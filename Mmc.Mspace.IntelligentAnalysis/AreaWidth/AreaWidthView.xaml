@@ -1,0 +1,123 @@
+﻿<blankWindow:BlankWindow x:Class="Mmc.Mspace.IntelligentAnalysisModule.AreaWidth.AreaWidthView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Mmc.Mspace.IntelligentAnalysisModule.AreaWidth"                                 
+        mc:Ignorable="d"
+        xmlns:blankWindow="http://GFramework.org"
+                         xmlns:controls="clr-namespace:Mmc.Mspace.Theme.Controls;assembly=Mmc.Mspace.Theme"
+                         Title="AreaWidthView" Height="320" Width="440">
+   
+        <Grid Margin="0,0,0,0">
+            <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="215"/>
+            <ColumnDefinition Width="215"/>
+           
+        </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="126"/>
+                
+        </Grid.RowDefinitions>
+        <Border  Grid.Row="0" Background="#292C35" Grid.Column="0" Grid.ColumnSpan="2" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True"/>
+        <TextBlock  blankWindow:BlankWindow.Draggable="True"  Grid.Row="0" Grid.Column="0" Text="边界宽度预警" Height="15" Width="120" Margin="18,2,0,8" Foreground="White"  FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" />
+        <Button Grid.Row="0" Grid.Column="1"  Command="{Binding CloseCmd}"  Style="{StaticResource ButtonCloseStyle}" Height="36" Width="36" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="0,2,5,0"  />
+
+        <DockPanel  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+            <Button Grid.Row="1" Grid.Column="1" Width="60" Height="30" Margin="5,2,10,0" Content="计算"  Style="{StaticResource DefaultButtonStyle}" Command="{Binding Calculate}" ></Button>
+            <Button Grid.Row="1" Grid.Column="0" Width="65" Height="30" Margin="5,2,10,0" Content="清除"  Style="{StaticResource DefaultButtonStyle}" Command="{Binding ClearDraw}" ></Button>
+            <TextBlock Text="输入缓冲半径" Height="15"></TextBlock>
+            <TextBox Text="{Binding Radius}" Height="15" Width="55" Margin="20,0,0,0" KeyDown="keydown" TextChanged="textChange"/>
+            <Button Grid.Row="1" Grid.Column="0" Width="65" Height="30" Margin="5,2,10,0" Content="保存"  Style="{StaticResource DefaultButtonStyle}" Command="{Binding SaveCmd}" ></Button>
+            <Button Grid.Row="1" Grid.Column="0" Width="65" Height="30" Margin="5,2,10,0" Content="绘制边线"  Style="{StaticResource DefaultButtonStyle}" Command="{Binding DrawSide}" Visibility="Hidden"></Button>
+            
+        </DockPanel>
+       
+        <!---->
+<DataGrid Grid.Row="2" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Grid.ColumnSpan="2" Grid.RowSpan="3"   AlternationCount="2" VerticalGridLinesBrush="Black" HorizontalGridLinesBrush="Transparent"
+                      CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False"  BorderBrush="Black"   
+                      Name="Pointdg" ItemsSource="{Binding ProblemPoints}">
+			<DataGrid.ColumnHeaderStyle>
+			<Style TargetType="DataGridColumnHeader">
+				<Setter Property="HorizontalContentAlignment" Value="Center"/>
+				<Setter Property="Background" Value="#1E2026"/>
+				<Setter Property="Foreground" Value="#B3BBC5"/>
+				<Setter Property="BorderThickness" Value="0,0,1,0" />
+				<Setter Property="BorderBrush" Value="#000000" />
+				<Setter Property="Height" Value="36"/>
+				<Setter Property="FontSize" Value="12"/>
+			</Style>
+		</DataGrid.ColumnHeaderStyle>
+		<DataGrid.RowStyle>
+			<Style TargetType="DataGridRow">
+				<Style.Triggers>
+					<Trigger Property="AlternationIndex" Value="0" >
+						<Setter Property="Background" Value="#0A0B0D" />
+						<Setter Property="Foreground" Value ="#C6CCD4"/>
+					</Trigger>
+					<Trigger Property="AlternationIndex" Value="1" >
+						<Setter Property="Background" Value="#14151A" />
+						<Setter Property="Foreground" Value ="#C6CCD4"/>
+					</Trigger>
+					<Trigger Property="IsMouseOver" Value="True">
+						<Setter Property="Background" Value="#50ABFF"/>
+						<Setter Property="Foreground" Value ="White"/>
+					</Trigger>
+					<Trigger Property="IsSelected" Value="True">
+						<Setter Property="Background" Value="#1890FF"/>
+						<Setter Property="Foreground" Value ="White"/>
+					</Trigger>
+				</Style.Triggers>
+			</Style>
+		</DataGrid.RowStyle>
+		<DataGrid.Columns>
+				<!--<DataGridTemplateColumn Header="显示" Width="80">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<CheckBox  Command="{Binding DataContext.VisualCmd,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}" 
+                                                CommandParameter="{Binding SelectedItem,ElementName=Querydg}" Margin="23,3,5,3"></CheckBox>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>-->
+        <DataGridTemplateColumn Header="问题点" Width="180" >
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <TextBlock TextAlignment="Center"  TextTrimming="WordEllipsis"  Text="问题点"  FontSize="12"/>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <!--<DataGridTemplateColumn Header="经纬度" Width="225">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <TextBlock TextAlignment="Center" TextTrimming="WordEllipsis" ToolTip="{Binding AreaNum}" Text="{Binding AreaNum}"  FontSize="12"/>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>-->
+
+        <DataGridTemplateColumn Header="操作 " Width="248">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <controls:Buttons x:Name="bs1" Height="23" Width="30" Content=""  Margin="20,0,0,0"
+											    ToolTip="定位"
+                                                Click="Poi_Click"
+                                                RIcon="{DynamicResource Account_View}"
+                                                MouseOverRIcon="{DynamicResource Account_View_H}"  
+                                                PressedRIcon="{DynamicResource Account_View_C}"
+                                                Style="{StaticResource AddandExportAccountBtnStyle}" 
+                                                
+                                                CommandParameter="{Binding SelectedItem,ElementName=Pointdg}"/>
+
+                    </StackPanel>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+    <!--/ Command="{Binding DataContext.VisualCmd,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}"-->
+</blankWindow:BlankWindow>

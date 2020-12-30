@@ -1,0 +1,20 @@
+﻿<blankWindow:BlankWindow x:Class="Mmc.Mspace.IotModule.Views.EventTimeView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Mmc.Mspace.IotModule.Views"
+        xmlns:blankWindow="http://GFramework.org"
+        mc:Ignorable="d"
+        Title="EventTimeView" Height="60" Width="120" ResizeMode="NoResize"  Style="{DynamicResource baseWindowStyle}" Background="Transparent" AllowsTransparency="True">
+    <Grid >
+        <Button   Background="Transparent"  BorderThickness="0"   ToolTip="清除事件"  Margin="5,2,8,2" Command="{Binding RecordCmd}" >
+            <Grid>
+                <Image Source="{DynamicResource  Calendar}" Panel.ZIndex="0"/>
+                <TextBlock Text="{Binding DataTimeToday}" Foreground="White" Width="80" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="1" Margin="10,5,5,5"/>
+            </Grid>
+        </Button>
+        <!--<Button Content="{Binding DataTimeToday}" Foreground="White" Background="#1E2026" Command="{Binding RecordCmd}"></Button>-->
+        
+    </Grid>
+</blankWindow:BlankWindow>

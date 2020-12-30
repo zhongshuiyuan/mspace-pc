@@ -1,0 +1,13 @@
+{
+  "poiUrl": "http://mspace.mmcuav.cn",
+  "mspaceVersion": "v1.6",
+  "labelMaxDistance": 1000,
+  "tracePoiMaxDistance": 5000,
+  "aiUrl": "http://ai.stream.mmcuav.cn:8082/",
+  "openMultiScreen": "true",
+  "uavSocketUri": "ws://socket.mmcuav.cn",
+  "joyUdpServer": {
+    "ip": "127.0.0.1",
+    "port": 8888
+  }
+}
