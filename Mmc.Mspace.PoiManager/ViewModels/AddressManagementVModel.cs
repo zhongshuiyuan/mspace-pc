@@ -1,7 +1,9 @@
 ﻿using Gvitech.CityMaker.Math;
 using Mmc.Framework.Services;
 using Mmc.Mspace.Common.Models;
+using Mmc.Mspace.Const.ConstDataInterface;
 using Mmc.Mspace.Models.AddressManagementModel;
+using Mmc.Mspace.Services.HttpService;
 using Mmc.Mspace.Services.LocalConfigService;
 using Mmc.Mspace.Theme.Pop;
 using Mmc.Windows.Services;
@@ -52,9 +54,18 @@ namespace Mmc.Mspace.PoiManagerModule.ViewModels
             if (AddressDatasList != null)
             {
                 loadLocalAddressDatas(AddressDatasList);
-            }          
+            }
         }
 
+        public void getPipeList()
+        {
+            Task.Run(() => {
+                string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PipeList);
+
+                this.PipeModels = new ObservableCollection<Models.PipeModel>(JsonUtil.DeserializeFromString<List<Models.PipeModel>>(resStr));
+
+            });
+        }
 
         private void loadLocalAddressDatas(List<AddressInfoModel> addressDatasList)
         {
@@ -572,6 +583,19 @@ namespace Mmc.Mspace.PoiManagerModule.ViewModels
                 OnPropertyChanged("AddressInfoCollection");
             }
         }
+
+        private ObservableCollection<Models.PipeModel> _pipeModels = new ObservableCollection<Models.PipeModel>();
+        public ObservableCollection<Models.PipeModel> PipeModels
+        {
+            get { return _pipeModels; }
+            set
+            {
+                _pipeModels = value;
+                OnPropertyChanged("PipeModels");
+            }
+        }
+
+        
 
 
         private ObservableCollection<AddressInfoModel> _tempAddressInfoCollection = new ObservableCollection<AddressInfoModel>();

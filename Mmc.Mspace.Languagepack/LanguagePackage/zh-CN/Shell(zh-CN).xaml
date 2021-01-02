@@ -25,7 +25,7 @@
     <sys:String x:Key="Volumecalculating">体积测算</sys:String>
     <sys:String x:Key="Splitscreen">分屏对比</sys:String>
     <sys:String x:Key="Scale">比例尺</sys:String>
-    <sys:String x:Key="Cityoverview">城市总览</sys:String>
+    <sys:String x:Key="Cityoverview">管线总览</sys:String>
     <sys:String x:Key="GridPatrol">网格化巡视</sys:String>
     <sys:String x:Key="Videomonitoring">视频监测</sys:String>
     <sys:String x:Key="securityguards">保安人员</sys:String>

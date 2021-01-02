@@ -20,61 +20,54 @@
     </i:Interaction.Triggers>
     <UserControl.Resources>
         <binding:BindingProxy x:Key="Proxy" Data="{Binding }"/>
-        <HierarchicalDataTemplate x:Key="ItemNode" ItemsSource="{Binding Path=InspectList}">
-            <StackPanel Orientation="Horizontal" Height="28">
-                <TextBlock Text="{Binding Path=Name}"  Width="auto" MaxWidth="190"   ToolTip="{Binding Path=Name}" TextTrimming="CharacterEllipsis"  FontSize="13" VerticalAlignment="Center" Margin="3,0,0,0"></TextBlock>
-            </StackPanel>
-        </HierarchicalDataTemplate>
-
     </UserControl.Resources>
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="64"/>
             <RowDefinition Height="45"/>
             <RowDefinition Height="45"/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="40"/>
             <RowDefinition Height="35"/>
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="Black"  Margin="0,1,0,0">
-            <TextBox x:Name="search"  Margin="10,5" Grid.Row="0" Height="36"  Width="331"  HorizontalAlignment="Stretch"  Style="{DynamicResource AddressTbxSearchStyle}"  
-                                              Helper:TextBoxHelper.IsNeedClearButton="False" Helper:TextBoxHelper.ButtonCommand="{Binding SearchCommand}"  Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}"  />
-
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" BorderThickness="0,0,0,1" BorderBrush="#000000" Opacity="0.5" Margin="0,1,0,0">
         </Border>
-        <StackPanel Grid.Row="1">
-            <DockPanel>
-                <TextBlock Text="等级：" Foreground="White" Margin="10,15,5,5"></TextBlock>
-                <ComboBox Height="32" Width="99" Style="{DynamicResource DefaultComboBoxStyle}"></ComboBox>
-                <TextBlock Text="标段：" Foreground="White" Margin="10,15,5,5"></TextBlock>
-                <ComboBox x:Name="biaoduanCombox" ItemsSource="{Binding BiaoduanSource}" Height="32" Width="99" Style="{DynamicResource DefaultComboBoxStyle}" ></ComboBox>
-            </DockPanel>
-        </StackPanel>
-        <StackPanel Grid.Row="2">
-            <DockPanel>
-                <TextBlock Text="日期：" Foreground="White" Margin="10,15,5,5"></TextBlock>
-                <DatePicker Height="28" Width="99" Style="{DynamicResource DatePickerStyle1}" Margin="5,10,5,5"></DatePicker>
-                <TextBlock Text="----" Foreground="White" Margin="10,15,5,5"></TextBlock>
-                <DatePicker Height="28" Width="99" Style="{DynamicResource DatePickerStyle1}" Margin="5,10,5,5"></DatePicker>
-            </DockPanel>
-        </StackPanel>
-        <DockPanel Grid.Row="3">
-            <CheckBox  Margin="20,2,2,2"></CheckBox>
-            <TextBlock Text="最新进度" Width="50" Height="20" Foreground="White" HorizontalAlignment="Left" Margin="2"></TextBlock>
-        </DockPanel>
-        <DockPanel Grid.Row="4">
+        <TextBox x:Name="search"  Grid.Row="0"  Grid.Column="0" Grid.ColumnSpan="4"   HorizontalAlignment="Stretch" Width="300" Style="{DynamicResource AddressTbxSearchStyle}"  
+                                              Helper:TextBoxHelper.IsNeedClearButton="False" Helper:TextBoxHelper.ButtonCommand="{Binding SearchCommand}"  Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}"  />
+        <TextBlock Text="等级："  Margin="10 0 0 0 " Grid.Row="1"  Grid.Column="0" FontSize="14"  Foreground="#B3BBC5"  HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+        <ComboBox Height="32" Grid.Row="1"  Grid.Column="1" Width="99" Style="{DynamicResource DefaultComboBoxStyle}"></ComboBox>
+
+        <TextBlock Text="标段：" Grid.Row="1"  Grid.Column="2" FontSize="14" Foreground="#B3BBC5" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+        <ComboBox x:Name="biaoduanCombox"  Grid.Row="1"  Grid.Column="3" ItemsSource="{Binding BiaoduanSource}" Height="32" Width="99" Style="{DynamicResource DefaultComboBoxStyle}" ></ComboBox>
+
+        <TextBlock Text="日期：" Margin="10 0 0 0 " Grid.Row="2"  Grid.Column="0" FontSize="14" Foreground="#B3BBC5" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+        <DatePicker Height="28"  Grid.Row="2"  Grid.Column="1" Width="99" Style="{DynamicResource DatePickerStyle1}" ></DatePicker>
+
+        <TextBlock Text="-" FontSize="14" Grid.Row="2"  Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#B3BBC5" ></TextBlock>
+        <DatePicker Height="28"  Grid.Row="2"  Grid.Column="3" Width="99" Style="{DynamicResource DatePickerStyle1}" ></DatePicker>
+
+
+        <CheckBox  Grid.Row="3"  Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Style="{StaticResource PoiCheckBoxStyle}" Content="最新进度" Margin="10,2,2,2"></CheckBox>
+
+        <DockPanel Grid.Row="4" Grid.ColumnSpan="4">
             <Button Content="确定" Style="{DynamicResource DefaultButtonStyle}" Height="30" Margin="70,4,5,5" Command="{Binding SearchCommand}"></Button>
             <Button Content="取消" Style="{DynamicResource DefaultButtonStyle}" Height="30" Margin="10,4,5,5"></Button>
         </DockPanel>
-        <DockPanel Grid.Row="5">
-            <TextBlock Text="中俄东线" Foreground="White" FontSize="16" Margin="10,5,5,5"></TextBlock>
+        <DockPanel Grid.Row="5" Grid.ColumnSpan="4">
+            <TextBlock Text="中俄东线" Foreground="#B3BBC5" FontSize="16" Margin="10,5,5,5"></TextBlock>
         </DockPanel>
         <!--左边目录树-->
-        <TreeView Grid.Row="6" x:Name="tree1" Width="345"
-                  ItemTemplate="{StaticResource ItemNode}" 
-                  ItemsSource="{Binding InspectRegions}"  
+        <TreeView Grid.Row="6" Grid.ColumnSpan="4" x:Name="tree1" Width="345"
+                  ItemsSource="{Binding PipeModels}"  
                   Style="{StaticResource TreeViewStyle1}"
                   Foreground="Black" 
                   FontSize="20"
@@ -86,20 +79,18 @@
                     <i:InvokeCommandAction Command="{Binding Path=DataContext.SelectChangedCommand,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding SelectedItem,ElementName=tree1}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
+            <TreeView.ItemTemplate >
+                <HierarchicalDataTemplate ItemsSource="{Binding Child}" >
+                    <StackPanel Orientation="Horizontal" Height="36" >
+
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
             <TreeView.ItemContainerStyle>
-                <Style BasedOn="{StaticResource DefaultTreeViewStyle}" TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="FontWeight" Value="Normal"/>
-                    <Setter Property="ContextMenu" >
-                        <Setter.Value>
-                            <ContextMenu Style="{StaticResource DefaultContextMenu}">
-                                <MenuItem Header="{DynamicResource DeleteTitle}" Command="{Binding Data.DeleteCommand,Source={StaticResource Proxy}}" CommandParameter="{Binding .}"></MenuItem>
-                                <MenuItem Header="修改名称" Visibility="{Binding IsRegion,Converter={StaticResource BooleanToVisibilityConverter}}"  Command="{Binding Data.ReNameCmd,Source={StaticResource Proxy}}" CommandParameter="{Binding .}"></MenuItem>
-							</ContextMenu>
-                        </Setter.Value>
-                    </Setter>
+                <Style BasedOn="{StaticResource TreeViewItemStyle2}" TargetType="{x:Type TreeViewItem}">
                 </Style>
             </TreeView.ItemContainerStyle>
-            
+
         </TreeView>
 
     </Grid>

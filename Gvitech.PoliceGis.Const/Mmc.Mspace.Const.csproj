@@ -41,6 +41,7 @@
     <Compile Include="ConstDataInterface\GeoServiceDataInterface.cs" />
     <Compile Include="ConstDataInterface\GridPatrolInterface.cs" />
     <Compile Include="ConstDataInterface\MarkInterface.cs" />
+    <Compile Include="ConstDataInterface\PipelineInterface.cs" />
     <Compile Include="ConstDataInterface\RegularInspectInterface.cs" />
     <Compile Include="ConstDataInterface\UAVInterface.cs" />
     <Compile Include="ConstDataInterface\UserCfgInterface.cs" />

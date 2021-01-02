@@ -224,6 +224,7 @@ namespace MMC.MSpace
                     }
                     regularInspectionVModel?.MapControlEventManagement(false);
                     this.leftView.Content = leftManagementView;
+                    this.leftManagementVModel.ReLoaded();
                     //RegInsDataRenderManager.Instance.SaveRenderLayersStatus();
                     //RegInsDataRenderManager.Instance.HideRenderLayer();
                     //RegInsDataRenderManager.Instance.CloseHintView();

@@ -2,14 +2,18 @@
 using Mmc.Mspace.Common.Messenger;
 using Mmc.Mspace.Common.Models;
 using Mmc.Mspace.Common.ShellService;
+using Mmc.Mspace.Const.ConstDataInterface;
 using Mmc.Mspace.Models.Inspection;
+using Mmc.Mspace.PoiManagerModule.Models;
 using Mmc.Mspace.PoiManagerModule.ViewModels;
 using Mmc.Mspace.RegularInspectionModule.Dto;
 using Mmc.Mspace.RegularInspectionModule.Views;
 using Mmc.Mspace.Services.DataSourceServices;
+using Mmc.Mspace.Services.HttpService;
 using Mmc.Mspace.Services.LocalConfigService;
 using Mmc.Mspace.Theme.Pop;
 using Mmc.Windows.Services;
+using Mmc.Windows.Utils;
 using Mmc.Wpf.Commands;
 using System;
 using System.Collections.Generic;
@@ -47,6 +51,29 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 }
             }
         }
+
+        private ObservableCollection<string> _pipelist;
+        /// <summary>
+        /// 管道层级列表
+        /// </summary>
+        public ObservableCollection<string> Pipelist
+        {
+            get { return _pipelist; }
+            set { _pipelist = value; OnPropertyChanged("Pipelist"); }
+        }
+
+        private ObservableCollection<PipeModel> _pipeModels = new ObservableCollection<PipeModel>();
+        public ObservableCollection<PipeModel> PipeModels
+        {
+            get { return _pipeModels; }
+            set
+            {
+                _pipeModels = value;
+                OnPropertyChanged("PipeModels");
+            }
+        }
+
+
         private ObservableCollection<string> _biaoduanSource;
 
         public ObservableCollection<string> BiaoduanSource
@@ -124,8 +151,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             set { _reNameCmd = value; }
         }
         
-
-
         public RegularInspectionVModel()
         {
           Messenger.Messengers.Register<bool>("AddRegion", (t) =>
@@ -137,7 +162,11 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             Messenger.Messengers.Register("LeftListRefresh", () =>
             {
                 LoadData();
+        
             });
+
+
+
         }
 
         public void MapControlEventManagement(bool OnEvent)
@@ -154,6 +183,14 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         private void OnSelectChangedCommand(object parameter)
         {
 
+        }
+        public void getPipeList()
+        {
+            Task.Run(() => {
+                string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PipeList);
+
+                this.PipeModels = new ObservableCollection<PipeModel>(JsonUtil.DeserializeFromString<List<PipeModel>>(resStr));
+            });
         }
 
         private void OnImportCommand(object parameter)
@@ -277,6 +314,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         private void LoadData()
         {
             UpdateData();
+            this.getPipeList();
             if (InspectRegions.Count == 0)
                 Messenger.Messengers.Notify("CreateNewInspection", true);
         }

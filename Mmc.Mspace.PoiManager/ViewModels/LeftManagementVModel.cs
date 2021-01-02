@@ -1,4 +1,8 @@
 ﻿using Mmc.Mspace.Common.Models;
+using Mmc.Mspace.Const.ConstDataInterface;
+using Mmc.Mspace.PoiManagerModule.Models;
+using Mmc.Mspace.Services.HttpService;
+using Mmc.Windows.Utils;
 using Mmc.Wpf.Commands;
 using System;
 using System.Collections.Generic;
@@ -62,8 +66,16 @@ namespace Mmc.Mspace.PoiManagerModule.ViewModels
 
         public LeftManagementVModel()
         {
+        }
+
+        public void ReLoaded()
+        {
+            this.SelectedIndex = 0;
+            ///获取树结构
+            this.AddressManagementVModel.getPipeList();
 
         }
+
 
         protected override void Loaded()
         {

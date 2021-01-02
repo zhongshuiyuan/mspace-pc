@@ -152,6 +152,7 @@
   <ItemGroup>
     <Compile Include="Models\LayerQueryWktGroup.cs" />
     <Compile Include="Models\LoadType.cs" />
+    <Compile Include="Models\PipeModel.cs" />
     <Compile Include="Models\QueryWktGroup.cs" />
     <Compile Include="Models\TagTypeModel.cs" />
     <Compile Include="ViewModels\EditNameVModel.cs" />
@@ -164,6 +165,9 @@
     <Compile Include="ViewModels\ReportRankingViewModel.cs" />
     <Compile Include="ViewModels\UpLoadAccountImageViewModel.cs" />
     <Compile Include="ViewModels\VideoPlayViewVMdel.cs" />
+    <Compile Include="Views\AddressManagementView - 复制.xaml.cs">
+      <DependentUpon>AddressManagementView - 复制.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\EditNameView.xaml.cs">
       <DependentUpon>EditNameView.xaml</DependentUpon>
     </Compile>
@@ -376,6 +380,10 @@
     <Page Include="Views\AddAccountView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddressManagementView - 复制.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\AddressManagementView.xaml">
       <SubType>Designer</SubType>
