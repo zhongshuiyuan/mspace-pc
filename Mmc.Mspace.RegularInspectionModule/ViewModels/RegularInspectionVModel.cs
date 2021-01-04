@@ -34,8 +34,13 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
     {
 
         //private RegInsImportDataView _regInsImportDataView;
-        
+
         //private RegInsImportDataVModel _regInsImportDataVModel;
+
+        private NewInspectionView _newInspectionView;
+
+        private NewInspectionVModel newInspectionVModel;
+
         private ObservableCollection<InspectModel> _inspectRegions;
 
         public ObservableCollection<InspectModel> InspectRegions
@@ -155,6 +160,15 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _importCommand??(_importCommand=new RelayCommand<object>(OnImportCommand)); }
             set { _importCommand = value; }
         }
+
+        private RelayCommand<object> _addCommand;
+
+        public RelayCommand<object> AddCommand
+        {
+            get { return _addCommand??(_addCommand=new  RelayCommand<object> (OnAddCommand)); }
+            set { _addCommand = value; }
+        }
+
         private RelayCommand<object> _checkedCommand;
 
         public RelayCommand<object> CheckedCommand
@@ -230,6 +244,21 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             });
         }
 
+
+        private void OnAddCommand( object obj)
+        {
+            if (_newInspectionView == null)
+            {
+                _newInspectionView = new NewInspectionView();
+                 newInspectionVModel = new NewInspectionVModel();
+                _newInspectionView.DataContext = newInspectionVModel;
+                newInspectionVModel.HideWin = _newInspectionView.CloseWindow;
+            }
+            _newInspectionView.Owner = Application.Current.MainWindow;
+            _newInspectionView.Left = 400;
+            _newInspectionView.Top = Application.Current.MainWindow.Height * 0.2;
+            _newInspectionView.Show();
+        }
         private void OnImportCommand(object parameter)
         {
             //if (parameter == null) return;

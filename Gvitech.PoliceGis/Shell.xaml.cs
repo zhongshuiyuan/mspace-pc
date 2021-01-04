@@ -208,6 +208,9 @@ namespace MMC.MSpace
         private HistoryDomView historyDomView;
         private HistoryDomVModel historyDomVModel;
 
+        private ComparisonView comparisonView;
+        private ComparisonVModel comparisonVModel;
+
         private NavigationView navigationView;
         private NavigationViewModel navigationViewModel;
 
@@ -237,9 +240,16 @@ namespace MMC.MSpace
                         regularInspectionVModel = new RegularInspectionVModel();
                         regularInspectionView.DataContext = regularInspectionVModel;
                     }
+
+                    if (comparisonView == null)
+                    {
+                        comparisonView = new ComparisonView();
+                        comparisonVModel = new ComparisonVModel();
+                        comparisonView.DataContext = comparisonVModel;
+                    }
                     regularInspectionVModel?.MapControlEventManagement(true);
                     this.comparison.Visibility = Visibility.Visible;
-
+                    this.comparison.Content = comparisonView;
                     this.leftView.Content = regularInspectionView;
                     //RegInsDataRenderManager.Instance.RecoverRenderLayer();
                     break;

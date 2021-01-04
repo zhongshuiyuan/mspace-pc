@@ -122,6 +122,7 @@
     <Compile Include="ViewModels\AnalysisiBarChartVModel.cs" />
     <Compile Include="ViewModels\AnalysisiChartVModel.cs" />
     <Compile Include="ViewModels\ChangeRegInsNameVModel.cs" />
+    <Compile Include="ViewModels\ComparisonVModel.cs" />
     <Compile Include="ViewModels\DomReclassify.cs" />
     <Compile Include="ViewModels\NewDrawLineVModel.cs" />
     <Compile Include="ViewModels\NewInspectionVModel.cs" />

@@ -59,7 +59,21 @@ namespace Mmc.Mspace.PoiManagerModule.Models
                 NotifyPropertyChanged("NodeName");
             }
         }
+
+        private string _level;
+
+        public string Level
+        {
+            get => _level;
+            set
+            {
+                _level = value;
+                NotifyPropertyChanged("Level");
+            }
+        }
+
         
+
         private string _prefix;
 
         public string Prefix

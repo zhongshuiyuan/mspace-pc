@@ -18,16 +18,19 @@ using System.Xml.Serialization;
 
 namespace Mmc.Mspace.RegularInspectionModule.ViewModels
 {
-    public class NewInspectionVModel : CheckedToolItemModel
+    public class NewInspectionVModel : BaseViewModel
     {
         private NewInspectionView _newInspectionView;
 
         private InspectRegion _selectedItem;
 
+
+        public Action HideWin;
+
         public InspectRegion SelectedItem
         {
             get { return _selectedItem; }
-            set { _selectedItem = value; NotifyPropertyChanged("SelectedItem"); }
+            set { _selectedItem = value; OnPropertyChanged("SelectedItem"); }
         }
 
         private string _newName;
@@ -38,7 +41,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             set
             {
                 _newName = value;
-                NotifyPropertyChanged("NewName");
+                OnPropertyChanged("NewName");
             }
         }
 
@@ -47,17 +50,15 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         public DateTime InspectionDate
         {
             get { return _inspectionDate; }
-            set { _inspectionDate = value; NotifyPropertyChanged("InspectionDate"); }
+            set { _inspectionDate = value; OnPropertyChanged("InspectionDate"); }
         }
-
-
 
         private ObservableCollection<InspectRegion> _inspectRegions;
 
         public ObservableCollection<InspectRegion> InspectRegions
         {
             get { return _inspectRegions; }
-            set { _inspectRegions = value; NotifyPropertyChanged("InspectRegions"); }
+            set { _inspectRegions = value; OnPropertyChanged("InspectRegions"); }
         }
 
         private RelayCommand _cancelCommand;
@@ -75,25 +76,16 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _createCommand ?? (_createCommand = new RelayCommand(OnCreateCommand)); }
             set { _createCommand = value; }
         }
-        public override void Initialize()
-        {
-            base.Initialize();
-            base.ViewType = (ViewType)1;
-            Messenger.Messengers.Register<bool>("CreateNewInspection", (t) =>
-            {
-                IsChecked = true;
-            });
-        }
 
-
-
+        //关闭新增窗口
         private void OnCancelCommand()
         {
-            IsChecked = false;
+            //清楚数据
+            this.HideWin();
         }
-        public override void OnChecked()
+        public void OnChecked()
         {
-            base.OnChecked();
+          
             if (_newInspectionView == null)
             {
                 _newInspectionView = new NewInspectionView();
@@ -103,9 +95,9 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             LoadData();
             _newInspectionView.Show();
         }
-        public override void OnUnchecked()
+        public  void OnUnchecked()
         {
-            base.OnUnchecked();
+          
             _newInspectionView.Hide();
         }
         public void LoadData()
@@ -154,7 +146,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 NewName = null;
                 Messages.ShowMessage(Helpers.ResourceHelper.FindKey("Savesuccess"));
                 Messenger.Messengers.Notify("AddRegion", true);
-                IsChecked = false;
 
                 Messenger.Messengers.Notify("HistoryDomRefresh");
                 Messenger.Messengers.Notify("PhotoTraceRefresh");

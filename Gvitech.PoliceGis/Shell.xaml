@@ -100,9 +100,8 @@
                 <views:BootomToolView x:Name="bottomTool" />
             </StackPanel>
             <ContentControl x:Name="BottomMenu" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
-            <StackPanel x:Name="comparison" Visibility="Collapsed" Margin="363 0 0 0"  Orientation="Horizontal" HorizontalAlignment="Stretch"   Height="200">
-       
-            </StackPanel>
+            <ContentControl x:Name="comparison" Visibility="Collapsed" Margin="363 0 0 0"  HorizontalAlignment="Stretch"   Height="200">
+            </ContentControl>
         </StackPanel>
 
         <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" HorizontalAlignment="Right">

@@ -66,7 +66,7 @@
         <DockPanel Grid.Row="5" Grid.ColumnSpan="4">
             <TextBlock Text="中俄东线" Foreground="#B3BBC5" FontSize="16" Margin="10,5,5,5"></TextBlock>
 
-            <conrols:Buttons  Command="{Binding Path=DataContext.DownloadCommand}" CommandParameter="{Binding }"   Style="{StaticResource Button_plusStyle}" Height="16" Width="16" HasPathData="true" PathData="{StaticResource glyphicon-add}" RIcon="{StaticResource add_n}"  ToolTip="添加" InnerPathFill="#50ABFF"  HorizontalAlignment="Right" Margin="0 0 25 0"/>
+            <conrols:Buttons  Command="{Binding AddCommand}" CommandParameter="0"   Style="{StaticResource Button_plusStyle}" Height="16" Width="16" HasPathData="true" PathData="{StaticResource glyphicon-add}" RIcon="{StaticResource add_n}"  ToolTip="添加" InnerPathFill="#50ABFF"  HorizontalAlignment="Right" Margin="0 0 25 0"/>
         </DockPanel>
         <!--左边目录树-->
         <TreeView Grid.Row="6" Grid.ColumnSpan="4" x:Name="tree1" Width="360"
