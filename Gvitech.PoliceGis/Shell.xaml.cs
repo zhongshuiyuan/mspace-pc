@@ -222,6 +222,7 @@ namespace MMC.MSpace
                         leftManagementVModel = new LeftManagementVModel();
                         leftManagementView.DataContext = leftManagementVModel;
                     }
+                    this.comparison.Visibility = Visibility.Collapsed;
                     regularInspectionVModel?.MapControlEventManagement(false);
                     this.leftView.Content = leftManagementView;
                     this.leftManagementVModel.ReLoaded();
@@ -237,6 +238,8 @@ namespace MMC.MSpace
                         regularInspectionView.DataContext = regularInspectionVModel;
                     }
                     regularInspectionVModel?.MapControlEventManagement(true);
+                    this.comparison.Visibility = Visibility.Visible;
+
                     this.leftView.Content = regularInspectionView;
                     //RegInsDataRenderManager.Instance.RecoverRenderLayer();
                     break;

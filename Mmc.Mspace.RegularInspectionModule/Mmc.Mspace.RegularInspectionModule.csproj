@@ -115,6 +115,8 @@
     <Compile Include="Dto\RegInsModelConvert.cs" />
     <Compile Include="model\FileModel.cs" />
     <Compile Include="model\InspectModel.cs" />
+    <Compile Include="model\PeriodModel.cs" />
+    <Compile Include="model\SectionModel.cs" />
     <Compile Include="model\ShpRoneModel.cs" />
     <Compile Include="RegInsDataRenderManager.cs" />
     <Compile Include="ViewModels\AnalysisiBarChartVModel.cs" />
@@ -155,6 +157,9 @@
     </Compile>
     <Compile Include="Views\ChangeRegInsNameView.xaml.cs">
       <DependentUpon>ChangeRegInsNameView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ComparisonView.xaml.cs">
+      <DependentUpon>ComparisonView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\HistoryDomView.xaml.cs">
       <DependentUpon>HistoryDomView.xaml</DependentUpon>
@@ -292,6 +297,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ChangeRegInsNameView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ComparisonView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

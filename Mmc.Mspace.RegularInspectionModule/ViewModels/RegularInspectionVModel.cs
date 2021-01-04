@@ -7,6 +7,7 @@ using Mmc.Mspace.Models.Inspection;
 using Mmc.Mspace.PoiManagerModule.Models;
 using Mmc.Mspace.PoiManagerModule.ViewModels;
 using Mmc.Mspace.RegularInspectionModule.Dto;
+using Mmc.Mspace.RegularInspectionModule.model;
 using Mmc.Mspace.RegularInspectionModule.Views;
 using Mmc.Mspace.Services.DataSourceServices;
 using Mmc.Mspace.Services.HttpService;
@@ -62,6 +63,41 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             set { _pipelist = value; OnPropertyChanged("Pipelist"); }
         }
 
+
+        private ObservableCollection<PeriodModel> _periods=new ObservableCollection<PeriodModel>();
+        /// <summary>
+        /// 阶段
+        /// </summary>
+        public ObservableCollection<PeriodModel> Periods
+        {
+            get { return _periods; }
+            set { _periods = value; OnPropertyChanged("Periods"); }
+        }
+        private ObservableCollection<SectionModel> _sections = new ObservableCollection<SectionModel>();
+        /// <summary>
+        /// 标段
+        /// </summary>
+        public ObservableCollection<SectionModel> Sections
+        {
+            get { return _sections; }
+            set { _sections = value; OnPropertyChanged("Sections"); }
+        }
+
+        private DateTime startTime = DateTime.Now.AddDays(-90);
+
+        public DateTime StartTime
+        {
+            get { return startTime; }
+            set { startTime = value; OnPropertyChanged("StartTime"); }
+        }
+        private DateTime endTime= DateTime.Now;
+
+        public DateTime EndTime
+        {
+            get { return endTime; }
+            set { endTime = value; OnPropertyChanged("EndTime"); }
+        }
+
         private ObservableCollection<PipeModel> _pipeModels = new ObservableCollection<PipeModel>();
         public ObservableCollection<PipeModel> PipeModels
         {
@@ -85,7 +121,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 OnPropertyChanged("BiaoduanSource");
             }
         }
-
 
         private string _searchText;
 
@@ -177,7 +212,10 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
 
         private void OnSearchCommand()
         {
-            InspectRegions = new ObservableCollection<InspectModel>(InspectionService.Instance.GetAllRegion(_searchText).Select(t => RegInsModelConvert.InspectRegionConvert(t)).ToList());
+            //add  by hengda 
+            //InspectRegions = new ObservableCollection<InspectModel>(InspectionService.Instance.GetAllRegion(_searchText).Select(t => RegInsModelConvert.InspectRegionConvert(t)).ToList());
+
+            this.getPipeList();
         }
 
         private void OnSelectChangedCommand(object parameter)
@@ -188,7 +226,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         {
             Task.Run(() => {
                 string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PipeList);
-
                 this.PipeModels = new ObservableCollection<PipeModel>(JsonUtil.DeserializeFromString<List<PipeModel>>(resStr));
             });
         }
@@ -236,15 +273,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             RegInsDataRenderManager.Instance.OpenInspectData(inspect);
 
         }
-
-        //private void CloseWindow()
-        //{
-        //    ServiceManager.GetService<IShellService>(null).ShellWindow.Dispatcher.Invoke(() =>
-        //    {
-        //        _regInsImportDataView.Hide();
-        //        _regInsImportDataVModel.ClearData();
-        //    });
-        //}
 
         private void OnDeleteCommand(object parameter)
         {
@@ -317,6 +345,19 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             this.getPipeList();
             if (InspectRegions.Count == 0)
                 Messenger.Messengers.Notify("CreateNewInspection", true);
+
+            Task.Run(() =>
+            {
+                //获取阶段
+                string periodList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PeriodList);
+
+                this.Periods = new ObservableCollection<PeriodModel>(JsonUtil.DeserializeFromString<List<PeriodModel>>(periodList));
+
+                //获取标段
+                string sectionList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.SectionList);
+
+                this.Sections = new ObservableCollection<SectionModel>(JsonUtil.DeserializeFromString<List<SectionModel>>(sectionList));
+            });
         }
 
         private void UpdateData()

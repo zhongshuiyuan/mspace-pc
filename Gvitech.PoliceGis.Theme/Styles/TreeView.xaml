@@ -795,7 +795,105 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style x:Key="TreeViewItemStyle3" TargetType="{x:Type TreeViewItem}">
+        <Setter Property="Foreground" Value="#FFF0F0F0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                    <Grid Margin="-5,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition  Width="24"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Border Grid.ColumnSpan="2" Margin="0,0,0,0"  x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Background="Transparent"  SnapsToDevicePixels="true"/>
 
+                        <ToggleButton  x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ExpandCollapseToggleStyle}"/>
+                        <ContentPresenter Grid.Column="1" x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        <DockPanel   Grid.Column="1" HorizontalAlignment="Stretch" Margin="0 0 10 0">
+                            <TextBlock Width="80"  HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#B3BBC5" FontSize="14" ToolTip="{Binding NodeName}" Text="{Binding NodeName}" ></TextBlock>
+                            <Border    HorizontalAlignment="Right">
+                                <!--TextTrimming="W ordEllipsis"-->
+                                <StackPanel Orientation="Horizontal" x:Name="buttonvisibility"  HorizontalAlignment="Right" Visibility="Visible" Background ="Transparent"  Margin="{Binding AddressLevel, Converter={StaticResource AddressMarginLevelConverter}}">
+                                    <!--<controls:Buttons   Visibility ="{Binding AddBtnVisibility}" 
+                                      ToolTip="{DynamicResource AMV_AddAddress}"
+                                      RIcon="{DynamicResource Address_Add}"
+                                      MouseOverRIcon="{DynamicResource Address_Add_H}"
+                                      PressedRIcon="{DynamicResource Address_Add_C}"
+                                      Style="{StaticResource AddressBtnStyle}" 
+                                      Command="{Binding Path=DataContext.AddChildNodeCmd,RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                      CommandParameter="{Binding}"/>
+                                    <controls:Buttons 
+                                      ToolTip="{DynamicResource AMV_RemoveAddress}"
+                                      RIcon="{DynamicResource Address_Delete}"
+                                      MouseOverRIcon="{DynamicResource Address_Delete_H}"
+                                      PressedRIcon="{DynamicResource Address_Delete_C}"
+                                      Style="{StaticResource AddressBtnStyle}" 
+                                      Command="{Binding Path=DataContext.DeleteChildNodeCmd,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                      CommandParameter="{Binding}"/>
+                                    <controls:Buttons  
+                                      ToolTip="{DynamicResource AMV_SetAddress}"
+                                      RIcon="{DynamicResource Address_Set}"
+                                      MouseOverRIcon="{DynamicResource Address_Set_H}"
+                                      PressedRIcon="{DynamicResource Address_Set_C}"
+                                      Style="{StaticResource AddressBtnStyle}" 
+                                      Command="{Binding Path=DataContext.SetNodeInfoCmd,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                      CommandParameter="{Binding}"/>-->
+                                    <controls:Buttons  Command="{Binding Path=DataContext.DownloadCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding }"   Style="{DynamicResource Button_plusStyle}" Height="20" Width="16" HasPathData="true" PathData="{DynamicResource glyphicon-check2}" RIcon="{DynamicResource add_n}"  ToolTip="查看" InnerPathFill="#D1DBEA"  HorizontalAlignment="Right" Margin="0 0 10 0"/>
+                                    <controls:Buttons  Command="{Binding Path=DataContext.DownloadCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding }"  Style="{DynamicResource Button_plusStyle}" Height="20" Width="16" HasPathData="true" PathData="{DynamicResource glyphicon-delete}" RIcon="{DynamicResource add_n}"  ToolTip="删除" InnerPathFill="#D1DBEA"  HorizontalAlignment="Right" Margin="0 0 10 0"/>
+                                    <controls:Buttons  Command="{Binding Path=DataContext.DownloadCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding }"   Style="{DynamicResource Button_plusStyle}" Height="16" Width="16" HasPathData="true" PathData="{DynamicResource glyphicon-add}" RIcon="{DynamicResource add_n}"  ToolTip="添加" InnerPathFill="#50ABFF"  HorizontalAlignment="Right" Margin="0 0 10 0"/>
+                                </StackPanel>
+                            </Border>
+                        </DockPanel>
+                        <ItemsPresenter  x:Name="ItemsHost" Grid.ColumnSpan="2" Grid.Column="1" Grid.Row="1"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="false">
+                            <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="HasItems" Value="false">
+                            <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="#50ABFF" />
+                            <Setter Property="Background" TargetName="Expander" Value="#50ABFF"/>
+                            <Setter Property="Visibility" TargetName="buttonvisibility" Value="Visible"/>
+                        </Trigger>
+                        <!--<Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Background" TargetName="Expander" Value="#50ABFF"/>
+                            <Setter Property="Visibility" TargetName="buttonvisibility" Value="Visible"/>
+                        </Trigger>-->
+
+
+                        <!--<MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="False" />
+                                <Condition  Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="#50ABFF" />
+                            <Setter Property="Background" TargetName="Expander" Value="#50ABFF"/>
+                            <Setter Property="Visibility" TargetName="buttonvisibility" Value="Visible"/>
+                        </MultiTrigger>-->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="true"/>
+                                <Condition Property="IsSelectionActive" Value="false"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Bd" Value="#FF404040"/>
+
+                            <Setter Property="Background" TargetName="Expander" Value="#FF404040"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
     <SolidColorBrush x:Key="ListBorder" Color="#50ABFF"/>
     <Style x:Key="AddressTreeViewStyle" TargetType="{x:Type TreeView}">
         <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>

@@ -20,7 +20,7 @@
 
     <ItemsControl
 		Name="tools"
-		Margin="10"
+		Margin="10 10 10 0"
 		ItemTemplateSelector="{DynamicResource ToolDataTemplateSelector}"
 		gvifm:AttachedProperties.Orientation="Horizontal"
 		ItemsSource="{Binding ShellModel.BottomToolMenuItems}">
