@@ -226,7 +226,8 @@ namespace MMC.MSpace
                         leftManagementView.DataContext = leftManagementVModel;
                     }
                     this.comparison.Visibility = Visibility.Collapsed;
-                    regularInspectionVModel?.MapControlEventManagement(false);
+                    regularInspectionVModel?.MapControlEventManagement(false); 
+                    regularInspectionVModel?.CloseAddWin(); 
                     this.leftView.Content = leftManagementView;
                     this.leftManagementVModel.ReLoaded();
                     //RegInsDataRenderManager.Instance.SaveRenderLayersStatus();

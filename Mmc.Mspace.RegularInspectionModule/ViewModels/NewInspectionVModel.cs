@@ -280,6 +280,12 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             this.LoadFiles = "";
             this.LocalCheck = true;
             this.Name = "";
+            this.StartStake = 0;
+            this.EndStake = 0;
+            this.SelectPeriodModel = null;
+            this.SelectPipeModel = null;
+            this.SelectSectionModel = null;
+            this.CreateTime = DateTime.Now;
             this.HideWin();
         }
         public void LoadData()
@@ -439,7 +445,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 default:
                     typeString = "";
                     break;
-
             }
             return typeString;
         }
@@ -481,7 +486,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                         AddData(filetype, fileAddress, "", 20, -1);
                         break;
                 }
-
             }
         }
 

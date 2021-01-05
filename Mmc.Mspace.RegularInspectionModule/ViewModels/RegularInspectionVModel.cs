@@ -38,9 +38,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
     /// </summary>
     public class RegularInspectionVModel:BaseViewModel
     {
-
-   
-
         private NewInspectionView _newInspectionView;
 
         private NewInspectionVModel newInspectionVModel;
@@ -54,7 +51,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         ObservableCollection<RenderLayerModel> tempMapSource = null;
 
         private ObservableCollection<InspectModel> _inspectRegions;
-
         public ObservableCollection<InspectModel> InspectRegions
         {
             get { return _inspectRegions ?? (_inspectRegions = new ObservableCollection<InspectModel>()); }
@@ -79,7 +75,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _pipelist; }
             set { _pipelist = value; OnPropertyChanged("Pipelist"); }
         }
-
 
         private ObservableCollection<PeriodModel> _periods=new ObservableCollection<PeriodModel>();
         /// <summary>
@@ -125,7 +120,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 OnPropertyChanged("PipeModels");
             }
         }
-
 
         private ObservableCollection<string> _biaoduanSource;
 
@@ -512,11 +506,14 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 this.PipeModels = (JsonUtil.DeserializeFromString<List<PipeModel>>(resStr));
             });
         }
-
+        public void CloseAddWin()
+        {
+            if (newInspectionVModel != null)
+                newInspectionVModel.HideWin();
+        }
 
         private void OnAddCommand( object obj)
         {
-          
             if (_newInspectionView == null)
             {
                 _newInspectionView = new NewInspectionView();
@@ -534,7 +531,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             {
               
             }
-          
             _newInspectionView.Owner = Application.Current.MainWindow;
             _newInspectionView.Left = 400;
             _newInspectionView.Top = Application.Current.MainWindow.Height * 0.2;
@@ -588,7 +584,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             var inspect = parameter as InspectModel;
             if (inspect == null) return;
             RegInsDataRenderManager.Instance.OpenInspectData(inspect);
-
         }
 
         private void OnDeleteCommand(object parameter)
