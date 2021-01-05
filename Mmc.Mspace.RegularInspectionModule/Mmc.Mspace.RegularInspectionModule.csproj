@@ -118,6 +118,7 @@
     <Compile Include="model\PeriodModel.cs" />
     <Compile Include="model\SectionModel.cs" />
     <Compile Include="model\ShpRoneModel.cs" />
+    <Compile Include="model\StakeModel.cs" />
     <Compile Include="RegInsDataRenderManager.cs" />
     <Compile Include="ViewModels\AnalysisiBarChartVModel.cs" />
     <Compile Include="ViewModels\AnalysisiChartVModel.cs" />

@@ -34,6 +34,8 @@
     <sys:String x:Key="Statistics">统计数据</sys:String>
     <sys:String x:Key="UAV">无人机</sys:String>
     <sys:String x:Key="WireLinePatrol">电力巡航</sys:String>
+    <sys:String x:Key="DrawLineManage">描线管理</sys:String>
+    
 
     <sys:String x:Key="Intelligentanalysis">智能分析</sys:String>
     <sys:String x:Key="Smartdevices">智能设备</sys:String>

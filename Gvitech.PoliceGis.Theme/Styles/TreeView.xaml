@@ -814,7 +814,7 @@
                         <ToggleButton  x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ExpandCollapseToggleStyle}"/>
                         <ContentPresenter Grid.Column="1" x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                         <DockPanel   Grid.Column="1" HorizontalAlignment="Stretch" Margin="0 0 10 0">
-                            <TextBlock Width="80"  HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#B3BBC5" FontSize="14" ToolTip="{Binding NodeName}" Text="{Binding NodeName}" ></TextBlock>
+                            <TextBlock   HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#B3BBC5" FontSize="14" ToolTip="{Binding NodeName}" Text="{Binding NodeName}" ></TextBlock>
                             <Border    HorizontalAlignment="Right">
                                 <!--TextTrimming="W ordEllipsis"-->
                                 <StackPanel Orientation="Horizontal" x:Name="buttonvisibility"  HorizontalAlignment="Right" Visibility="Visible" Background ="Transparent"  Margin="{Binding AddressLevel, Converter={StaticResource AddressMarginLevelConverter}}">

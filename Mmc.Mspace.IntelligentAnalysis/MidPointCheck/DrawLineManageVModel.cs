@@ -14,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
@@ -48,6 +49,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             drawLineManageView.DataContext = this;
             this.CloseCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
+                IsChecked = false;
                 drawLineManageView.Hide();
             }); 
             this.CreatLineCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
@@ -103,6 +105,10 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         public override void OnChecked()
         {
             GetLineData();
+
+            drawLineManageView.Owner = Application.Current.MainWindow;
+            drawLineManageView.Left = 700;
+            drawLineManageView.Top = Application.Current.MainWindow.Height * 0.2;
             drawLineManageView.Show();
             base.OnChecked();          
         }

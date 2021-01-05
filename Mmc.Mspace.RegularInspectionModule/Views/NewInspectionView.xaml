@@ -9,7 +9,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="NewInspectionView" Height="378" Width="270"  Style="{DynamicResource baseWindowStyle}">
+        Title="NewInspectionView" Height="410" Width="270"  Style="{DynamicResource AllowsTransparencyWindowStyle2}">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadedCommand}"/>
@@ -25,13 +25,14 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="#292C35" Grid.Column="0" Grid.ColumnSpan="2" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True" />
+        <Border Grid.Row="0" Background="{StaticResource titleBackground}" Grid.Column="0" Grid.ColumnSpan="2" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True" />
         <TextBlock x:Name="TitleName" blankWindow:BlankWindow.Draggable="True"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{DynamicResource CreateRegular}" Margin="18,0,0,0" Foreground="White"  FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <Button Grid.Row="0" x:Name="CloseButton" Grid.Column="0" Grid.ColumnSpan="2"   Style="{DynamicResource ButtonCloseStyle}" Height="32" Width="32" HorizontalAlignment="Right" VerticalAlignment="Top" Command="{Binding CancelCommand}"  Margin="0,2,0,0" />
 
 
         <Grid Grid.Row="1" >
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -46,45 +47,48 @@
                 <ColumnDefinition Width="177*"/>
                 <ColumnDefinition Width="19*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Margin="10,10,0,10" Grid.Row="0" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="项目："></TextBlock>
+            <TextBlock Margin="10,10,0,10" Grid.Row="0" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="管线："></TextBlock>
             <TextBlock Margin="10,10,0,10" Grid.Row="1" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="标段："></TextBlock>
-            <TextBlock Margin="10,6,0,6" Grid.Row="2" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="时间："></TextBlock>
-            <TextBlock Margin="10,10,0,10" Grid.Row="3" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="名称："></TextBlock>
-            <TextBlock Margin="10,10,0,10" Grid.Row="4" Grid.Column="0"  Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="中线桩："></TextBlock>
+            <TextBlock Margin="10,10,0,10" Grid.Row="2" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="阶段："></TextBlock>
+            <TextBlock Margin="10,6,0,6" Grid.Row="3" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="时间："></TextBlock>
+            <TextBlock Margin="10,10,0,10" Grid.Row="4" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="名称："></TextBlock>
+            <TextBlock Margin="10,10,0,10" Grid.Row="5" Grid.Column="0"  Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="中线桩："></TextBlock>
 
-            <ComboBox  Height="32" Margin="0 5 10 2" helper:TextBoxHelper.Watermark="{DynamicResource CreateRegularWater}" ContextMenu="{DynamicResource TextBoxContextMenu}" Grid.Row="0" Grid.Column="1" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding InspectRegions}"  Text="{Binding NewName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedItem}" Style="{DynamicResource DefaultComboBoxStyle}" IsEditable="True" Grid.ColumnSpan="2">
+            <ComboBox  Height="32" Margin="0 5 10 2" helper:TextBoxHelper.Watermark="{DynamicResource CreateRegularWater}" ContextMenu="{DynamicResource TextBoxContextMenu}" Grid.Row="0" Grid.Column="1" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding PipeModels}"   SelectedItem="{Binding SelectPipeModel}" Style="{DynamicResource DefaultComboBoxStyle}"  Grid.ColumnSpan="2">
             </ComboBox>
-            <ComboBox  Height="32" Margin="0 5 10 2" helper:TextBoxHelper.Watermark="{DynamicResource CreateRegularWater}" ContextMenu="{DynamicResource TextBoxContextMenu}" Grid.Row="1" Grid.Column="1" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding InspectRegions}"  Text="{Binding NewName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedItem}" Style="{DynamicResource DefaultComboBoxStyle}" IsEditable="True" Grid.ColumnSpan="2">
+            <ComboBox  Height="32" Margin="0 5 10 2" helper:TextBoxHelper.Watermark="{DynamicResource CreateRegularWater}" ContextMenu="{DynamicResource TextBoxContextMenu}" Grid.Row="1" Grid.Column="1" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding Sections}"  SelectedItem="{Binding SelectSectionModel}" Style="{DynamicResource DefaultComboBoxStyle}"  Grid.ColumnSpan="2">
             </ComboBox>
-            <DatePicker Grid.Column="1" Margin="0 5 10 2" SelectedDate="{x:Static system:DateTime.Today}" HorizontalAlignment="Stretch"  Text="{Binding InspectionDate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Grid.Row="2" VerticalAlignment="Center" Width="Auto" Grid.ColumnSpan="2"/>
+            <ComboBox  Height="32" Margin="0 5 10 2" helper:TextBoxHelper.Watermark="{DynamicResource CreateRegularWater}" ContextMenu="{DynamicResource TextBoxContextMenu}" Grid.Row="2" Grid.Column="1" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding Periods}"   SelectedItem="{Binding SelectPeriodModel}" Style="{DynamicResource DefaultComboBoxStyle}"  Grid.ColumnSpan="2">
+            </ComboBox>
+            <DatePicker Grid.Column="1" Margin="0 5 10 2" SelectedDate="{x:Static system:DateTime.Today}" HorizontalAlignment="Stretch"  Text="{Binding CreateTime,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Grid.Row="3" VerticalAlignment="Center" Width="Auto" Grid.ColumnSpan="2"/>
 
-            <TextBox  Margin="0 5 10 2" Grid.Row="3" Height="32" Grid.Column="1" Width="Auto" Style="{DynamicResource TbxWaterStyle}" VerticalContentAlignment="Center"
-                                             helper:TextBoxHelper.IsNeedClearButton="False"    Text="{Binding AccountModel.OperatorPhone,UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2"  />
+            <TextBox  Margin="0 5 10 2" Grid.Row="4" Height="32" Grid.Column="1" Width="Auto" Style="{DynamicResource TbxWaterStyle}" VerticalContentAlignment="Center"
+                                             helper:TextBoxHelper.IsNeedClearButton="False"    Text="{Binding Name,UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2"  />
 
-            <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Stretch" Grid.ColumnSpan="2"  >
+            <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Stretch" Grid.ColumnSpan="2"  >
                 <TextBox  Margin="0 5 10 2" Width="50" Height="32" Grid.Column="1"  Style="{DynamicResource TbxWaterStyle}" VerticalContentAlignment="Center"
-                                             helper:TextBoxHelper.IsNeedClearButton="False"    Text="{Binding AccountModel.OperatorPhone,UpdateSourceTrigger=PropertyChanged}"  />
+                                             helper:TextBoxHelper.IsNeedClearButton="False"    Text="{Binding StartStake,UpdateSourceTrigger=PropertyChanged}"  />
                 <TextBlock Grid.Row="4" Margin="10 0" Grid.Column="0" Style="{StaticResource DefaultTextBlockStyle}" Foreground="#B3BBC5" Text="~"></TextBlock>
 
                 <TextBox   Grid.Row="4" Height="32" Grid.Column="1" Width="50" Margin="10 0 0 0" Style="{DynamicResource TbxWaterStyle}" VerticalContentAlignment="Center"
-                                             helper:TextBoxHelper.IsNeedClearButton="False"    Text="{Binding AccountModel.OperatorPhone,UpdateSourceTrigger=PropertyChanged}"  />
+                                             helper:TextBoxHelper.IsNeedClearButton="False"  Text="{Binding EndStake,UpdateSourceTrigger=PropertyChanged}"  />
 
 
             </StackPanel>
 
 
-            <StackPanel Orientation="Horizontal" Margin="20,10,1,10" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" >
-                <RadioButton Margin="10,0,20,0" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Center" VerticalAlignment="Center" Content="{DynamicResource pie_chart}" x:Name="pie" GroupName="AnalyseMidea" Foreground="WhiteSmoke" IsChecked="{Binding PieCheck}" ></RadioButton>
-                <RadioButton Margin="20,0" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Center" VerticalAlignment="Center" Content="{DynamicResource rect_chart}" x:Name="rect" GroupName="AnalyseMidea" Foreground="WhiteSmoke" IsChecked="True"></RadioButton>
+            <StackPanel Orientation="Horizontal" Margin="20,10,1,10" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" >
+                <RadioButton Margin="10,0,20,0" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Center" VerticalAlignment="Center" Content="本地" x:Name="pie" GroupName="AnalyseMidea" Foreground="#B3BBC5" IsChecked="{Binding LocalCheck}" ></RadioButton>
+                <RadioButton Margin="20,0" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Center" VerticalAlignment="Center" Content="网络" x:Name="rect" GroupName="AnalyseMidea" Foreground="#B3BBC5" IsChecked="{Binding ServerCheck}"></RadioButton>
             </StackPanel>
-            <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Stretch"  >
-                <TextBox  Margin="30 5 10 2" Width="162" HorizontalAlignment="Stretch"  Height="32"  Style="{DynamicResource TbxWaterStyle}" VerticalContentAlignment="Center"
-                                             helper:TextBoxHelper.IsNeedClearButton="False"    Text="{Binding AccountModel.OperatorPhone,UpdateSourceTrigger=PropertyChanged}"  />
-                <Button  Content="{DynamicResource Accountupload}" Style="{StaticResource DefaultButtonStyle}"  HorizontalAlignment="Right" Height="24" Margin="0,5,10,5"  VerticalAlignment="Center" Width="44" />
+            <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Stretch"  >
+                <TextBox  Margin="30 5 10 2" Width="162" HorizontalAlignment="Stretch"  Height="32"  Style="{DynamicResource TbxWaterStyle}" VerticalContentAlignment="Center" IsEnabled="{Binding ServerCheck}"
+                                   helper:TextBoxHelper.Watermark="{Binding UploadText}"          helper:TextBoxHelper.IsNeedClearButton="False"    Text="{Binding LoadFiles,UpdateSourceTrigger=PropertyChanged}"  />
+                <Button  Content="{DynamicResource Accountupload}" Style="{StaticResource DefaultuploadButtonStyle}"  HorizontalAlignment="Right" Height="24" Margin="0,5,10,5"  Command="{Binding UploadFileCommand}"  VerticalAlignment="Center" Width="44" />
 
             </StackPanel>
-            <Button Grid.Row="6" Grid.ColumnSpan="2" Content="{DynamicResource OK}" Command="{Binding CreateCommand}" Style="{StaticResource DefaultButtonStyle}"  Grid.Column="0"  HorizontalAlignment="Center" Height="36" Margin="41,0,122,30"  VerticalAlignment="Bottom" Width="80" Grid.RowSpan="2" />
-            <Button Grid.Row="6" Content="{DynamicResource Cancel}" Grid.Column="1" Command="{Binding CancelCommand}" Style="{StaticResource DefaultButtonStyle}"  HorizontalAlignment="Center" Height="36" Margin="75,0,22,30"  VerticalAlignment="Bottom" Width="80" Grid.RowSpan="2"/>
+            <Button Grid.Row="7" Grid.ColumnSpan="2" Content="{DynamicResource OK}" Command="{Binding CreateCommand}" Style="{StaticResource DefaultButtonStyle}"  Grid.Column="0"  HorizontalAlignment="Center" Height="36" Margin="41,0,122,30"  VerticalAlignment="Bottom" Width="80" Grid.RowSpan="2" />
+            <Button Grid.Row="7" Content="{DynamicResource Cancel}" Grid.Column="1" Command="{Binding CancelCommand}" Style="{StaticResource DefaultButtonStyle}"  HorizontalAlignment="Center" Height="36" Margin="75,0,22,30"  VerticalAlignment="Bottom" Width="80" Grid.RowSpan="2"/>
 
 
         </Grid>

@@ -139,6 +139,81 @@ namespace Mmc.Mspace.RegularInspectionModule.model
                 NotifyPropertyChanged("Is_del");
             }
         }
+        private string _section_id;
+        public string Section_id
+        {
+            get => _section_id;
+            set
+            {
+                _section_id = value;
+                NotifyPropertyChanged("Section_id");
+            }
+        }
+        private string _lng;
+        public string Lng
+        {
+            get => _lng;
+            set
+            {
+                _lng = value;
+                NotifyPropertyChanged("Lng");
+            }
+        }
+
+        private string _lat;
+        public string Lat
+        {
+            get => _lat;
+            set
+            {
+                _lat = value;
+                NotifyPropertyChanged("Lat");
+            }
+        }
+
+        private string _period_id;
+        public string Period_id
+        {
+            get => _period_id;
+            set
+            {
+                _period_id = value;
+                NotifyPropertyChanged("Period_id");
+            }
+        }
+
+        private string _file;
+        public string File
+        {
+            get => _file;
+            set
+            {
+                _file = value;
+                NotifyPropertyChanged("File");
+            }
+        }
+
+        private string _time;
+        public string Time
+        {
+            get => _time;
+            set
+            {
+                _time = value;
+                NotifyPropertyChanged("Time");
+            }
+        }
+
+        private string _file_type;
+        public string File_type
+        {
+            get => _file_type;
+            set
+            {
+                _file_type = value;
+                NotifyPropertyChanged("File_type");
+            }
+        }
 
     }
 }

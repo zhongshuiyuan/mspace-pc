@@ -28,7 +28,7 @@ namespace Mmc.Mspace.Main.ViewModels
 
                 //this.ShellModel = SerializationUtil.DeserializeFromXml<ShellModel>(ConfigPath.ShellConfig);
 
-                ShellModel shellModel = new ShellModel()
+                  ShellModel shellModel = new ShellModel()
                 {
                     RowCount = 4,
                     ColumnCount = 6,

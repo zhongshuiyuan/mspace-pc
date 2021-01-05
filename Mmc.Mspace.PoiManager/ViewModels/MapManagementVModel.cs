@@ -1576,7 +1576,6 @@ namespace Mmc.Mspace.PoiManagerModule.ViewModels
                     {
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-
                             _renderLayers.Add(renderLayer);
                             GetMapSource();
                             if (!isLocal)

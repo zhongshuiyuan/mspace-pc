@@ -14,7 +14,6 @@
     <SolidColorBrush x:Key="DefaultOpacityButtonPressed" Color="#50ABFF"/>
     <SolidColorBrush x:Key="DefaultOpacityButtonIsEnabled" Color="#5D6168"/>
 
-    
 
     <SolidColorBrush x:Key="DefaultTextBoxForeground" Color="#B3BBC5"/>
     <SolidColorBrush x:Key="DefaultTextBoxBackground" Color="#16181B"/>
@@ -25,7 +24,19 @@
         <GradientStop Color="#282A30" Offset="0"/>
         <GradientStop Color="#1E2026" Offset="1"/>
     </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="uploadBackground">
+        <GradientStop Color="#305A80" Offset="0.35"/>
+        <GradientStop Color="#1A334B" Offset="0.99"/>
+        <GradientStop Color="#1188FF" Offset="1"/>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="titleBackground" StartPoint="0.5,0" EndPoint="0.5,1">
+        <GradientStop Color="#1E2026" Offset="0.35"/>
+        <GradientStop Color="#1A334B" Offset="0.99"/>
+        <GradientStop Color="#1188FF" Offset="1"/>
+    </LinearGradientBrush>
     <SolidColorBrush x:Key="LeftWindowTitleBg" Color="#1E2026" Opacity="0.5"/>
+    <SolidColorBrush x:Key="LeftWindowTitleBg2" Color="#000000" Opacity="0.9"/>
     <SolidColorBrush x:Key="LeftWindowBg" Color="#1E2026" Opacity="1"/>
     <SolidColorBrush x:Key="WindowTitleBg" Color="#292C35" Opacity="0.5"/>
 

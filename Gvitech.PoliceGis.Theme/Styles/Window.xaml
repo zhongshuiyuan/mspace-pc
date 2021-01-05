@@ -18,4 +18,14 @@
         <Setter Property="IgnoreTaskbarOnMaximize" Value="True"/>
         
     </Style>
+
+    <!--加透明色不可以最大化-->
+    <Style x:Key="AllowsTransparencyWindowStyle2" TargetType="{x:Type blankWindow:BlankWindow}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property ="Background" Value="{DynamicResource LeftWindowTitleBg2}" />
+        <Setter Property="AllowsTransparency" Value="True"/>
+        <Setter Property="ShowInTaskbar" Value="False"/>
+        <Setter Property="IgnoreTaskbarOnMaximize" Value="True"/>
+
+    </Style>
 </ResourceDictionary>

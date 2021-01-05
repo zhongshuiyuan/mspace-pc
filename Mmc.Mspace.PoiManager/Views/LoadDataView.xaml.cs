@@ -90,7 +90,6 @@ namespace Mmc.Mspace.PoiManagerModule.Views
                 {
                     addRecord(name);
                 }
-               
             }
         }
         private void loadFileName()//弃用

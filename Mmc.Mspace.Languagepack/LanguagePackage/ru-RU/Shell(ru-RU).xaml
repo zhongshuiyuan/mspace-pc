@@ -42,6 +42,8 @@
     <sys:String x:Key="Records">записей</sys:String>
     <sys:String x:Key="Off">Закрыть</sys:String>
     <sys:String x:Key="Turnon">Открыть</sys:String>
+    <sys:String x:Key="DrawLineManage">描线管理</sys:String>
+
 
 
     <sys:String x:Key="Characteristicsanalysis">Функциональный анализ</sys:String>

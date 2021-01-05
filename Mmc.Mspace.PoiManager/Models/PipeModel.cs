@@ -20,6 +20,7 @@ namespace Mmc.Mspace.PoiManagerModule.Models
         private string _id;
         private string _sn;
         private string _name;
+        private string _map;
 
         public string Id
         {
@@ -39,6 +40,16 @@ namespace Mmc.Mspace.PoiManagerModule.Models
                 NotifyPropertyChanged("Sn");
             }
         }
+        public string Map
+        {
+            get => _map;
+            set
+            {
+                _map = value;
+                NotifyPropertyChanged("Map");
+            }
+        }
+        
         public string Name
         {
             get => _name;

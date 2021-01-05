@@ -41,11 +41,11 @@
 
         <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" BorderThickness="0,0,0,1" BorderBrush="#000000" Opacity="0.5" Margin="0,5,0,0">
         </Border>
-        <TextBlock Text="等级："  Margin="10 0 0 0 " Grid.Row="1"  Grid.Column="0" FontSize="14"  Foreground="#B3BBC5"  HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-        <ComboBox Height="32" Grid.Row="1" Helper:TextBoxHelper.Watermark="所有标段"  Grid.Column="1" Width="99" ItemsSource="{Binding Periods}" SelectedValuePath="id" DisplayMemberPath="Name" Style="{DynamicResource DefaultComboBoxStyle}"></ComboBox>
+        <TextBlock Text="阶段："  Margin="10 0 0 0 " Grid.Row="1"  Grid.Column="2" FontSize="14"  Foreground="#B3BBC5"  HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+        <ComboBox Height="32" Grid.Row="1" Helper:TextBoxHelper.Watermark="所有标段"  Grid.Column="3" Width="99" ItemsSource="{Binding Periods}" SelectedValuePath="id" DisplayMemberPath="Name" Style="{DynamicResource DefaultComboBoxStyle}"></ComboBox>
 
-        <TextBlock Text="标段：" Grid.Row="1"  Grid.Column="2" FontSize="14" Foreground="#B3BBC5" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-        <ComboBox x:Name="biaoduanCombox" Helper:TextBoxHelper.Watermark="所有标段" Grid.Row="1" SelectedValuePath="id" DisplayMemberPath="Name" Grid.Column="3" ItemsSource="{Binding Sections}" Height="32" Width="99" Style="{DynamicResource DefaultComboBoxStyle}" ></ComboBox>
+        <TextBlock Text="标段：" Grid.Row="1"  Grid.Column="0" FontSize="14" Foreground="#B3BBC5" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+        <ComboBox x:Name="biaoduanCombox" Helper:TextBoxHelper.Watermark="所有标段" Grid.Row="1" SelectedValuePath="id" DisplayMemberPath="Name" Grid.Column="1" ItemsSource="{Binding Sections}" Height="32" Width="99" Style="{DynamicResource DefaultComboBoxStyle}" ></ComboBox>
 
         <TextBlock Text="日期：" Margin="10 0 0 0 " Grid.Row="2"  Grid.Column="0" FontSize="14" Foreground="#B3BBC5" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
         <DatePicker Height="28"  Grid.Row="2"  SelectedDate="{x:Static system:DateTime.Today}" HorizontalAlignment="Stretch"  Text="{Binding StartTime,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Width="99" Style="{DynamicResource DatePickerStyle1}" ></DatePicker>
@@ -73,15 +73,16 @@
                   ItemsSource="{Binding PipeModels}"  
                   Style="{StaticResource TreeViewStyle1}"
                   Foreground="Black" 
-                  FontSize="20"
+                  FontSize="20" 
                   Background="Transparent"
                   BorderThickness="0"
                   Margin="5 10 0 0">
             <i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectedItemChanged">
-                    <i:InvokeCommandAction Command="{Binding Path=DataContext.SelectChangedCommand,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding SelectedItem,ElementName=tree1}"/>
+                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                    <i:InvokeCommandAction  Command="{Binding Path=DataContext.SelectCommand,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding SelectedItem, ElementName=tree1}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
+    
             <TreeView.ItemTemplate >
                 <HierarchicalDataTemplate ItemsSource="{Binding Child}" >
                     <StackPanel Orientation="Horizontal" Height="36" >

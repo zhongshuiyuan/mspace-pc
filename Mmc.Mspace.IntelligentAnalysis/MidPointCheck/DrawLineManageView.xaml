@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         xmlns:blankWindow="http://GFramework.org"
         xmlns:controls="clr-namespace:Mmc.Mspace.Theme.Controls;assembly=Mmc.Mspace.Theme"
-        Title="DrawLineManageView" Height="500" Width="820" ResizeMode="NoResize" ShowInTaskbar="False">
+        Title="DrawLineManageView" Height="499" Width="852" ResizeMode="NoResize" ShowInTaskbar="False" Style="{StaticResource AllowsTransparencyWindowStyle2}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40*"/>
@@ -18,46 +18,31 @@
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="320" ></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Border  Grid.Row="0" Background="#292C35" Grid.Column="0" Grid.ColumnSpan="2" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True"/>
-        <TextBlock  blankWindow:BlankWindow.Draggable="True"  Grid.Row="0" Grid.Column="0" Text="区域管理" Margin="18,2,0,8" Foreground="White"  FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Height="24" Width="0"/>
+        <Border  Grid.Row="0" Grid.Column="0" Background="{StaticResource titleBackground}" Grid.ColumnSpan="2" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True"/>
+        <TextBlock  blankWindow:BlankWindow.Draggable="True"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="描线管理"  Foreground=" #69CEFF"  FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" />
         <Button Grid.Row="0" Grid.Column="1"  Command="{Binding CloseCmd}"  Style="{StaticResource ButtonCloseStyle}" Height="36" Width="36" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="0,2,5,0"  />
-        <DockPanel  Grid.Row="1" Grid.Column="0" >
+        <DockPanel  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" >
+            <Button  Width="88" Height="32" Style="{StaticResource DefaultuploadButtonStyle}" Content="删除描线" Command="{Binding DelItemsCmd}"  BorderThickness="0" Margin="10,5,5,5">
+     
+            </Button>
+            <Button Width="88" Height="32" Style="{StaticResource DefaultuploadButtonStyle}" Content="新建描线" Command="{Binding CreatLineCmd}"  BorderThickness="0" Margin="10,5,5,5">
+            </Button>
             <TextBox HorizontalAlignment="Left"  Style="{DynamicResource AddressTbxSearchStyle}"
                      Width="231" Height="32" 
                      Helper:TextBoxHelper.IsNeedClearButton="False" Helper:TextBoxHelper.ButtonCommand="{Binding SearchCmd}"
                      Text="{Binding ReportSearchText,UpdateSourceTrigger=PropertyChanged}" Margin="17,8" />
         </DockPanel>
-        <DockPanel  Grid.Row="1" Grid.Column="1" >
-            <Button  Width="88" Height="32" Foreground="White" Content="删除描线" Command="{Binding DelItemsCmd}"  BorderThickness="0" Margin="170,5,5,5">
-                <Button.Background>
-                    <LinearGradientBrush>
-                        <GradientStop Color="#305A80" Offset="0.35"/>
-                        <GradientStop Color="#1A334B" Offset="0.99"/>
-                        <GradientStop Color="#1188FF" Offset="1"/>
-                    </LinearGradientBrush>
-                </Button.Background>
-            </Button>
-            <Button Width="88" Height="32" Foreground="White" Content="新建描线" Command="{Binding CreatLineCmd}"  BorderThickness="0" Margin="10,5,5,5">
-                <Button.Background>
-                    <LinearGradientBrush>
-                        <GradientStop Color="#305A80" Offset="0.35"/>
-                        <GradientStop Color="#1A334B" Offset="0.99"/>
-                        <GradientStop Color="#1188FF" Offset="1"/>
-                    </LinearGradientBrush>
-                </Button.Background>
-            </Button>
-        </DockPanel>
-        <DataGrid Grid.Row="2" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Grid.ColumnSpan="2"  AlternationCount="2" VerticalGridLinesBrush="Black" HorizontalGridLinesBrush="Transparent"
-                      CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False"  BorderBrush="Black"   
+        <DataGrid Grid.Row="2" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Grid.ColumnSpan="2"  AlternationCount="2"  Margin="10 0" VerticalGridLinesBrush="Black" HorizontalGridLinesBrush="Transparent"
+                     BorderBrush="Black"   
+                      CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False"   
                       Name="MidLinedg" ItemsSource="{Binding DrawLineListCollection}">
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                    <Setter Property="Background" Value="#1E2026"/>
                     <Setter Property="Foreground" Value="#B3BBC5"/>
                     <Setter Property="BorderThickness" Value="0,0,1,0" />
                     <Setter Property="BorderBrush" Value="#000000" />
@@ -69,11 +54,12 @@
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>
                         <Trigger Property="AlternationIndex" Value="0" >
-                            <Setter Property="Background" Value="#0A0B0D" />
+                            <Setter Property="Background" Value="#131418" />
                             <Setter Property="Foreground" Value ="#C6CCD4"/>
                         </Trigger>
                         <Trigger Property="AlternationIndex" Value="1" >
-                            <Setter Property="Background" Value="#14151A" />
+                            <Setter Property="Background" Value="#131418" />
+                            <Setter Property="Opacity" Value="0.5" />
                             <Setter Property="Foreground" Value ="#C6CCD4"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -181,14 +167,8 @@
             </DataGrid.Columns>
         </DataGrid>
         <DockPanel  Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
-            <Button  Width="88" Height="32" Foreground="White" Content="边界宽度预警" Command="{Binding AreaWidthCmd}"   BorderThickness="0" Margin="50,5,80,5">
-                <Button.Background>
-                    <LinearGradientBrush>
-                        <GradientStop Color="#305A80" Offset="0.35"/>
-                        <GradientStop Color="#1A334B" Offset="0.99"/>
-                        <GradientStop Color="#1188FF" Offset="1"/>
-                    </LinearGradientBrush>
-                </Button.Background>
+            <Button  Width="130" Height="32" Style="{StaticResource DefaultuploadButtonStyle}" Content="边界宽度预警" Command="{Binding AreaWidthCmd}"   BorderThickness="0" Margin="50,5,80,5">
+           
             </Button>
             <StackPanel  Width="180"  Orientation="Horizontal" HorizontalAlignment="Center"  Margin="100,5,5,5">
                 <controls:Buttons x:Name="bs5" Content=""
@@ -220,14 +200,7 @@
                                 Tag="{DynamicResource FinalPageNew_D}" 
                                 Style="{StaticResource AddandExportAccountBtnStyle}" Command="{Binding EndPageCmd}" Height="32" Width="32" Margin="5,0,0,0"/>
             </StackPanel>
-            <Button Width="88" Height="32" Foreground="White" Content="中线桩位置核准" Command="{Binding MidPositionCmd}"  BorderThickness="0" Margin="90,5,5,5">
-                <Button.Background>
-                    <LinearGradientBrush>
-                        <GradientStop Color="#305A80" Offset="0.35"/>
-                        <GradientStop Color="#1A334B" Offset="0.99"/>
-                        <GradientStop Color="#1188FF" Offset="1"/>
-                    </LinearGradientBrush>
-                </Button.Background>
+            <Button Width="130" Height="32"  Style="{StaticResource DefaultuploadButtonStyle}" Content="中线桩位置核准" Command="{Binding MidPositionCmd}"  BorderThickness="0" Margin="90,5,5,5">
             </Button>
         </DockPanel>
     </Grid>

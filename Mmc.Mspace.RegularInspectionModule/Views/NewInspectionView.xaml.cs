@@ -26,7 +26,11 @@ namespace Mmc.Mspace.RegularInspectionModule.Views
 
         public void CloseWindow()
         {
-            this.Hide();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.Hide();
+            });
+         
         }
     }
 }

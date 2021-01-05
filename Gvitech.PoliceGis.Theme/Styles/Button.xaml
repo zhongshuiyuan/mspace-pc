@@ -18,8 +18,41 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="Cursor" Value="Hand" />
+    </Style> 
+    <Style TargetType="{x:Type Button}" x:Key="DefaultuploadButtonStyle" BasedOn="{StaticResource BaseButton}">
+        <Setter Property="FontSize" Value="14px"/>
+        <Setter Property="Height" Value="24"/>
+        <Setter Property="Width" Value="84"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Padding" Value="2,1"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Background" Value="{StaticResource uploadBackground}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource DefaultButtonForeground}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}" >
+                    <Border x:Name="Border" Padding="{TemplateBinding Padding}" Width="{TemplateBinding Width}" CornerRadius="2" Height="{TemplateBinding Height}" Background="{TemplateBinding Background}"  BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter HorizontalAlignment="Center"  Margin="{TemplateBinding Padding}"  VerticalAlignment="Center" Content="{TemplateBinding Content}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource DefaultButtonMouseOver}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource DefaultButtonPressed}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Border" Property="BorderThickness" Value="0"/>
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource DefaultButtonIsEnabled}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
-
     <Style TargetType="{x:Type Button}" x:Key="DefaultButtonStyle" BasedOn="{StaticResource BaseButton}">
         <Setter Property="FontSize" Value="14px"/>
         <Setter Property="Height" Value="24"/>
