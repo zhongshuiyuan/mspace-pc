@@ -188,10 +188,14 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             List<StakeModel> list = FilterStakes.Where(t => t.IsChecked).ToList();
             if(list.Count<2)
             {
-                Messages.ShowMessage("请选中至少两个正射或倾斜相关模型！");
+                Messages.ShowMessage("请最少选中2期模型！");
                 return;
             }
-
+            if (list.Count > 4)
+            {
+                Messages.ShowMessage("最多选择4个模型进行对比！");
+                return;
+            }
             var mapView = ServiceManager.GetService<IMaphostService>(null).MapWindow;
 
             Messenger.Messengers.Notify(CommonContract.MessengerKey.Openscreen.ToString(), list.Count.ToString());

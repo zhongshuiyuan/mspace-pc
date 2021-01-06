@@ -45,16 +45,17 @@
             <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
         <TextBlock Margin="10,2,0,2" Grid.Row="0" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="地图视角内包含的正射、倾斜模型如下："></TextBlock>
+        <ScrollViewer  Height="152" Width="1400"  Grid.Column="0"  Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                               ScrollViewer.VerticalScrollBarVisibility="Auto" >
+            <ItemsControl x:Name="filterStakes" Background="#16181B" ItemTemplate="{DynamicResource itemTemplate}" ItemsSource="{Binding FilterStakes}" >
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Name="wp" Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </ScrollViewer>
 
-        <ItemsControl x:Name="filterStakes" Grid.Column="0" Background="#16181B" Grid.Row="1" ItemTemplate="{DynamicResource itemTemplate}" Margin="10 10 0 10" ItemsSource="{Binding FilterStakes}" >
-        
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Name="wp" Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-       
         <Grid Grid.Row="1" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
