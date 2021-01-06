@@ -28,8 +28,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return this._Progress_value; }
             set {
                 _Progress_value = value; NotifyPropertyChanged("Progress_value");
-              
-             
             }
         }
 

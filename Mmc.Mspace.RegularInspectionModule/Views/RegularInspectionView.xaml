@@ -77,8 +77,6 @@
                   Background="Transparent"
                   BorderThickness="0"
                   Margin="5 10 0 0">
-        
-    
             <TreeView.ItemTemplate >
                 <HierarchicalDataTemplate ItemsSource="{Binding Child}" >
                     <StackPanel Orientation="Horizontal" Height="36" >

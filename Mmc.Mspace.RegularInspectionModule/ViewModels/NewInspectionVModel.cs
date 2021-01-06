@@ -137,17 +137,17 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
         }
 
-        private int _startStake;
+        private string _startStake;
 
-        public int StartStake
+        public string StartStake
         {
             get { return _startStake; }
             set { _startStake = value; OnPropertyChanged("StartStake"); }
         }
 
-        private int _endStake;
+        private string _endStake;
 
-        public int EndStake
+        public string EndStake
         {
             get { return _endStake; }
             set { _endStake = value; OnPropertyChanged("EndStake"); }
@@ -276,8 +276,8 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             this.LoadFiles = "";
             this.LocalCheck = true;
             this.Name = "";
-            this.StartStake = 0;
-            this.EndStake = 0;
+            this.StartStake = "";
+            this.EndStake = "";
             this.SelectPeriodModel = null;
             this.SelectPipeModel = null;
             this.SelectSectionModel = null;
@@ -736,17 +736,26 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         #endregion
         private void OnCreateCommand()
         {
-            //if (string.IsNullOrEmpty(_newName) && _selectedItem == null)
-            //{
-            //    Messages.ShowMessage(Helpers.ResourceHelper.FindKey("InputName"));
-            //    return;
-            //}
-            //if (_newName.Length>21)
-            //{
-            //    Messages.ShowMessage(Helpers.ResourceHelper.FindKey("InputNameLength"));
-            //    return;
-            //}
-
+            if (SelectPeriodModel==null)
+            {
+                Messages.ShowMessage("请选择标段信息！");
+                return;
+            }
+            if (SelectSectionModel == null)
+            {
+                Messages.ShowMessage("请选择阶段信息！");
+                return;
+            }
+            if (string.IsNullOrEmpty(Name))
+            {
+                Messages.ShowMessage("请输入名称信息！");
+                return;
+            }
+            if (string.IsNullOrEmpty(StartStake) || string.IsNullOrEmpty(EndStake))
+            {
+                Messages.ShowMessage("请填写完整的中线桩信息！");
+                return;
+            }
             Task.Run(()=>{
 
                 this.ParseUpload();
