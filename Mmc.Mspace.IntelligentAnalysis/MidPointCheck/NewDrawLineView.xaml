@@ -28,30 +28,23 @@
         <TextBlock x:Name="TitleName" blankWindow:BlankWindow.Draggable="True"  Grid.Row="0" Grid.Column="0" Text="{DynamicResource SysSet}" Margin="18,8,0,8" Foreground="White"  FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Height="24" Width="0"/>
         <Button Grid.Row="0" x:Name="CloseButton" Grid.Column="6"  Command="{Binding DisposeCmd}" blankWindow:BlankWindow.Closeable="True"  Style="{StaticResource ButtonCloseStyle}" Height="31" Width="31" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="0,2,2,0"  />
         <DockPanel Grid.Row="1">
-            <TextBlock  Text="描线编号：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
+            <TextBlock  Text="描线编号：" VerticalAlignment="Center" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <TextBlock  Height="18" Width="180" Margin="10,0,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" Text="MX3216541651"></TextBlock>
         </DockPanel>
 
         <DockPanel Grid.Row="2">
-            <TextBlock Text="描线名称：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
+            <TextBlock Text="描线名称：" VerticalAlignment="Center" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <!--<ComboBox Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="10,0,5,5"></ComboBox>-->
-            <TextBox Text="{Binding PipeName}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="32" Width="180" Margin="10,0,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>
+            <TextBox Text="{Binding PipeName}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="32" Width="180" Margin="10,5,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>
         </DockPanel>
         <DockPanel Grid.Row="3">
             <TextBlock Text="对应管线：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <TextBox Text="{Binding Pipe}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="32" Width="180" Margin="10,0,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>
         </DockPanel>
         <DockPanel Grid.Row="4">
-            <TextBlock Text="描线方式：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
-            <ComboBox x:Name="DrawLineWay"  SelectionChanged="DrawLineWay_SelectionChanged" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="100" Margin="10,0,5,5"></ComboBox>
-            <Button x:Name="DrawlineBtn" Width="52" Height="24" Foreground="White" Content="去描线" Margin="5" BorderThickness="0" Command="{Binding GoDrawLine}">
-                <Button.Background>
-                    <LinearGradientBrush>
-                        <GradientStop Color="#305A80" Offset="0.35"/>
-                        <GradientStop Color="#1A334B" Offset="0.99"/>
-                        <GradientStop Color="#1188FF" Offset="1"/>
-                    </LinearGradientBrush>
-                </Button.Background>
+            <TextBlock Text="描线方式：" FontSize="16"  Margin="10,5,5,5" VerticalAlignment="Center" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
+            <ComboBox x:Name="DrawLineWay"  SelectionChanged="DrawLineWay_SelectionChanged" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="100" Margin="10,5,5,5"></ComboBox>
+            <Button x:Name="DrawlineBtn" Width="52" Height="24" Style="{StaticResource DefaultuploadButtonStyle}" Content="去描线" VerticalAlignment="Center" BorderThickness="0" Command="{Binding GoDrawLine}">
             </Button>
         </DockPanel>
         <DockPanel Grid.Row="6" x:Name="midPoiNum">
@@ -61,8 +54,8 @@
             <TextBox Text="{Binding EndPoi}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="32" Width="50" Margin="0,0,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>
         </DockPanel>
         <DockPanel Grid.Row="5">
-            <TextBlock Text="是否显示：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
-            <ComboBox x:Name="VisibleOrNot" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="10,0,5,5"></ComboBox>
+            <TextBlock Text="是否显示：" FontSize="16" VerticalAlignment="Center" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
+            <ComboBox x:Name="VisibleOrNot" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="10,5,5,5"></ComboBox>
           
         </DockPanel>
         <DockPanel Grid.Row="7" HorizontalAlignment="Center">
