@@ -39,16 +39,8 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
     public class RegularInspectionVModel:BaseViewModel
     {
         private NewInspectionView _newInspectionView;
-
+        public Action updateRenderLayer = null;
         private NewInspectionVModel newInspectionVModel;
-
-        private ObservableCollection<RenderLayerModel> _mapSource;
-        public ObservableCollection<RenderLayerModel> MapSource
-        {
-            get { return _mapSource ?? (_mapSource = new ObservableCollection<RenderLayerModel>()); }
-            set { _mapSource = value; OnPropertyChanged("MapSource"); }
-        }
-        ObservableCollection<RenderLayerModel> tempMapSource = null;
 
         private ObservableCollection<InspectModel> _inspectRegions;
         public ObservableCollection<InspectModel> InspectRegions
@@ -109,6 +101,37 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return endTime; }
             set { endTime = value; OnPropertyChanged("EndTime"); }
         }
+        private PeriodModel _selectPeriodModel;
+        /// <summary>
+        /// 阶段选中
+        /// </summary>
+        public PeriodModel SelectPeriodModel
+        {
+            get { return _selectPeriodModel; }
+            set
+            {
+                _selectPeriodModel = value; OnPropertyChanged("SelectPeriodModel");
+            }
+        }
+        private bool _isNew;
+        public bool IsNew
+        {
+            get { return _isNew; }
+            set { _isNew = value; OnPropertyChanged("IsNew"); }
+        }
+
+        private SectionModel _selectSectionModel;
+        /// <summary>
+        /// 标段选中
+        /// </summary>
+        public SectionModel SelectSectionModel
+        {
+            get { return _selectSectionModel; }
+            set
+            {
+                _selectSectionModel = value; OnPropertyChanged("SelectSectionModel");
+            }
+        }
 
         private List<PipeModel> _pipeModels = new List<PipeModel>();
         public List<PipeModel> PipeModels
@@ -132,7 +155,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 OnPropertyChanged("BiaoduanSource");
             }
         }
-
         private string _searchText;
 
         public string SearchText
@@ -149,7 +171,15 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _searchCommand??(_searchCommand =new RelayCommand(OnSearchCommand)); }
             set { _searchCommand = value; }
         }
+        private RelayCommand _cancelCommand;
 
+        public RelayCommand CancelCommand
+        {
+            get { return _cancelCommand ?? (_cancelCommand = new RelayCommand(OnCancelCommand)); }
+            set { _cancelCommand = value; }
+        }
+
+        
         private RelayCommand<object> _selectCommand;
 
         public RelayCommand<object> SelectCommand
@@ -157,7 +187,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _selectCommand ?? (_selectCommand = new RelayCommand<object>(OnSelectCommand)); }
             set { _selectCommand = value; }
         }
-
+        
 
         private RelayCommand<object> _importCommand;
 
@@ -218,31 +248,10 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             Messenger.Messengers.Register("LeftListRefresh", () =>
             {
                 LoadData();
-        
             });
-
-
-
             if (_renderLayers == null)
             {
                 _renderLayers = new List<IRenderLayer>();
-                var tileLayers = DataBaseService.Instance.GetTileLayers();
-                var imageLayers = DataBaseService.Instance.GetImageLayers();
-                var shpLayers = DataBaseService.Instance.GetShpLayers();
-                var actualLayers = DataBaseService.Instance.GetActualityLayers();
-                if (shpLayers != null)
-                {
-                    foreach (var item in shpLayers)
-                        _renderLayers.Add(item as IRenderLayer);
-                }
-                if (actualLayers != null)
-                {
-                    foreach (var item in actualLayers)
-                        _renderLayers.Add(item as IRenderLayer);
-                }
-                _renderLayers.AddRange(tileLayers);
-                _renderLayers.AddRange(imageLayers);
-
                 Task.Run(() =>
                 {
                     GetMapSource();
@@ -257,203 +266,38 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
 
         private void GetMapSource()
         {
-            List<RenderLayerModel> list = new List<RenderLayerModel>();
-            //三维模型
-            var modelRenderLayers = new RenderLayerModel()
-            {
-                ChildCount = 0,
-                MenuLevel = "1",
-                IsDisplay = false,
-                IsChecked = true,
-                DataPath = (ImageSource)Helpers.ResourceHelper.FindResourceByKey("3dIcon"),
-                Name = Helpers.ResourceHelper.FindKey("3dmodel") + "(0)",
-                AliasName = Helpers.ResourceHelper.FindKey("3dmodel"),
-                Guid = Guid.Parse("00000000-0000-0000-0000-000000000100").ToString(),
-                LayerType = Common.CommonContract.RenderLayerType.DataSetGroupLayer,
-                Rederlayers = new List<RenderLayerModel>(),
-            };
-
-            list.Add(modelRenderLayers);
-
-            var actualLayers = DataBaseService.Instance.GetActualityLayers();
-            if (actualLayers != null)
-            {
-                Dictionary<string, Tuple<IDataSource, List<IDisplayLayer>>> dicModel = new Dictionary<string, Tuple<IDataSource, List<IDisplayLayer>>>();
-
-                foreach (var item in actualLayers)
-                {
-                    var key = item.Fc.DataSource.Guid.ToString();
-                    if (!dicModel.ContainsKey(key))
-                    {
-                        dicModel.Add(key, new Tuple<IDataSource, List<IDisplayLayer>>(item.Fc.DataSource, new List<IDisplayLayer>()));
-
-                    }
-                    dicModel[key].Item2.Add(item);
-                }
-                modelRenderLayers.Name = Helpers.ResourceHelper.FindKey("3dmodel") + "(" + dicModel.Count + ")";
-                foreach (var key in dicModel.Keys)
-                {
-                    modelRenderLayers.HasPathData = true;
-                    modelRenderLayers.ChildCount++;
-                    var dsName = dicModel[key].Item1.ConnectionInfo.GetDataSourceName();
-                    var dataSourceRenderLayers = new RenderLayerModel()
-                    {
-                        HasPathData = true,
-                        MenuLevel = "2",
-                        IsDisplay = true,
-                        IsChecked = true,
-                        ChildCount = 0,
-                        ParentName = modelRenderLayers.Name,
-                        IsLocal = !dicModel[key].Item1.IsNetServer(),
-                        Name = (!dicModel[key].Item1.IsNetServer() ? Helpers.ResourceHelper.FindKey("LocalDataMark") : Helpers.ResourceHelper.FindKey("ServerDataMark")) + dsName,
-                        AliasName = (!dicModel[key].Item1.IsNetServer() ? Helpers.ResourceHelper.FindKey("LocalDataMark") : Helpers.ResourceHelper.FindKey("ServerDataMark")) + dsName,
-                        Guid = key,
-                        LayerType = Common.CommonContract.RenderLayerType.GroupLayer,
-                        Rederlayers = new List<RenderLayerModel>()
-                    };
-                    list.Add(dataSourceRenderLayers);
-                    foreach (var item in dicModel[key].Item2)
-                    {
-                        dataSourceRenderLayers.ChildCount++;
-                        list.Add(RenderLayerModel.CreateRenderLayer(RenderLayerDto.RenderLayerConvert(item as DisplayLayer), dataSourceRenderLayers.Name));
-                    }
-                }
-
-
-                //   modelRenderLayers.Name = Helpers.ResourceHelper.FindKey("3dmodel") + "(" +"0" + ")";
-
-
-            }
-            var imgRenderLayers = new RenderLayerModel()
-            {
-                DataPath = (ImageSource)Helpers.ResourceHelper.FindResourceByKey("image"),
-                MenuLevel = "1",
-                ChildCount = 0,
-                IsDisplay = false,
-                IsChecked = true,
-                HasPathData = false,
-                Name = Helpers.ResourceHelper.FindKey("Screenage") + "(0)",
-                AliasName = Helpers.ResourceHelper.FindKey("Screenage"),
-                Guid = Guid.Parse("00000000-0000-0000-0000-000000000300").ToString(),
-                LayerType = Common.CommonContract.RenderLayerType.ImageGroupLayer,
-                Rederlayers = new List<RenderLayerModel>()
-            };
-            list.Add(imgRenderLayers);
-            var imageLayers = DataBaseService.Instance.GetImageLayers();
-            if (imageLayers != null)
-            {
-                imgRenderLayers.Name = Helpers.ResourceHelper.FindKey("Screenage") + "(" + imageLayers.Count + ")";
-
-                foreach (var item in imageLayers)
-                {
-                    imgRenderLayers.HasPathData = true;
-                    imgRenderLayers.ChildCount++;
-                    list.Add(new RenderLayerModel()
-                    {
-                        HasPathData = false,
-                        AlphaBtnOn = true,
-                        AlphaStation = "1",
-                        MenuLevel = "2",
-                        IsDisplay = true,
-                        IsChecked = true,
-                        ParentName = imgRenderLayers.Name,
-                        IsLocal = item.IsLocal,
-                        Name = (item.IsLocal ? Helpers.ResourceHelper.FindKey("LocalDataMark") : Helpers.ResourceHelper.FindKey("ServerDataMark")) + item.Name,
-                        AliasName = (item.IsLocal ? Helpers.ResourceHelper.FindKey("LocalDataMark") : Helpers.ResourceHelper.FindKey("ServerDataMark")) + item.AliasName,
-                        Guid = item.Guid,
-                        LayerType = RenderLayerType.ImageLayer
-                    });
-                }
-            }
-            var tileRenderLayers = new RenderLayerModel()
-            {
-                DataPath = (ImageSource)Helpers.ResourceHelper.FindResourceByKey("photography"),
-                MenuLevel = "1",
-                IsDisplay = false,
-                IsChecked = true,
-                ChildCount = 0,
-                HasPathData = false,
-                Name = Helpers.ResourceHelper.FindKey("Obliquephotography") + "(0)",
-                AliasName = Helpers.ResourceHelper.FindKey("Obliquephotography"),
-                Guid = Guid.Parse("00000000-0000-0000-0000-000000000200").ToString(),
-                LayerType = Common.CommonContract.RenderLayerType.TileGroupLayer,
-                Rederlayers = new List<RenderLayerModel>()
-            };
-            list.Add(tileRenderLayers);
             var tileLayers = DataBaseService.Instance.GetTileLayers();
-            if (tileLayers != null)
-            {
-                tileRenderLayers.Name = Helpers.ResourceHelper.FindKey("Obliquephotography") + "(" + tileLayers.Count + ")";
-
-                foreach (var item in tileLayers)
-                {
-                    tileRenderLayers.HasPathData = true;
-                    tileRenderLayers.ChildCount++;
-                    list.Add(new RenderLayerModel()
-                    {
-                        HasPathData = false,
-                        MenuLevel = "2",
-                        IsDisplay = true,
-                        IsChecked = true,
-                        IsSymbolic = true,
-                        ParentName = tileRenderLayers.Name,
-                        IsLocal = item.IsLocal,
-                        Name = (item.IsLocal ? Helpers.ResourceHelper.FindKey("LocalDataMark") : Helpers.ResourceHelper.FindKey("ServerDataMark")) + item.Name,
-                        AliasName = (item.IsLocal ? Helpers.ResourceHelper.FindKey("LocalDataMark") : Helpers.ResourceHelper.FindKey("ServerDataMark")) + item.AliasName,
-                        Guid = item.Guid,
-                        LayerType = RenderLayerType.TileLayer,
-
-                    });
-                }
-            }
-            //二维矢量
-            var shpRenderLayers = new RenderLayerModel()
-            {
-                DataPath = (ImageSource)Helpers.ResourceHelper.FindResourceByKey("2dIcon"),
-                MenuLevel = "1",
-                IsDisplay = false,
-                IsChecked = true,
-                ChildCount = 0,
-                HasPathData = false,
-                Name = Helpers.ResourceHelper.FindKey("2dvector") + "(0)",
-                AliasName = Helpers.ResourceHelper.FindKey("2dvector"),
-                Guid = Guid.Parse("00000000-0000-0000-0000-000000000400").ToString(),
-                LayerType = Common.CommonContract.RenderLayerType.ShpGroupLayer,
-                Rederlayers = new List<RenderLayerModel>()
-            };
-            list.Add(shpRenderLayers);
+            var imageLayers = DataBaseService.Instance.GetImageLayers();
             var shpLayers = DataBaseService.Instance.GetShpLayers();
+            var actualLayers = DataBaseService.Instance.GetActualityLayers();
             if (shpLayers != null)
             {
-                shpRenderLayers.Name = Helpers.ResourceHelper.FindKey("2dvector") + "(" + shpLayers.Count + ")";
                 foreach (var item in shpLayers)
-                {
-                    shpRenderLayers.HasPathData = true;
-                    shpRenderLayers.ChildCount++;
-                    var shpRen = RenderLayerModel.CreateRenderLayer(RenderLayerDto.RenderLayerConvert(item as DisplayLayer), shpRenderLayers.Name);
-                    shpRen.HasPathData = false;
-                    shpRen.MenuLevel = "2";
-                    shpRen.IsDisplay = true;
-                    shpRen.IsChecked = true;
-                    shpRen.IsSymbolic = true;
-                    shpRen.ParentName = shpRenderLayers.Name;
-                    shpRen.IsLocal = !item.Fc.DataSource.IsNetServer();
-                    shpRen.Name = (!item.Fc.DataSource.IsNetServer() ? Helpers.ResourceHelper.FindKey("LocalDataMark") : Helpers.ResourceHelper.FindKey("ServerDataMark")) + item.Name;
-                    shpRen.AliasName = (!item.Fc.DataSource.IsNetServer() ? Helpers.ResourceHelper.FindKey("LocalDataMark") : Helpers.ResourceHelper.FindKey("ServerDataMark")) + item.Name;
-                    list.Add(shpRen);
-                }
+                    _renderLayers.Add(item as IRenderLayer);
             }
-            MapSource = new ObservableCollection<RenderLayerModel>(list);
-
-            tempMapSource = new ObservableCollection<RenderLayerModel>(list);
-
+            if (actualLayers != null)
+            {
+                foreach (var item in actualLayers)
+                    _renderLayers.Add(item as IRenderLayer);
+            }
+            _renderLayers.AddRange(tileLayers);
+            _renderLayers.AddRange(imageLayers);
         }
-
 
         private void OnSearchCommand()
         {
             //add  by hengda 
             //InspectRegions = new ObservableCollection<InspectModel>(InspectionService.Instance.GetAllRegion(_searchText).Select(t => RegInsModelConvert.InspectRegionConvert(t)).ToList());
+            this.getPipeList();
+        }
+
+        private void OnCancelCommand()
+        {
+            IsNew = false;
+            SelectPeriodModel = null;
+            SelectSectionModel = null;
+            StartTime = DateTime.Now.AddDays(-90);
+            EndTime = DateTime.Now;
             this.getPipeList();
         }
         /// <summary>
@@ -490,7 +334,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
              
                 if (popemodel.Level!="4") return;
                 //定位到图层
-
                 flyToRederLayer(popemodel.Map.Split('&')[0]);
             }
             catch (Exception e)
@@ -502,7 +345,9 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         public void getPipeList()
         {
             Task.Run(() => {
-                string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PipeList);
+                string param = "";
+                    param = "?section_id=" + SelectSectionModel?.Id+ "&period_id="+SelectPeriodModel?.Id+ "&new="+(IsNew ? 1 : 0) +"&time="+StartTime.ToString("yyyy-MM-dd hh:mm:ss") + "~" + EndTime.ToString("yyyy-MM-dd hh:mm:ss");
+                string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PipeList+ param);
                 this.PipeModels = (JsonUtil.DeserializeFromString<List<PipeModel>>(resStr));
             });
         }
@@ -542,6 +387,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             _renderLayers.Add(renderLayer);
             GetMapSource();
             this.getPipeList();
+            this.updateRenderLayer();
         }
         private void OnImportCommand(object parameter)
         {
@@ -570,7 +416,10 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             //    LoadData();
         }
 
-
+        /// <summary>
+        /// 点击按钮显示
+        /// </summary>
+        /// <param name="parameter"></param>
         private void OnCheckedCommand(object parameter)
         {
             var inspect = parameter as InspectModel;

@@ -28,7 +28,14 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             VisibleOrNot.Items.Add("是");
             VisibleOrNot.Items.Add("否");
         }
+        public void CloseWindow()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.Hide();
+            });
 
+        }
         private void DrawLineWay_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DrawLineWay.SelectedItem != null && DrawLineWay.SelectedItem.ToString() == "手动")

@@ -13,7 +13,7 @@
 
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="32"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="40"></RowDefinition>
@@ -68,7 +68,7 @@
         </DockPanel>
         <DockPanel Grid.Row="7">
             <Button Content="{DynamicResource OK}"  Style="{StaticResource DefaultButtonStyle}" Command="{Binding NewLineCmd}" Grid.Column="0"  HorizontalAlignment="Center" Height="36" Margin="50,10,0,30" Grid.Row="2" VerticalAlignment="Bottom" Width="80" />
-            <Button Content="{DynamicResource Cancel}"  Style="{StaticResource DefaultButtonStyle}"  HorizontalAlignment="Center" Height="36" Margin="0,0,0,30" Grid.Row="2" VerticalAlignment="Bottom" Width="80"/>
+            <Button Content="{DynamicResource Cancel}"  Style="{StaticResource DefaultButtonStyle}"  HorizontalAlignment="Center" Height="36" Margin="0,0,0,30" Grid.Row="2" VerticalAlignment="Bottom" Width="80" Command="{Binding CancelCommand}"/>
 
         </DockPanel>
     </Grid>

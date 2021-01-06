@@ -55,6 +55,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             this.CreatLineCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
                 NewDrawLineVModel newDrawLineVModel = new NewDrawLineVModel();
+
                 newDrawLineVModel.ShowDrawWin();
                 newDrawLineVModel.AddPipe += AddLinePipe;
                // GetLineData();

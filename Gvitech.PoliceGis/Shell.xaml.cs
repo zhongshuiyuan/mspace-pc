@@ -125,6 +125,7 @@ namespace MMC.MSpace
             Messenger.Messengers.Register<CommonContract.LeftMenuEnum>("LeftMenuEnum", (t) => { NavLeftWin(t); });
             Messenger.Messengers.Register<bool>("BottomMenuEnum", (t) => { ShowBottomMenu(t); });
             Messenger.Messengers.Register<bool>("BottomMenuEnumNavigation", (t) => { ShowBottomNavigationMenu(t); });
+            Messenger.Messengers.Register<bool>("openComparison", (t) => { this.CancelComparison.Visibility = Visibility.Visible; });
             Messenger.Messengers.Register<bool>("ShowHiddenMenu", (t) =>
             {
                 if (!(bool)this.leftStatus.IsChecked && t)
@@ -240,6 +241,7 @@ namespace MMC.MSpace
                         regularInspectionView = new RegularInspectionView();
                         regularInspectionVModel = new RegularInspectionVModel();
                         regularInspectionView.DataContext = regularInspectionVModel;
+
                     }
 
                     if (comparisonView == null)
@@ -247,6 +249,7 @@ namespace MMC.MSpace
                         comparisonView = new ComparisonView();
                         comparisonVModel = new ComparisonVModel();
                         comparisonView.DataContext = comparisonVModel;
+                       regularInspectionVModel.updateRenderLayer = comparisonVModel.GetMapSource;
                     }
                     regularInspectionVModel?.MapControlEventManagement(true);
                     this.comparison.Visibility = Visibility.Visible;
@@ -568,6 +571,12 @@ namespace MMC.MSpace
                 }
 
             });
+        }
+
+        private void CancelComparison_Click(object sender, RoutedEventArgs e)
+        {
+            this.CancelComparison.Visibility = Visibility.Collapsed;
+            Messenger.Messengers.Notify("closeComparison", true);
         }
     }
 }

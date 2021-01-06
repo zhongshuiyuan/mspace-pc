@@ -440,21 +440,17 @@ namespace Mmc.Mspace.RegularInspectionModule
                 case Common.CommonContract.InspectDataType.Route:
                     var polyLine = GviMap.GeoFactory.CreatePolyline(inModel.Geom, GviMap.SpatialCrs);
                     OpenTraceLine(polyLine, inModel.Style, inModel.Id.ToString());
-
                     var photoList = InspectionService.Instance.PictureItemSet.Find(p => p.RouteName == inModel.Name);
 
                     if (photoList?.Count > 0)
                     {
                         var inspectList = new List<InspectModel>();
-
                         foreach (var item in photoList)
                         {
                             inspectList.Add(RegInsModelConvert.PictureConvert(item));
                         }
-
                         CreatePhotoPoints(inspectList);
                     }
-
                     break;
                 case Common.CommonContract.InspectDataType.Report:
 

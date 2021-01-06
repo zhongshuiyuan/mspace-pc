@@ -9,6 +9,7 @@ using Mmc.Mspace.Services.HttpService;
 using Mmc.Mspace.Theme.Pop;
 using Mmc.Windows.Services;
 using Mmc.Windows.Utils;
+using Mmc.Wpf.Commands;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -17,12 +18,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
 {
     public class NewDrawLineVModel : BaseViewModel
     {
+        public Action HideWin;
         public Action<LineItem> AddPipe;
         List<Guid> guids = new List<Guid>();
         ICurveSymbol curveSymbol;        
@@ -67,11 +70,19 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             }
         }        
         public ICommand NewLineCmd { get; set; }
-        public ICommand GoDrawLine { get; set; }       
+        public ICommand GoDrawLine { get; set; }
+
+        private RelayCommand _cancelCommand;
+        public RelayCommand CancelCommand
+        {
+            get { return _cancelCommand ?? (_cancelCommand = new RelayCommand(OnCancelCommand)); }
+            set { _cancelCommand = value; }
+        }
         public NewDrawLineVModel()
         {
             newDrawLineView = new NewDrawLineView();
             newDrawLineView.DataContext = this;
+             HideWin = newDrawLineView.CloseWindow;
             this.NewLineCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
                AddLineData();               
@@ -81,9 +92,18 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 RegisterDrawLine();
             });
         }
+        //关闭新增窗口
+        private void OnCancelCommand()
+        {
+            //清楚数据
+     
+            this.HideWin();
+        }
         public void ShowDrawWin()
         {
-            //inspect = inspectModel;
+            newDrawLineView.Owner = Application.Current.MainWindow;
+            newDrawLineView.Left = 400;
+            newDrawLineView.Top = Application.Current.MainWindow.Height * 0.2;
             newDrawLineView?.Show();
         }
         private void  AddLineData()

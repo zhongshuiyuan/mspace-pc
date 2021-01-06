@@ -46,6 +46,18 @@ namespace Mmc.Mspace.RegularInspectionModule.model
                 NotifyPropertyChanged("Time");
             }
         }
+        private string _map;
+
+        public string Map
+        {
+            get => _map;
+            set
+            {
+                _map = value;
+                NotifyPropertyChanged("Map");
+            }
+        }
+
 
         private string _pipe_id;
 

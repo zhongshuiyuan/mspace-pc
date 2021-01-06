@@ -92,6 +92,8 @@
         </Border>
 
         <DockPanel  Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" Panel.ZIndex="22">
+            <Button x:Name="CancelComparison" Visibility="Collapsed" VerticalAlignment="Top" Style="{DynamicResource DefaultuploadButtonStyle}" HorizontalAlignment="Center" Height="32" Width="99" Margin="0 50 50 0" Content="{DynamicResource CancelComparison}" Click="CancelComparison_Click">
+            </Button>
             <views:RightToolView x:Name="rightToolView" />
         </DockPanel>
 

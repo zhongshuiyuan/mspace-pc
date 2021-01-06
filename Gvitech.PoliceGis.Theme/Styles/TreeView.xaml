@@ -3,7 +3,7 @@
                     xmlns:controls="clr-namespace:Mmc.Mspace.Theme.Controls"
                     xmlns:vc="clr-namespace:Mmc.Mspace.Theme.Converter"
                     xmlns:helper="clr-namespace:Mmc.Mspace.Theme.Helper;assembly=Mmc.Mspace.Theme"
-
+                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                     xmlns:model="clr-namespace:Mmc.Mspace.Models.AddressManagementModel"
                     xmlns:conver="clr-namespace:Mmc.Mspace.Theme.Converter">
     <conver:AddressMarginLevelConverter x:Key="AddressMarginLevelConverter"/>
@@ -809,6 +809,11 @@
                             <RowDefinition/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                                <i:InvokeCommandAction  Command="{Binding Path=DataContext.SelectCommand,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding .}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <Border Grid.ColumnSpan="2" Margin="0,0,0,0"  x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Background="Transparent"  SnapsToDevicePixels="true"/>
 
                         <ToggleButton  x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ExpandCollapseToggleStyle}"/>
@@ -850,6 +855,7 @@
                         </DockPanel>
                         <ItemsPresenter  x:Name="ItemsHost" Grid.ColumnSpan="2" Grid.Column="1" Grid.Row="1"/>
                     </Grid>
+                
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsExpanded" Value="false">
                             <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>

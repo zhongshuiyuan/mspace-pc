@@ -41,13 +41,9 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         public Action<IRenderLayer> addRenderLayer = null;
         private InspectRegion _selectedItem;
         private UserInfo _userInfo;
-
         public Action HideWin;
         public Action updateData;
-
         public Dictionary<Guid, string> newrender = new Dictionary<Guid, string>();
-
-      
         private string typeString = "";
 
         public NewInspectionVModel()
@@ -456,7 +452,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             //本地加载
             if (LocalCheck)
             {
-                //  bool loadstatus = false;
                 loadLayer(LoadFiles, 20, 0);
                 //loadLayer(LoadFiles, 20, 0);//默认值
             }
@@ -543,18 +538,10 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                         Messages.ShowMessage("网络图层加载成功");
                     }
                 }
-                if (_index != -1)
-                {
-                    //ChangeStatue(status, _index);
-                }
             }
             catch (Exception ex)
             {
                 SystemLog.Log(ex);
-                if (_index != -1)
-                {
-                    //ChangeStatue(status, _index);
-                }
             }
         }
 
@@ -592,7 +579,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                         {
                             newrender.Add(new Guid(renderLayer.Guid), typeString);
                             //_renderLayers.Add(renderLayer);
-
                             addRenderLayer(renderLayer);
                             if (!isLocal)
                             {
@@ -625,18 +611,13 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             //打开文件
             try
             {
-             
-                    //   BeginLoadDsProcess();
-
                     string name = string.Empty;
-                    //string hashCode = string.Empty;
                     if (isLocal)
                     {
                         name = Path.GetFileNameWithoutExtension(fileAddress);
                     }
                     else
                     {
-
                         name = fileAddress.Split(':', '@')[1];
                     }
                     TileLayerConfig layerConfig = new TileLayerConfig()
@@ -644,7 +625,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                         AliasName = name,
                         ConnInfoString = fileAddress,
                         IsLocal = isLocal,
-                        //HashCode = hashCode
                     };
 
                     var renderLayer = DataBaseService.Instance.Add3DTileLayer(layerConfig, out status);
@@ -661,17 +641,12 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                             }
                             else if (_index != -1)
                             {
-                                //ChangeStatue(status, _index);
                                 Messages.ShowMessage("数据加载成功");
                             }
                         });
                     }
                     else
                     {
-                        if (_index != -1)
-                        {
-                            //ChangeStatue(status, _index);
-                        }
                     }
                
                 //
@@ -679,7 +654,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             catch (Exception ex)
             {
                 SystemLog.Log(ex);
-                //ChangeStatue(status, _index);
             }
 
         }
@@ -735,7 +709,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     foreach (var item in renderLayers)
                     {
                         //_renderLayers.Add(item as DisplayLayer);
-
                         addRenderLayer(item as DisplayLayer);
                     }
                     if (!isLocal)
@@ -744,26 +717,18 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     }
                     else if (_index != -1)
                     {
-                        //ChangeStatue(status, _index);
                         Messages.ShowMessage("数据加载成功");
 
                     }
                 }
                 if (status == OperateDataStatus.DATAEXISTED)
                 {
-                    if (_index != -1)
-                    {
-                        //ChangeStatue(status, _index);
-                    }
+                  
                 }
             }
             catch (Exception ex)
             {
                 SystemLog.Log(ex);
-                if (_index != -1)
-                {
-                    //ChangeStatue(status, _index);
-                }
             }
 
         }

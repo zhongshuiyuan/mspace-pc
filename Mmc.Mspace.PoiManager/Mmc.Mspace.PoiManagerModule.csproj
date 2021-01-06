@@ -165,8 +165,11 @@
     <Compile Include="ViewModels\ReportRankingViewModel.cs" />
     <Compile Include="ViewModels\UpLoadAccountImageViewModel.cs" />
     <Compile Include="ViewModels\VideoPlayViewVMdel.cs" />
-    <Compile Include="Views\AddressManagementView - 复制.xaml.cs">
-      <DependentUpon>AddressManagementView - 复制.xaml</DependentUpon>
+    <Compile Include="Views\AddressManagementView.xaml.cs">
+      <DependentUpon>AddressManagementView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddressManagementView-copy.xaml.cs">
+      <DependentUpon>AddressManagementView-copy.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditNameView.xaml.cs">
       <DependentUpon>EditNameView.xaml</DependentUpon>
@@ -293,9 +296,6 @@
     <Compile Include="Views\AddAccountView.xaml.cs">
       <DependentUpon>AddAccountView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\AddressManagementView.xaml.cs">
-      <DependentUpon>AddressManagementView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\AnalysisiBarChartDisplayView.xaml.cs">
       <DependentUpon>AnalysisiBarChartDisplayView.xaml</DependentUpon>
     </Compile>
@@ -381,13 +381,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AddressManagementView - 复制.xaml">
+    <Page Include="Views\AddressManagementView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\AddressManagementView.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Views\AddressManagementView-copy.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\AnalysisiBarChartDisplayView.xaml">
       <Generator>MSBuild:Compile</Generator>
