@@ -187,6 +187,13 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _selectCommand ?? (_selectCommand = new RelayCommand<object>(OnSelectCommand)); }
             set { _selectCommand = value; }
         }
+        private RelayCommand<object> _checkVideoCommand;
+
+        public RelayCommand<object> CheckVideoCommand
+        {
+            get { return _checkVideoCommand ?? (_checkVideoCommand = new RelayCommand<object>(OnCheckVideoCommand)); }
+            set { _checkVideoCommand = value; }
+        }
         
 
         private RelayCommand<object> _importCommand;
@@ -340,6 +347,11 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             {
                 SystemLog.Log(e);
             }
+        }
+
+        private void OnCheckVideoCommand(object obj)
+        {
+
         }
 
         public void getPipeList()

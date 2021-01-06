@@ -51,7 +51,17 @@ namespace Mmc.Mspace.PoiManagerModule.Models
                 NotifyPropertyChanged("Map");
             }
         }
-        
+        private string _fileType;
+
+        public string FileType
+        {
+            get => Map?.Split('&')[1];
+            set
+            {
+                _fileType = value;
+                NotifyPropertyChanged("FileType");
+            }
+        }
         public string Name
         {
             get => _name;

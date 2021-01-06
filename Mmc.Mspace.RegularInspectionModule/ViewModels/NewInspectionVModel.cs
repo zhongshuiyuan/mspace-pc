@@ -351,6 +351,9 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     case "DataSetGroupLayer":
                         AddFdbDataSource(fileAddress, index);
                         break;
+                    case "Video":
+                       
+                        break;
                 }
             }
             if (index == -1)
@@ -437,6 +440,12 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     break;
                 case ".FDB":
                     typeString = "DataSetGroupLayer";
+                    break;
+                case ".mp4":
+                    typeString = "Video";
+                    break;
+                case ".MP4":
+                    typeString = "Video";
                     break;
                 default:
                     typeString = "";
@@ -759,19 +768,27 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             Task.Run(()=>{
 
                 this.ParseUpload();
-                if (newrender.Count <= 0)
+                string map = "";
+                if (newrender.Count <= 0&&typeString!= "Video")
                 {
                     Messages.ShowMessage("当前上传文件已存在！");
                     return;
                 }
-                var aa = newrender.ToString();
+                if (newrender.Count > 0)
+                {
+                    map = newrender.First().Key + "&" + newrender.First().Value;
+                }
+                if (typeString == "Video")
+                {
+                    map = "123456&" + typeString;
+                }
                 var txtjson = JsonUtil.SerializeToString(new
                 {
                     name = this.Name,
                     pipe_id = this.SelectPipeModel.Id,
                     section_id = this.SelectSectionModel.Id,
                     file_type = LocalCheck ? 0 : 1,//文件类型
-                    map = newrender.First().Key+"&"+ newrender.First().Value,
+                    map = map,
                     period_id = this.SelectPeriodModel.Id,
                     time = this.CreateTime.ToString("yyyy-MM-dd hh:mm:ss"),
                     file = LoadFiles,
