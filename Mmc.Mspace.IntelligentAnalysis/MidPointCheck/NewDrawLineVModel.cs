@@ -89,6 +89,11 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             });
             this.GoDrawLine = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
+                if (string.IsNullOrEmpty(StartPoi)|| string.IsNullOrEmpty(EndPoi))
+                {
+                    Messages.ShowMessage("请输入起始桩号！");
+                    return;
+                }
                 RegisterDrawLine();
             });
         }
