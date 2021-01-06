@@ -102,7 +102,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         public void ShowDrawWin()
         {
             newDrawLineView.Owner = Application.Current.MainWindow;
-            newDrawLineView.Left = 400;
+            newDrawLineView.Left = 380;
             newDrawLineView.Top = Application.Current.MainWindow.Height * 0.2;
             newDrawLineView?.Show();
         }

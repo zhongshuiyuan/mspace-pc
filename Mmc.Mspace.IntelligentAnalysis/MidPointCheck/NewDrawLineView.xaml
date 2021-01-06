@@ -10,40 +10,39 @@
     <Grid Margin="0,0,3.4,-0.8">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="35*"/>
-
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <Border  Grid.Row="0" Grid.Column="0"  Background="#292C35" Grid.ColumnSpan="7" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True" Margin="0,0,-1,0" >
+        <Border  Grid.Row="0" Grid.Column="0" Background="{StaticResource titleBackground}" Grid.ColumnSpan="7" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True" Margin="0,0,-1,0" >
             <TextBlock Text="新建描线" Foreground="#69CEFF" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" ></TextBlock>
         </Border>
         <TextBlock x:Name="TitleName" blankWindow:BlankWindow.Draggable="True"  Grid.Row="0" Grid.Column="0" Text="{DynamicResource SysSet}" Margin="18,8,0,8" Foreground="White"  FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Height="24" Width="0"/>
-        <Button Grid.Row="0" x:Name="CloseButton" Grid.Column="6"  Command="{Binding DisposeCmd}" blankWindow:BlankWindow.Closeable="True"  Style="{StaticResource ButtonCloseStyle}" Height="31" Width="31" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="0,2,5,0"  />
+        <Button Grid.Row="0" x:Name="CloseButton" Grid.Column="6"  Command="{Binding DisposeCmd}" blankWindow:BlankWindow.Closeable="True"  Style="{StaticResource ButtonCloseStyle}" Height="31" Width="31" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="0,2,2,0"  />
         <DockPanel Grid.Row="1">
-            <TextBlock  Text="描线编号：" FontSize="16" Margin="10,5,5,5" Foreground="WhiteSmoke"></TextBlock>
-            <TextBlock  Height="18" Width="180" Margin="10,0,5,5" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Text="MX3216541651"></TextBlock>
+            <TextBlock  Text="描线编号：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
+            <TextBlock  Height="18" Width="180" Margin="10,0,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" Text="MX3216541651"></TextBlock>
         </DockPanel>
 
         <DockPanel Grid.Row="2">
-            <TextBlock Text="描线名称：" FontSize="16" Margin="10,5,5,5" Foreground="White"></TextBlock>
+            <TextBlock Text="描线名称：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <!--<ComboBox Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="10,0,5,5"></ComboBox>-->
-            <TextBox Text="{Binding PipeName}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="24" Width="180" Margin="10,0,5,5"></TextBox>
+            <TextBox Text="{Binding PipeName}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="32" Width="180" Margin="10,0,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>
         </DockPanel>
         <DockPanel Grid.Row="3">
-            <TextBlock Text="对应管线：" FontSize="16" Margin="10,5,5,5" Foreground="White"></TextBlock>
-            <TextBox Text="{Binding Pipe}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="24" Width="180" Margin="10,0,5,5"></TextBox>
+            <TextBlock Text="对应管线：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
+            <TextBox Text="{Binding Pipe}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="32" Width="180" Margin="10,0,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>
         </DockPanel>
         <DockPanel Grid.Row="4">
-            <TextBlock Text="描线方式：" FontSize="16" Margin="10,5,5,5" Foreground="White"></TextBlock>
+            <TextBlock Text="描线方式：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <ComboBox x:Name="DrawLineWay"  SelectionChanged="DrawLineWay_SelectionChanged" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="100" Margin="10,0,5,5"></ComboBox>
             <Button x:Name="DrawlineBtn" Width="52" Height="24" Foreground="White" Content="去描线" Margin="5" BorderThickness="0" Command="{Binding GoDrawLine}">
                 <Button.Background>
@@ -56,19 +55,19 @@
             </Button>
         </DockPanel>
         <DockPanel Grid.Row="6" x:Name="midPoiNum">
-            <TextBlock Text="起始桩号：" FontSize="16" Margin="10,5,5,5" Foreground="White"></TextBlock>
-            <TextBox Text="{Binding StartPoi}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="24" Width="50" Margin="0,0,5,5"></TextBox>
+            <TextBlock Text="起始桩号：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
+            <TextBox Text="{Binding StartPoi}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="32" Width="50" Margin="0,0,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>
             <TextBlock Text="终止桩号：" FontSize="16" Margin="10,5,5,5" Foreground="White"></TextBlock>
-            <TextBox Text="{Binding EndPoi}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="24" Width="50" Margin="0,0,5,5"></TextBox>
+            <TextBox Text="{Binding EndPoi}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="32" Width="50" Margin="0,0,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>
         </DockPanel>
         <DockPanel Grid.Row="5">
-            <TextBlock Text="是否显示：" FontSize="16" Margin="10,5,5,5" Foreground="White"></TextBlock>
+            <TextBlock Text="是否显示：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <ComboBox x:Name="VisibleOrNot" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="10,0,5,5"></ComboBox>
           
         </DockPanel>
-        <DockPanel Grid.Row="7">
-            <Button Content="{DynamicResource OK}"  Style="{StaticResource DefaultButtonStyle}" Command="{Binding NewLineCmd}" Grid.Column="0"  HorizontalAlignment="Center" Height="36" Margin="50,10,0,30" Grid.Row="2" VerticalAlignment="Bottom" Width="80" />
-            <Button Content="{DynamicResource Cancel}"  Style="{StaticResource DefaultButtonStyle}"  HorizontalAlignment="Center" Height="36" Margin="0,0,0,30" Grid.Row="2" VerticalAlignment="Bottom" Width="80" Command="{Binding CancelCommand}"/>
+        <DockPanel Grid.Row="7" HorizontalAlignment="Center">
+            <Button Content="{DynamicResource OK}"  Style="{StaticResource DefaultButtonStyle}" Command="{Binding NewLineCmd}" Grid.Column="0"  HorizontalAlignment="Center" Height="36" Margin="0 0 20 0" Grid.Row="2" VerticalAlignment="Bottom" Width="80" />
+            <Button Content="{DynamicResource Cancel}"  Style="{StaticResource DefaultButtonStyle}"  HorizontalAlignment="Center" Height="36" Margin="0" Grid.Row="2" VerticalAlignment="Bottom" Width="80" Command="{Binding CancelCommand}"/>
 
         </DockPanel>
     </Grid>
