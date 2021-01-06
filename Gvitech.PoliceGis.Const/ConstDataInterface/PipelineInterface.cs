@@ -14,7 +14,14 @@ namespace Mmc.Mspace.Const.ConstDataInterface
         public const string createstake = "/api/stake/create";
         public const string updatestake = "/api/stake/update";// id =${id}  中线桩 编辑
         public const string deletestake = "/api/stake/delete";// id =${id}
+        public const string stakelist = "/api/stake/list";
+        public const string pipeindex = "/api/pipe/index";//管道列表
+        public const string stakeindex = "/api/stake/index";//中线桩列表
 
-   
+        
+
+
+
+
     }
 }

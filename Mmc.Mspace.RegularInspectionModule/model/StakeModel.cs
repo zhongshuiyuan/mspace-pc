@@ -35,19 +35,54 @@ namespace Mmc.Mspace.RegularInspectionModule.model
             set
             {
                 _name = value;
+                NotifyPropertyChanged("Name");
             }
         }
-
         private string _time;
-
         public string Time
         {
             get { return _time; }
-            set { _time = value; }
+            set { _time = value;
+                NotifyPropertyChanged("Time");
+            }
+        }
+
+        private string _pipe_id;
+
+        public string Pipe_id
+        {
+            get { return _pipe_id; }
+            set { _pipe_id = value;
+                NotifyPropertyChanged("Pipe_id");
+            }
+        }
+
+        private string _id;
+
+        public string Id
+        {
+            get { return _id; }
+            set { _id = value;
+                NotifyPropertyChanged("Id");
+            }
         }
 
 
-      
+        private string _sn;
+
+        public string Sn
+        {
+            get { return _sn; }
+            set { _sn = value; NotifyPropertyChanged("Id"); }
+        }
+
+        private bool _isChecked;
+
+        public bool IsChecked
+        {
+            get { return _isChecked; }
+            set { _isChecked = value; NotifyPropertyChanged("IsChecked"); }
+        }
 
     }
 }

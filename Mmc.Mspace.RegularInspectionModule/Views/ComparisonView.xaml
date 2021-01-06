@@ -3,16 +3,36 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:Helper="clr-namespace:Mmc.Mspace.Theme.Helper;assembly=Mmc.Mspace.Theme"
              xmlns:local="clr-namespace:Mmc.Mspace.RegularInspectionModule.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Height="200">
     <UserControl.Resources>
         <DataTemplate x:Key="itemTemplate">
-            <Border Name="TagBorder" BorderBrush="#FF71757E" Background="Transparent" BorderThickness="0.5" CornerRadius="2" Padding="3,2" Margin="3,2" ToolTip="{Binding name}">
-                <StackPanel Orientation="Horizontal"  MinWidth="120">
-                    <CheckBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" Command="{Binding Path=DataContext.CheckCommand,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding .}" Margin="16,4,0,0" VerticalAlignment="Center" Style="{DynamicResource CheckBoxStyle2}" Content="{Binding name}" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" />
-                </StackPanel>
+            <Border Name="TagBorder" BorderBrush="#FF71757E" Background="Transparent" BorderThickness="0.5" CornerRadius="2" Padding="3,2" Margin="3,2" ToolTip="{Binding Sn}">
+                <Grid Width="200" Height="152">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="108"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Image Stretch="UniformToFill"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Width="192" Height="108" Source="{DynamicResource  ceshi123}"/>
+                    <CheckBox x:Name="ischecked" Panel.ZIndex="10" Grid.Row="0" Margin="0 0 0 0" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Collapsed" Command="{Binding Path=DataContext.CheckCommand,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding .}"  Style="{DynamicResource PoiCheckBoxStyle}" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Grid.Row="1" HorizontalAlignment="Center" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="{Binding Name}"></TextBlock>
+                </Grid>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                        <i:InvokeCommandAction  Command="{Binding Path=DataContext.SelectCommand,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding .}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </Border>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsChecked}" Value="True">
+                    <Setter Property="BorderBrush" TargetName="TagBorder" Value="#1890FF"/>
+                    <Setter Property="Visibility" TargetName="ischecked" Value="Visible"/>
+
+                </DataTrigger>
+            </DataTemplate.Triggers>
         </DataTemplate>
     </UserControl.Resources>
     <Grid Background="#26292D">
@@ -26,26 +46,27 @@
         </Grid.ColumnDefinitions>
         <TextBlock Margin="10,2,0,2" Grid.Row="0" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="地图视角内包含的正射、倾斜模型如下："></TextBlock>
 
-        <ItemsControl Grid.Column="0" Background="#16181B" Grid.Row="1" ItemTemplate="{DynamicResource itemTemplate}" Margin="10 10 0 10" ItemsSource="{Binding GridModels}">
+        <ItemsControl x:Name="filterStakes" Grid.Column="0" Background="#16181B" Grid.Row="1" ItemTemplate="{DynamicResource itemTemplate}" Margin="10 10 0 10" ItemsSource="{Binding FilterStakes}" >
+        
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Name="wp" Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
-
+       
         <Grid Grid.Row="1" Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition/>
-
                 <RowDefinition Height="auto"/>
+                <RowDefinition  Height="*"/>
             </Grid.RowDefinitions>
 
-            <ComboBox Height="32" Grid.Row="0" Margin="10 0 10 10"  Width="152" Style="{DynamicResource DefaultComboBoxStyle}"></ComboBox>
-            <ComboBox Height="32" Grid.Row="1" Margin="10 0"  Width="152" Style="{DynamicResource DefaultComboBoxStyle}"></ComboBox>
-
+            <ComboBox Height="32" Helper:TextBoxHelper.Watermark="请选择管线" Grid.Row="0" Margin="10 10 10 10" ItemsSource="{Binding Periods}" SelectedItem="{Binding SelectPipeModel}" SelectedValuePath="Id" DisplayMemberPath="Name"  Width="152" Style="{DynamicResource DefaultComboBoxStyle}"></ComboBox>
+            <ComboBox Height="32"  Helper:TextBoxHelper.Watermark="请选择中线桩" Grid.Row="1" Margin="10 0" SelectedValuePath="Id" DisplayMemberPath="Sn"  ItemsSource="{Binding Stakes}"  Width="152" Style="{DynamicResource DefaultComboBoxStyle}" SelectedItem="{Binding SelectStakeModel}" ></ComboBox>
+            <Button Grid.Row="2"  Content="刷新" Command="{Binding getSourceCommand}" Style="{StaticResource DefaultuploadButtonStyle}"   HorizontalAlignment="Center" Height="30" Margin="0 5" VerticalAlignment="Bottom" Width="88" />
+            
             <Button Grid.Row="3"  Content="多期比对" Command="{Binding ComparisonCommand}" Style="{StaticResource DefaultuploadButtonStyle}"   HorizontalAlignment="Center" Height="32" Margin="0 10" VerticalAlignment="Bottom" Width="154" />
         </Grid>
 

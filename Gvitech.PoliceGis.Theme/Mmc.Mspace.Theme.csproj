@@ -981,5 +981,15 @@
   <ItemGroup>
     <Resource Include="Images\downdown.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\BuildImage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ceshi123.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
