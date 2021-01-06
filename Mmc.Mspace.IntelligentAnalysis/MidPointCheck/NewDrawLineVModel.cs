@@ -26,6 +26,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
     public class NewDrawLineVModel : BaseViewModel
     {
         public Action HideWin;
+        public Action HideParentsWin;
+        public Action ShowParentsWin;
         public Action<LineItem> AddPipe;
         List<Guid> guids = new List<Guid>();
         ICurveSymbol curveSymbol;        
@@ -89,11 +91,15 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             });
             this.GoDrawLine = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
+            
+
                 if (string.IsNullOrEmpty(StartPoi)|| string.IsNullOrEmpty(EndPoi))
                 {
                     Messages.ShowMessage("请输入起始桩号！");
                     return;
                 }
+                this.HideParentsWin();
+                //隐藏列表界面 
                 RegisterDrawLine();
             });
         }
@@ -101,8 +107,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         private void OnCancelCommand()
         {
             //清楚数据
-     
             this.HideWin();
+            this.ShowParentsWin();
         }
         public void ShowDrawWin()
         {
@@ -186,6 +192,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             {
                 RCDrawManager.Instance.PolylineDraw.OnDrawFinished -= PlanPolylineDraw_OnDrawFinished;
                 RCDrawManager.Instance.PolylineDraw.UnRegister(GviMap.AxMapControl);
+                ShowParentsWin();
                 return;
             }
             curveSymbol = GviMap.TraceLinePolyManager.CreateCurveSymbol(0.4f, System.Drawing.Color.Yellow, gviDashStyle.gviDashSmall);

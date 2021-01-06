@@ -55,7 +55,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             this.CreatLineCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
                 NewDrawLineVModel newDrawLineVModel = new NewDrawLineVModel();
-
+                newDrawLineVModel.HideParentsWin = drawLineManageView.Hide;
+                newDrawLineVModel.ShowParentsWin = ShowWin;
                 newDrawLineVModel.ShowDrawWin();
                 newDrawLineVModel.AddPipe += AddLinePipe;
                // GetLineData();
@@ -113,7 +114,11 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             drawLineManageView.Show();
             base.OnChecked();          
         }
-      
+        private void ShowWin()
+        {
+
+            drawLineManageView.Show();
+        }
      
         public override void OnUnchecked()
         {
@@ -152,6 +157,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         {
             if(lineItem != null)
             {
+                drawLineManageView.Show();
                 DrawLineListCollection.Add(lineItem);
             }            
         }
