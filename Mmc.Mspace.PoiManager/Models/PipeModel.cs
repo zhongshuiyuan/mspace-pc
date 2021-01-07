@@ -51,6 +51,15 @@ namespace Mmc.Mspace.PoiManagerModule.Models
                 NotifyPropertyChanged("Map");
             }
         }
+
+        private string _file;
+
+        public string File
+        {
+            get { return _file; }
+            set { _file  = value; NotifyPropertyChanged("File"); }
+        }
+
         private string _fileType;
 
         public string FileType

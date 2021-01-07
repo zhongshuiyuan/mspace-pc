@@ -24,6 +24,7 @@ using Mmc.Wpf.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -351,7 +352,25 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
 
         private void OnCheckVideoCommand(object obj)
         {
+            if (obj == null) return;
 
+            VideoPlayViewVMdel videoPlayViewVMdel = new VideoPlayViewVMdel();
+            PipeModel popemodel = obj as PipeModel;
+
+            if (WarnFileExist(popemodel.File))
+                videoPlayViewVMdel.ShowVideoView(popemodel.File);
+        }
+        private bool WarnFileExist(string filepath)
+        {
+            if (File.Exists(filepath))
+            {
+                return true;
+            }
+            else
+            {
+                Messages.ShowMessage(Helpers.ResourceHelper.FindKey("FileNotExists"));
+                return false;
+            }
         }
 
         public void getPipeList()
