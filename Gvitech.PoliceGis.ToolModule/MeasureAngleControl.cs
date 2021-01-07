@@ -109,6 +109,20 @@ namespace Mmc.Mspace.ToolModule
             //this.Lng = label.Position.X;
             //this.Lat = label.Position.Y;
             //this.Alt = label.Position.Z;
+            var point3 = polyLine.GetPoint(0);
+            if(polyLine.GetPoint(0).Z> polyLine.GetPoint(1).Z)
+            {
+                point3.X = polyLine.GetPoint(0).X;
+                point3.Y = polyLine.GetPoint(0).Y;
+                point3.Z = polyLine.GetPoint(1).Z;
+            }
+            else
+            {
+                point3.X = polyLine.GetPoint(1).X;
+                point3.Y = polyLine.GetPoint(1).Y;
+                point3.Z = polyLine.GetPoint(0).Z;
+            }
+            polyLine.AddPointAfter(1, point3);
             var pt = polyLine.GetPoint(0);
             var prjWkt = Wgs84UtmUtil.GetWkt(pt.X);
             if (!string.IsNullOrEmpty(prjWkt))
@@ -123,9 +137,9 @@ namespace Mmc.Mspace.ToolModule
         }
         private void CacluteAngle()
         {
-            if(GeometryPolyline?.PointCount<=2)
+            if(GeometryPolyline?.PointCount!=3)
             {
-                Messages.ShowMessage("点数目少于3，无法计算，请重新绘制！");
+                Messages.ShowMessage("描点数不等于2，无法计算，请重新绘制！");
                 Clear();
                 start = true;
                 return;

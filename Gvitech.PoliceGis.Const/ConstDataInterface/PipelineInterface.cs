@@ -17,8 +17,11 @@ namespace Mmc.Mspace.Const.ConstDataInterface
         public const string stakelist = "/api/stake/list";
         public const string pipeindex = "/api/pipe/index";//管道列表
         public const string stakeindex = "/api/stake/index";//中线桩列表
+        public const string tracinglineList = "/api/tracing-line/index";//描点列表
 
         
+
+
 
 
 

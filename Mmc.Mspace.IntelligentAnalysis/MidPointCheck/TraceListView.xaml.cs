@@ -15,25 +15,13 @@ using System.Windows.Shapes;
 namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
 {
     /// <summary>
-    /// NewDrawLineView.xaml 的交互逻辑
+    /// TraceListView.xaml 的交互逻辑
     /// </summary>
-    public partial class NewDrawLineView
+    public partial class TraceListView 
     {
-        public NewDrawLineView()
+        public TraceListView()
         {
             InitializeComponent();
-            DrawLineWay.Items.Add("手动");
-            DrawLineWay.Items.Add("自动");
-            VisibleOrNot.Items.Add("是");
-            VisibleOrNot.Items.Add("否");
-        }
-        public void CloseWindow()
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                this.Close();
-            });
-
         }
     }
 }

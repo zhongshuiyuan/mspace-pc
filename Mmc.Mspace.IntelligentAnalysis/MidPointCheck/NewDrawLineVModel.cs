@@ -5,6 +5,8 @@ using Mmc.Framework.Services;
 using Mmc.MathUtil;
 using Mmc.Mspace.Common.Models;
 using Mmc.Mspace.Const.ConstDataInterface;
+using Mmc.Mspace.IntelligentAnalysisModule.Models;
+using Mmc.Mspace.PoiManagerModule.Models;
 using Mmc.Mspace.Services.HttpService;
 using Mmc.Mspace.Theme.Pop;
 using Mmc.Windows.Services;
@@ -34,6 +36,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         private DrawCustomerUC drawCustomer;
         // public Action<InspectModel, string> AddTIF;
         private NewDrawLineView newDrawLineView = null;
+
+        private TraceListView traceListView = null;
         private string Geom = "";
         private string _pipeName;
         public string PipeName
@@ -44,6 +48,16 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 _pipeName = value; OnPropertyChanged("PipeName");
             }
         }
+        private string _sn;
+        public string Sn
+        {
+            get { return _sn; }
+            set
+            {
+                _sn = value; OnPropertyChanged("Sn");
+            }
+        }
+        
         private string _pipe;
         public string Pipe
         {
@@ -53,8 +67,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 _pipe = value; OnPropertyChanged("Pipe");
             }
         }
-        private string _startPoi;
-        public string StartPoi
+        private StakeModel _startPoi;
+        public StakeModel StartPoi
         {
             get { return _startPoi; }
             set
@@ -62,8 +76,62 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 _startPoi = value; OnPropertyChanged("StartPoi");
             }
         }
-        private string _endPoi;
-        public string EndPoi
+
+        private string _SelectedItem;
+
+        public string SelectedItem
+        {
+            get { return _SelectedItem; }
+            set { _SelectedItem = value; OnPropertyChanged("SelectedItem"); }
+        }
+        private PipeModel _selectPipeModel;
+        /// <summary>
+        /// 管线选中
+        /// </summary>
+        public PipeModel SelectPipeModel
+        {
+            get { return _selectPipeModel; }
+            set
+            {
+                _selectPipeModel = value;
+                OnPropertyChanged("SelectPipeModel");
+                getStackList();
+            }
+        }
+        private List<PipeModel> _pipeModels = new List<PipeModel>();
+        public List<PipeModel> PipeModels
+        {
+            get { return _pipeModels; }
+            set
+            {
+                _pipeModels = value;
+                OnPropertyChanged("PipeModels");
+            }
+        }
+        private List<StakeModel> _stakeModels = new List<StakeModel>();
+        public List<StakeModel> StakeModels
+        {
+            get { return _stakeModels; }
+            set
+            {
+                _stakeModels = value;
+                OnPropertyChanged("StakeModels");
+            }
+        }
+
+        private List<TracingLineModel> _tracingLineModels = new List<TracingLineModel>();
+        public List<TracingLineModel> TracingLineModels
+        {
+            get { return _tracingLineModels; }
+            set
+            {
+                _tracingLineModels = value;
+                OnPropertyChanged("_tracingLineModels");
+            }
+        }
+        
+        private StakeModel _endPoi;
+        public StakeModel EndPoi
         {
             get { return _endPoi; }
             set
@@ -82,18 +150,33 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         }
         public NewDrawLineVModel()
         {
-            newDrawLineView = new NewDrawLineView();
-            newDrawLineView.DataContext = this;
-             HideWin = newDrawLineView.CloseWindow;
             this.NewLineCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
                AddLineData();               
             });
             this.GoDrawLine = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
-            
-
-                if (string.IsNullOrEmpty(StartPoi)|| string.IsNullOrEmpty(EndPoi))
+                if (string.IsNullOrEmpty(Sn))
+                {
+                    Messages.ShowMessage("请选输入描线编号！");
+                    return;
+                }
+                if (string.IsNullOrEmpty(PipeName))
+                {
+                    Messages.ShowMessage("请选输入描线名称！");
+                    return;
+                }
+                if (SelectPipeModel == null)
+                {
+                    Messages.ShowMessage("请选择对应管线！");
+                    return;
+                }
+                if (SelectedItem == null)
+                {
+                    Messages.ShowMessage("请选择描线方式！");
+                    return;
+                }
+                if (StartPoi ==null|| EndPoi==null)
                 {
                     Messages.ShowMessage("请输入起始桩号！");
                     return;
@@ -101,32 +184,125 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 this.HideParentsWin();
                 //隐藏列表界面 
                 RegisterDrawLine();
+
+                if(traceListView==null)
+                {
+                    traceListView = new TraceListView();
+                    traceListView.Owner = Application.Current.MainWindow;
+                    traceListView.DataContext = this;
+                    this.gettracingline();
+                    traceListView.Show();
+                }
+
+                traceListView.Left = 50;
+                traceListView.Top = Application.Current.MainWindow.Height * 0.55;
+                this.gettracingline();
+                traceListView.Show();
             });
+
+            this.getPipeList();
         }
+
         //关闭新增窗口
         private void OnCancelCommand()
         {
-            //清楚数据
-            this.HideWin();
-            this.ShowParentsWin();
+           if (Messages.ShowMessageDialog("提示", "未保存手动描点信息，是否保存并退出？"))
+            {
+                //保存数据
+                AddLineData();
+                //清楚数据
+                this.HideWin();
+             
+                this.ShowParentsWin();
+            }
+            else
+            {
+                RCDrawManager.Instance.PolylineDraw.OnDrawFinished -= PlanPolylineDraw_OnDrawFinished;
+                RCDrawManager.Instance.PolylineDraw.UnRegister(GviMap.AxMapControl);
+                traceListView.Hide();
+                this.DelObjs();
+                Geom = "";
+                this.ShowParentsWin();
+            }
+            ChangedItem = null;
         }
         public void ShowDrawWin()
         {
+            newDrawLineView = new NewDrawLineView();
+            newDrawLineView.DataContext = this;
             newDrawLineView.Owner = Application.Current.MainWindow;
-            newDrawLineView.Left = 380;
-            newDrawLineView.Top = Application.Current.MainWindow.Height * 0.2;
-            newDrawLineView?.Show();
+            HideWin = newDrawLineView.CloseWindow;
+            newDrawLineView.Left = 50;
+            newDrawLineView.Top = Application.Current.MainWindow.Height * 0.05;
+            newDrawLineView.Show();
+        }
+        /// <summary>
+        /// 获取描点列表
+        /// </summary>
+        private void gettracingline()
+        {
+            Task.Run(() =>
+            {
+                this.TracingLineModels = new List<TracingLineModel>();
+                string param = "?page=1&page_size=20&start=" + StartPoi.Id + "&edn=" + EndPoi.Id;
+                string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.tracinglineList + param);
+                this.TracingLineModels = (JsonUtil.DeserializeFromString<List<TracingLineModel>>(resStr));
+            });
+        }
+        private LineItem ChangedItem = null;
+        public void ChangedData(LineItem lineItem)
+        {
+            ChangedItem = lineItem;
+            this.Sn = lineItem.sn;
+            this.PipeName = lineItem.name;
+            
+        }
+        public void ClearData()
+        {
+            ChangedItem = null;
+            this.Sn ="";
+            this.PipeName = "";
+            this.StartPoi = null;
+            this.EndPoi = null;
+            this.EndPoi = null;
+            this.SelectedItem = null;
+        }
+
+        /// <summary>
+        /// 获取中
+        /// </summary>
+        private void getStackList()
+        {
+            Task.Run(() =>
+            {
+                string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex+ "?pipe_id="+SelectPipeModel.Id);
+                this.StakeModels = (JsonUtil.DeserializeFromString<List<StakeModel>>(resStr));
+            });
+        }
+        public void getPipeList()
+        {
+            Task.Run(() => {
+                string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PipeList);
+                this.PipeModels = (JsonUtil.DeserializeFromString<List<PipeModel>>(resStr));
+            });
         }
         private void  AddLineData()
         {
+            if(string.IsNullOrEmpty(Geom))
+            {
+                Messages.ShowMessage("未描线，请描线后再次保存！");
+                return;
+            }
+            //校验数据
             string api = string.Empty;
             api = MarkInterface.AddLine;
             LineItem lineItem = new LineItem();
             lineItem.name = PipeName;
-            lineItem.pipe_id = Pipe;
-            lineItem.type_id = TypenameToNum(newDrawLineView.DrawLineWay.SelectedItem.ToString());
-            lineItem.start = StartPoi??"0";
-            lineItem.end = EndPoi ?? "0";
+            lineItem.pipe_id = SelectPipeModel.Id;
+            lineItem.sn = Sn;
+            lineItem.type_id = TypenameToNum(SelectedItem);
+            lineItem.start = StartPoi.Id;
+            lineItem.end = EndPoi.Id;
             lineItem.geom = Geom;
             if(guids.Count!=0)
             {
@@ -144,6 +320,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                     Messages.ShowMessage("新增成功");
                     AddPipe(lineItem);
                     newDrawLineView.Hide();
+                    ChangedItem = null;
                 }
                 else
                 {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mmc.Wpf.Mvvm;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,13 +7,20 @@ using System.Threading.Tasks;
 
 namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
 {
-    public class LineItem
+    public class LineItem: BindableBase
     {
-        public bool ischecked { get; set; }
+        private bool _isChecked;
+
+        public bool IsChecked
+        {
+            get { return _isChecked; }
+            set { _isChecked = value; NotifyPropertyChanged("IsChecked"); }
+        }
         public string id { get; set; }
         public string Number { get; set; }
 
         public string name { get; set; }
+        public string sn { get; set; }
 
         public string pipe_id { get; set; }
 

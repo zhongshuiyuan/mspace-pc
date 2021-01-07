@@ -126,6 +126,13 @@ namespace MMC.MSpace
             Messenger.Messengers.Register<bool>("BottomMenuEnum", (t) => { ShowBottomMenu(t); });
             Messenger.Messengers.Register<bool>("BottomMenuEnumNavigation", (t) => { ShowBottomNavigationMenu(t); });
             Messenger.Messengers.Register<bool>("openComparison", (t) => { this.CancelComparison.Visibility = Visibility.Visible; });
+            //描线管理
+            Messenger.Messengers.Register<bool>("DrawLineManage", (t) => {
+                this.leftStatus.IsChecked = t;
+                this.ShowHiddenMenu();
+                this.comparison.Visibility = (bool)this.leftStatus.IsChecked? Visibility.Collapsed : Visibility.Visible;
+                this.CancelComparison.Visibility = Visibility.Collapsed;
+            });
             Messenger.Messengers.Register<bool>("ShowHiddenMenu", (t) =>
             {
                 if (!(bool)this.leftStatus.IsChecked && t)

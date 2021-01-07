@@ -317,7 +317,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         {
             //string filetype = _filetype;
             // bool status = false;
-            string guid = string.Empty;
+            string guid = Guid.NewGuid().ToString();
 
             if (_fileAddress == null || _fileAddress == "")
             {
@@ -340,16 +340,16 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 switch (filetype)
                 {
                     case "ShpGroupLayer":
-                        AddShpDataSource(fileAddress, index);
+                        AddShpDataSource(fileAddress, guid, index);
                         break;
                     case "ImageGroupLayer":
-                         AddImageDataSource(fileAddress, index, cycleTime: cycleTime);
+                         AddImageDataSource(fileAddress, guid, index, cycleTime: cycleTime);
                         break;
                     case "TileGroupLayer":
-                         AddTileDataSource(fileAddress, index);
+                         AddTileDataSource(fileAddress, guid, index);
                         break;
                     case "DataSetGroupLayer":
-                        AddFdbDataSource(fileAddress, index);
+                        AddFdbDataSource(fileAddress, guid, index);
                         break;
                     case "Video":
                        
@@ -362,7 +362,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 {
                     case "WFS":
                         if (_userInfo.mspace_config.is_administrator == "1")
-                            AddShpDataSource(fileAddress, index, false, guid);
+                            AddShpDataSource(fileAddress, guid, index, false);
                         else
                         {
                             ShowAddDataStatus(OperateDataStatus.NOPERMISSION);
@@ -372,7 +372,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     case "WMTS":
                         if (_userInfo.mspace_config.is_administrator == "1")
                         {
-                            AddImageDataSource(fileAddress, index, isLocal: false);
+                            AddImageDataSource(fileAddress, guid, index, isLocal: false);
                         }
                         else
                         {
@@ -383,7 +383,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     case "TILE":
                         if (_userInfo.mspace_config.is_administrator == "1")
                         {
-                            AddTileDataSource(fileAddress, index, false);
+                            AddTileDataSource(fileAddress, guid, index, false);
                         }
                         else
                         {
@@ -393,7 +393,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     case "MODEL":
                         if (_userInfo.mspace_config.is_administrator == "1")
                         {
-                            AddFdbDataSource(fileAddress, index, false);
+                            AddFdbDataSource(fileAddress, guid, index, false);
                         }
                         else
                         {
@@ -466,7 +466,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
             else
             {
-                string guid = "";
+                string guid = Guid.NewGuid().ToString();
                 if (_userInfo.mspace_config.is_administrator != "1")
                 {
                     Messages.ShowMessage(Helpers.ResourceHelper.FindKey("NoPermission"));
@@ -511,7 +511,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     break;
             }
         }
-        private void AddShpDataSource(string fileAddress, int _index = -1, bool isLocal = true, string guid = "")
+        private void AddShpDataSource(string fileAddress, string guid , int _index = -1,bool isLocal = true)
         {
             OperateDataStatus status = OperateDataStatus.LOADFAILED;
             try
@@ -554,7 +554,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
         }
 
-        private  void AddImageDataSource(string fileAddress, int _index, double cycleTime = 0, bool isLocal = true)
+        private  void AddImageDataSource(string fileAddress,string guid, int _index, double cycleTime = 0, bool isLocal = true)
         {
             OperateDataStatus status = OperateDataStatus.LOADFAILED;
 
@@ -566,6 +566,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     {
                         ConnInfoString = fileAddress,
                         AlphaEnabled = "false",  //启动A通道
+                        Guid = guid,
                         IsLocal = isLocal
                     };
                     if (isLocal)
@@ -614,7 +615,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
 
         }
 
-        private void AddTileDataSource(string fileAddress, int _index, bool isLocal = true)
+        private void AddTileDataSource(string fileAddress, string guid, int _index, bool isLocal = true)
         {
             OperateDataStatus status = OperateDataStatus.LOADFAILED;
             //打开文件
@@ -633,6 +634,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     {
                         AliasName = name,
                         ConnInfoString = fileAddress,
+                        Guid = guid,
                         IsLocal = isLocal,
                     };
 
@@ -666,7 +668,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
 
         }
-        private void AddFdbDataSource(string fileAddress, int _index, bool isLocal = true)
+        private void AddFdbDataSource(string fileAddress, string guid, int _index, bool isLocal = true)
         {
             OperateDataStatus status = OperateDataStatus.LOADFAILED;
             try
@@ -708,6 +710,8 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     AliasName = name,
                     Is2DData = false,
                     IsLocal = isLocal,
+                    Guid = guid,
+
                     //HashCode = hashCode
                 };
                 var renderLayers = DataBaseService.Instance.AddFeatureDatasource(layerConfig, out status);

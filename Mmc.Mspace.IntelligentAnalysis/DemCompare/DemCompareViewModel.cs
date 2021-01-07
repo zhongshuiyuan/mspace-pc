@@ -46,7 +46,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.DemCompare
             try
             {
                 base.OnChecked();
-
+             
                 ShowImgAnalyseView();
             }
             catch (Exception ex)
@@ -59,6 +59,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.DemCompare
         {
             try
             {
+             
                 base.OnUnchecked();
                 if (importview1 != null)
                 {

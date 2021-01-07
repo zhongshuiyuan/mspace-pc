@@ -32,7 +32,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 base.SetAndNotifyPropertyChanged<ObservableCollection<LineItem>>(ref this._drawLineListCollection, value, "DrawLineListCollection");               
             }
         }
-     
+        private NewDrawLineVModel newDrawLineVModel = null;
+
         public ICommand CreatLineCmd { get; set; }
         public ICommand CloseCmd { get; set; }
         public ICommand DelItemsCmd { get; set; }
@@ -54,11 +55,15 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             }); 
             this.CreatLineCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
-                NewDrawLineVModel newDrawLineVModel = new NewDrawLineVModel();
-                newDrawLineVModel.HideParentsWin = drawLineManageView.Hide;
-                newDrawLineVModel.ShowParentsWin = ShowWin;
+                if(newDrawLineVModel==null)
+                {
+                    newDrawLineVModel = new NewDrawLineVModel();
+                    newDrawLineVModel.HideParentsWin = drawLineManageView.Hide;
+                    newDrawLineVModel.ShowParentsWin = ShowWin;
+                    newDrawLineVModel.AddPipe += AddLinePipe;
+                }
+                newDrawLineVModel.ClearData();
                 newDrawLineVModel.ShowDrawWin();
-                newDrawLineVModel.AddPipe += AddLinePipe;
                // GetLineData();
             });
             this.DelItemsCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
@@ -75,7 +80,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 var TempItemList = new List<LineItem>();
                 foreach (var item in DrawLineListCollection)
                 {
-                    if(item.ischecked==true)
+                    if(item.IsChecked == true)
                     {
                         TempItemList.Add(item);
                     }
@@ -95,17 +100,44 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             });
             this.MidPositionCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
-                
+                var TempItemList = new List<LineItem>();
+                foreach (var item in DrawLineListCollection)
+                {
+                    if (item.IsChecked == true)
+                    {
+                        TempItemList.Add(item);
+                    }
+                }
+                if (TempItemList.Count == 2)
+                {
+                    AreaWidthVModel areaWidthVModel = new AreaWidthVModel();
+                    areaWidthVModel.lineItems = TempItemList;
+                    areaWidthVModel.OnChecked();
+                }
+                else
+                {
+                    Messages.ShowMessage("线路条数不等于2，无法计算");
+                }//
             });    
-            this.ChangeCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
+            this.ChangeCmd = new Mmc.Wpf.Commands.RelayCommand<object>((obj) =>
             {
                 //DelItems();
+                if(newDrawLineVModel==null)
+                {
+                    newDrawLineVModel = new NewDrawLineVModel();
+                    newDrawLineVModel.HideParentsWin = drawLineManageView.Hide;
+                    newDrawLineVModel.ShowParentsWin = ShowWin;
+                    newDrawLineVModel.AddPipe += AddLinePipe;
+                }
+                newDrawLineVModel.ChangedData(obj as LineItem);
+                newDrawLineVModel.ShowDrawWin();
             });
             this.VisualCmd = new Mmc.Wpf.Commands.RelayCommand<LineItem>((lineitm) => VisualChecked(lineitm));           
         }
 
         public override void OnChecked()
         {
+            Messenger.Messengers.Notify("DrawLineManage", true);
             GetLineData();
 
             drawLineManageView.Owner = Application.Current.MainWindow;
@@ -123,7 +155,9 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         public override void OnUnchecked()
         {
             drawLineManageView.Hide();
-            base.OnUnchecked();          
+            newDrawLineVModel?.HideWin();
+            base.OnUnchecked();
+            Messenger.Messengers.Notify("DrawLineManage", false);
         }
         private void GetLineData()
         {
@@ -140,7 +174,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             {
                 LineItem lineItem = new LineItem();
                 lineItem.id = item["id"];
-                lineItem.Number = item["sn"];
+                lineItem.sn = item["sn"];
                 lineItem.name = item["name"];
                 lineItem.pipe_id = item["pipe_id"];
                 lineItem.start = item["start"];
@@ -148,7 +182,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 lineItem.isVisible = false;
                 lineItem.type_id = item["type_name"];//TypenameToNum(Convert.ToString(item["type_name"]));
                 lineItem.geom = "";
-                lineItem.ischecked = false;
+                lineItem.IsChecked = false;
                 DrawLineListCollection.Add(lineItem);
             }
         }
@@ -166,7 +200,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             string deleteString = "?ids=";
             foreach(var item in DrawLineListCollection)
             {
-                if(item?.ischecked==true)
+                if(item?.IsChecked == true)
                 {
                     deleteString = deleteString + Convert.ToString(item.id)+",";
                 }
@@ -185,7 +219,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         }
         private void ChangeIsChecked(LineItem lineItem)
         {
-            lineItem.ischecked = !lineItem.ischecked;
+            lineItem.IsChecked = !lineItem.IsChecked;
         }
         private void VisualChecked(LineItem lineItem)
         {

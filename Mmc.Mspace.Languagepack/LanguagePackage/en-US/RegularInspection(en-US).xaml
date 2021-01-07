@@ -89,7 +89,7 @@
     <sys:String x:Key="DataType">Data type</sys:String>
     <sys:String x:Key="NotMatchDataType">Data type does not match, please reselect data</sys:String>
 
-    <sys:String x:Key="CreateRegular">Add inspection</sys:String>
+    <sys:String x:Key="CreateRegular">Add Impact</sys:String>
     <sys:String x:Key="Regulargoal">Inspection target:</sys:String>
     <sys:String x:Key="RegularDate">Inspection date:</sys:String>
     <sys:String x:Key="CreateRegularWater">Please enter or select the target</sys:String>

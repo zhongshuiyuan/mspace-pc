@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:Mmc.Mspace.RegularInspectionModule.Views"
           xmlns:blankWindow="http://GFramework.org"
         mc:Ignorable="d"
-        Title="VideoPlayView" Height="450" Width="800">
+        Title="VideoPlayView" Height="450" Width="800" WindowState="Normal" WindowStartupLocation="CenterOwner">
 	<Window.Resources>
 		<Style x:Key="btnStyle" TargetType="Button">
 			<Setter Property="Background">

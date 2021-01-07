@@ -601,9 +601,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             //inspectModel.Name = "121";
             //InspectRegions.Insert(index,inspectModel);
           
-          
-
-
         }
         public void EditQueryName(InspectModel _inspectModel,string _name)
         {
