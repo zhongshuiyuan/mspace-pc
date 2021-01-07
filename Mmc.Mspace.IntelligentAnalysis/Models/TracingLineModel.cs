@@ -18,6 +18,13 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.Models
         //    "is_del": "0",
         //    "traces": "1,2",
         //    "height": "1"
+        private int _index;
+
+        public int Index
+        {
+            get { return _index; }
+            set { _index = value; NotifyPropertyChanged("Index"); }
+        }
 
 
         private string _stake;

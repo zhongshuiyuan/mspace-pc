@@ -93,7 +93,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 }
                 else
                 {
-                    Messages.ShowMessage("线路条数不等于2，无法计算");
+                    Messages.ShowMessage("请选择两条线路进行对比！");
                 }
                 //Messenger.Messengers.Notify("AreaWidth", true);
               
@@ -116,7 +116,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 }
                 else
                 {
-                    Messages.ShowMessage("线路条数不等于2，无法计算");
+                    Messages.ShowMessage("请选择两条线路进行对比！");
                 }//
             });    
             this.ChangeCmd = new Mmc.Wpf.Commands.RelayCommand<object>((obj) =>
@@ -192,7 +192,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             if(lineItem != null)
             {
                 drawLineManageView.Show();
-                DrawLineListCollection.Add(lineItem);
+                this.GetLineData();
             }            
         }
         private void DelItems()

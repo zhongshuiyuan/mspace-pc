@@ -67,8 +67,8 @@
             <ComboBox HorizontalAlignment="Left" SelectedItem="{Binding EndPoi}" SelectedValuePath="id" DisplayMemberPath="Sn" ItemsSource="{Binding StakeModels}" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="5,5,0,5"></ComboBox>
         </DockPanel>
         <DockPanel Grid.Row="8" HorizontalAlignment="Center">
-            <Button Content="{DynamicResource OK}"  Style="{StaticResource DefaultButtonStyle}" Command="{Binding NewLineCmd}" Grid.Column="0"  HorizontalAlignment="Center" Height="32" Margin="0 0 40 0" Grid.Row="2" VerticalAlignment="Center" Width="80" />
-            <Button Content="{DynamicResource Cancel}"  Style="{StaticResource DefaultButtonStyle}"  HorizontalAlignment="Center" Height="32" Margin="0" Grid.Row="2" VerticalAlignment="Center" Width="80" Command="{Binding CancelCommand}"/>
+            <Button Content="{DynamicResource OK}"  Style="{StaticResource DefaultButtonStyle}" Command="{Binding NewLineCmd}" Grid.Column="0"  HorizontalAlignment="Center" Height="32" Margin="0 0 0 0" Grid.Row="2" VerticalAlignment="Center" Width="80" />
+            <!--<Button Content="{DynamicResource Cancel}"  Style="{StaticResource DefaultButtonStyle}"  HorizontalAlignment="Center" Height="32" Margin="0" Grid.Row="2" VerticalAlignment="Center" Width="80" Command="{Binding CancelCommand}"/>-->
         </DockPanel>
     </Grid>
     </blankWindow:BlankWindow>

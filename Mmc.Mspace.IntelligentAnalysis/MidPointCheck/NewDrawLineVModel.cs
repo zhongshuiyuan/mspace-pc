@@ -126,7 +126,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             set
             {
                 _tracingLineModels = value;
-                OnPropertyChanged("_tracingLineModels");
+                OnPropertyChanged("TracingLineModels");
             }
         }
         
@@ -148,6 +148,22 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             get { return _cancelCommand ?? (_cancelCommand = new RelayCommand(OnCancelCommand)); }
             set { _cancelCommand = value; }
         }
+
+        private RelayCommand _deletePointCommand;
+        public RelayCommand DeletePointCommand
+        {
+            get { return _deletePointCommand ?? (_deletePointCommand = new RelayCommand(OnDeletePointCommand)); }
+            set { _deletePointCommand = value; }
+        }
+
+        private RelayCommand _savePointCommand;
+        public RelayCommand SavePointCommand
+        {
+            get { return _savePointCommand ?? (_savePointCommand = new RelayCommand(OnSavePointCommand)); }
+            set { _savePointCommand = value; }
+        }
+
+        
         public NewDrawLineVModel()
         {
             this.NewLineCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
@@ -203,6 +219,14 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             this.getPipeList();
         }
 
+        private void OnSavePointCommand() {
+            this.AddLineData();
+        }
+
+        private void OnDeletePointCommand()
+        {
+            this.DelObjs();
+        }
         //关闭新增窗口
         private void OnCancelCommand()
         {
@@ -320,6 +344,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                     Messages.ShowMessage("新增成功");
                     AddPipe(lineItem);
                     newDrawLineView.Hide();
+                    traceListView.Hide();
                     ChangedItem = null;
                 }
                 else
@@ -385,6 +410,32 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             //  label.VisibleMask = gviViewportMask.gviViewAllNormalView;
             renderPolyline.VisibleMask = gviViewportMask.gviViewAllNormalView;
             Geom = polyLine.AsWKT();
+
+            if(!string.IsNullOrEmpty(Geom))
+            {
+                string one = "(";
+                string two= ")";
+                int IndexofA = Geom.IndexOf(one);
+                int IndexofB = Geom.IndexOf(two);
+                string Ru = Geom.Substring(IndexofA + 1, IndexofB - IndexofA - 1);
+                string[] points = Ru.Split(',');
+                List<TracingLineModel> list = new List<TracingLineModel>();
+                for (int i = 0; i < points.Count(); i++)
+                {
+                    string[] xyz =  points[0].Split(' ');
+                    int index = (Convert.ToInt32(StartPoi.Sn.Substring(2, StartPoi.Sn.Length - 2) ) + i);
+                    TracingLineModel tracingLineModel = new TracingLineModel()
+                    {
+                        Sn = "AA" + ((index < 10) ? ("00" + index) : ("0" + index)),
+                        Index =i+1,
+                        Lng = xyz[0],
+                        Lat = xyz[1],
+                };
+                    list.Add(tracingLineModel);
+                }
+                TracingLineModels = list;
+            }
+        
             guids.Add(renderPolyline.Guid);
         }
         private void DelObjs()
@@ -394,6 +445,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 GviMap.ObjectManager.DeleteObject(item);
             }
             guids.Clear();
+            TracingLineModels = new List<TracingLineModel>();
         }
 
 
