@@ -24,7 +24,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Border  Grid.Row="0" Grid.Column="0" Background="{StaticResource titleBackground}" Grid.ColumnSpan="7" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True" Margin="0,0,-1,0" >
-            <TextBlock Text="新建描线" Foreground="#69CEFF" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" ></TextBlock>
+            <TextBlock Text="新建影像" Foreground="#69CEFF" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" ></TextBlock>
         </Border>
     
         <Button Grid.Row="0" x:Name="CloseButton" Grid.Column="6"  Command="{Binding DisposeCmd}" blankWindow:BlankWindow.Closeable="True"  Style="{StaticResource ButtonCloseStyle}" Height="31" Width="31" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="0,2,2,0"  />

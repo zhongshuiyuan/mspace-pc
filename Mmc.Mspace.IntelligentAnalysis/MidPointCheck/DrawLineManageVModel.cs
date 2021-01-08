@@ -166,6 +166,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
     
         private void OnSelectCommand(object obj)
         {
+            if (obj == null) return;
             DelObjs();
             polylines = new List<IPolyline>();
             var lineItem = obj as LineItem;

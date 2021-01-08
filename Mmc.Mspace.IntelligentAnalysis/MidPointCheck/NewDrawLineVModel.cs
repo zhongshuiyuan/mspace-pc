@@ -319,15 +319,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             }
 
 
-            for (int i = 0; i < TracingLineModels.Count; i++)
-            {
-                TracingLineModel tracingLineModel = new TracingLineModel();
-                tracingLineModel.Lat = TracingLineModels[0].Lat;
-                tracingLineModel.Lng = TracingLineModels[0].Lng;
-                tracingLineModel.Stake = TracingLineModels[0].Sn;
-                tracingLineModel.Height = TracingLineModels[0].Height;
-                string resStr1 = HttpServiceHelper.Instance.PostRequestForData(PipelineInterface.tracinglineCreate, JsonUtil.SerializeToString(tracingLineModel));
-            }
+     
         
             //校验数据
             string api = string.Empty;
@@ -346,24 +338,31 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             }
             string url = MarkInterface.AddLine;          
             var jsonData = JsonUtil.SerializeToString(lineItem);
-            string resStr = HttpServiceHelper.Instance.PostRequestForData(url, jsonData);           
-            using (JsonTextReader reader = new JsonTextReader(new StringReader(resStr)))
+            string resStr = HttpServiceHelper.Instance.PostRequestForData(url, jsonData);
+
+            var list = JsonUtil.DeserializeFromString<dynamic>(resStr);
+            string id = list["id"];
+
+            if(string.IsNullOrEmpty(id))
             {
-                JValue astatues = (JValue)JToken.ReadFrom(reader);
-                //string astatues = o["status"].ToString();
-                if (astatues.ToString() == "添加成功")
-                {
-                    Messages.ShowMessage("新增成功");
-                    AddPipe(lineItem);
-                    newDrawLineView.Hide();
-                    traceListView.Hide();
-                    ChangedItem = null;
-                }
-                else
-                {
-                    Messages.ShowMessage("新增失败，请检查数据");
-                }
+                Messages.ShowMessage("新增失败，请检查数据");
+                return;
             }
+            for (int i = 0; i < TracingLineModels.Count; i++)
+            {
+                TracingLineModel tracingLineModel = new TracingLineModel();
+                tracingLineModel.Lat = TracingLineModels[0].Lat;
+                tracingLineModel.Lng = TracingLineModels[0].Lng;
+                tracingLineModel.Stake = TracingLineModels[0].Sn;
+                tracingLineModel.Height = TracingLineModels[0].Height;
+                tracingLineModel.Traces = id;
+                string resStr1 = HttpServiceHelper.Instance.PostRequestForData(PipelineInterface.tracinglineCreate, JsonUtil.SerializeToString(tracingLineModel));
+            }
+            Messages.ShowMessage("新增成功");
+            AddPipe(lineItem);
+            newDrawLineView.Hide();
+            traceListView.Hide();
+            ChangedItem = null;
         }
         private string TypenameToNum(string typename)
         {
@@ -435,10 +434,10 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 for (int i = 0; i < points.Count(); i++)
                 {
                     string[] xyz =  points[0].Split(' ');
-                    int index = (Convert.ToInt32(StartPoi.Sn.Substring(2, StartPoi.Sn.Length - 2) ) + i);
+                    //int index = (Convert.ToInt32(StartPoi.Sn.Substring(2, StartPoi.Sn.Length - 2) ) + i);
                     TracingLineModel tracingLineModel = new TracingLineModel()
                     {
-                        Sn = "AA" + ((index < 10) ? ("00" + index) : ("0" + index)),
+                        Sn = "AA" + i+100,
                         Index =i+1,
                         Lng = xyz[0],
                         Lat = xyz[1],
