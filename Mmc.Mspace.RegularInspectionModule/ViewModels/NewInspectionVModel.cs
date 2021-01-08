@@ -56,8 +56,8 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
 
         }
 
-        private List<PipeModel> _pipeModels = new List<PipeModel>();
-        public List<PipeModel> PipeModels
+        private ObservableCollection<PipeModel> _pipeModels = new ObservableCollection<PipeModel>();
+        public ObservableCollection<PipeModel> PipeModels
         {
             get { return _pipeModels; }
             set
@@ -162,7 +162,8 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             set { _selectPipeModel = value;
              
                 OnPropertyChanged("SelectPipeModel");
-                getSectionList();
+                if (SelectPipeModel != null)
+                    getSectionList();
             }
         }
 
@@ -185,7 +186,8 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _selectPeriodModel; }
             set
             {
-                _selectPeriodModel = value; OnPropertyChanged("SelectPeriodModel");
+                _selectPeriodModel = value;
+                OnPropertyChanged("SelectPeriodModel");
             }
         }
 
@@ -208,14 +210,16 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _selectSectionModel; }
             set
             {
-                _selectSectionModel = value; OnPropertyChanged("SelectSectionModel");
+                _selectSectionModel = value;
+                OnPropertyChanged("SelectSectionModel");
             }
         }
 
         public InspectRegion SelectedItem
         {
             get { return _selectedItem; }
-            set { _selectedItem = value; OnPropertyChanged("SelectedItem"); }
+            set { _selectedItem = value;
+                OnPropertyChanged("SelectedItem"); }
         }
 
         private string _newName;
@@ -751,13 +755,15 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
 
         private void getSectionList()
         {
-            Task.Run(() =>
+            string sectionList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.SectionList);
+            ObservableCollection<SectionModel> list = new ObservableCollection<SectionModel>(JsonUtil.DeserializeFromString<List<SectionModel>>(sectionList));
+
+            SectionModel se = SelectSectionModel;
+            this.Sections = new ObservableCollection<SectionModel>((list.Where(t => t.Pipe_id == SelectPipeModel.Id).ToList()));
+            if (se != null)
             {
-                //获取标段
-                string sectionList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.SectionList);
-                List<SectionModel> list = JsonUtil.DeserializeFromString<List<SectionModel>>(sectionList);
-                this.Sections = new ObservableCollection<SectionModel>((list.Where(t => t.Pipe_id == SelectPipeModel.Id).ToList()));
-            });
+                SelectSectionModel= this.Sections.SingleOrDefault(t => t.Id == se.Id);
+            }
         }
 
         #endregion

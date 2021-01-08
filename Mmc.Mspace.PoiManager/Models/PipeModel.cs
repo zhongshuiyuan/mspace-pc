@@ -91,6 +91,13 @@ namespace Mmc.Mspace.PoiManagerModule.Models
                 NotifyPropertyChanged("NodeName");
             }
         }
+        private string _father;
+
+        public string Father
+        {
+            get { return _father; }
+            set { _father = value; NotifyPropertyChanged("Father"); }
+        }
 
         private string _level;
 

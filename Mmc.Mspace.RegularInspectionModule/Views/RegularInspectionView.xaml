@@ -45,7 +45,7 @@
         <ComboBox Height="32" Grid.Row="1" Helper:TextBoxHelper.Watermark="所有阶段"  Grid.Column="3" Width="99" ItemsSource="{Binding Periods}" SelectedValuePath="id" DisplayMemberPath="Name" SelectedItem="{Binding SelectPeriodModel}" Style="{DynamicResource DefaultComboBoxStyle}"></ComboBox>
 
         <TextBlock Text="标段：" Grid.Row="1"  Grid.Column="0" FontSize="14" Foreground="#B3BBC5" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-        <ComboBox x:Name="biaoduanCombox" Helper:TextBoxHelper.Watermark="所有标段" Grid.Row="1" SelectedValuePath="id" DisplayMemberPath="Name" Grid.Column="1" ItemsSource="{Binding Sections}" SelectedItem="{Binding SelectSectionModel}" Height="32" Width="99" Style="{DynamicResource DefaultComboBoxStyle}" ></ComboBox>
+        <ComboBox x:Name="biaoduanCombox" Helper:TextBoxHelper.Watermark="所有标段" Grid.Row="1" SelectedValuePath="id" DisplayMemberPath="Sn" Grid.Column="1" ItemsSource="{Binding Sections}" SelectedItem="{Binding SelectSectionModel}" Height="32" Width="99" Style="{DynamicResource DefaultComboBoxStyle}" ></ComboBox>
 
         <TextBlock Text="日期：" Margin="10 0 0 0 " Grid.Row="2"  Grid.Column="0" FontSize="14" Foreground="#B3BBC5" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
         <DatePicker Height="28"  Grid.Row="2"  SelectedDate="{x:Static system:DateTime.Today}" HorizontalAlignment="Stretch"  Text="{Binding StartTime,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Width="99" Style="{DynamicResource DatePickerStyle1}" ></DatePicker>
@@ -66,7 +66,6 @@
         <DockPanel Grid.Row="5" Grid.ColumnSpan="4">
             <TextBlock Text="中俄东线" Foreground="#B3BBC5" FontSize="16" Margin="10,5,5,5"></TextBlock>
 
-            <conrols:Buttons  Command="{Binding AddCommand}" CommandParameter="0"   Style="{StaticResource Button_plusStyle}" Height="16" Width="16" HasPathData="true" PathData="{StaticResource glyphicon-add}" RIcon="{StaticResource add_n}"  ToolTip="添加" InnerPathFill="#50ABFF"  HorizontalAlignment="Right" Margin="0 0 25 0"/>
         </DockPanel>
         <!--左边目录树-->
         <TreeView Grid.Row="6" Grid.ColumnSpan="4" x:Name="tree1" Width="360"

@@ -37,7 +37,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
     /// <summary>
     /// 常态化巡检列表构造器
     /// </summary>
-    public class RegularInspectionVModel:BaseViewModel
+    public class RegularInspectionVModel : BaseViewModel
     {
         private NewInspectionView _newInspectionView;
         public Action updateRenderLayer = null;
@@ -52,7 +52,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 _inspectRegions = value;
                 OnPropertyChanged("InspectRegions");
                 BiaoduanSource.Clear();
-                foreach ( var item in InspectRegions)
+                foreach (var item in InspectRegions)
                 {
                     BiaoduanSource.Add(item.Name);
                 }
@@ -69,7 +69,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             set { _pipelist = value; OnPropertyChanged("Pipelist"); }
         }
 
-        private ObservableCollection<PeriodModel> _periods=new ObservableCollection<PeriodModel>();
+        private ObservableCollection<PeriodModel> _periods = new ObservableCollection<PeriodModel>();
         /// <summary>
         /// 阶段
         /// </summary>
@@ -95,7 +95,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return startTime; }
             set { startTime = value; OnPropertyChanged("StartTime"); }
         }
-        private DateTime endTime= DateTime.Now;
+        private DateTime endTime = DateTime.Now;
 
         public DateTime EndTime
         {
@@ -134,8 +134,8 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
         }
 
-        private List<PipeModel> _pipeModels = new List<PipeModel>();
-        public List<PipeModel> PipeModels
+        private ObservableCollection<PipeModel> _pipeModels = new ObservableCollection<PipeModel>();
+        public ObservableCollection<PipeModel> PipeModels
         {
             get { return _pipeModels; }
             set
@@ -169,7 +169,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
 
         public RelayCommand SearchCommand
         {
-            get { return _searchCommand??(_searchCommand =new RelayCommand(OnSearchCommand)); }
+            get { return _searchCommand ?? (_searchCommand = new RelayCommand(OnSearchCommand)); }
             set { _searchCommand = value; }
         }
         private RelayCommand _cancelCommand;
@@ -180,7 +180,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             set { _cancelCommand = value; }
         }
 
-        
+
         private RelayCommand<object> _selectCommand;
 
         public RelayCommand<object> SelectCommand
@@ -195,13 +195,13 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _checkVideoCommand ?? (_checkVideoCommand = new RelayCommand<object>(OnCheckVideoCommand)); }
             set { _checkVideoCommand = value; }
         }
-        
+
 
         private RelayCommand<object> _importCommand;
 
         public RelayCommand<object> ImportCommand
         {
-            get { return _importCommand??(_importCommand=new RelayCommand<object>(OnImportCommand)); }
+            get { return _importCommand ?? (_importCommand = new RelayCommand<object>(OnImportCommand)); }
             set { _importCommand = value; }
         }
 
@@ -209,7 +209,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
 
         public RelayCommand<object> AddCommand
         {
-            get { return _addCommand??(_addCommand=new  RelayCommand<object> (OnAddCommand)); }
+            get { return _addCommand ?? (_addCommand = new RelayCommand<object>(OnAddCommand)); }
             set { _addCommand = value; }
         }
 
@@ -227,13 +227,13 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _downloadCommand ?? (_checkedCommand = new RelayCommand<object>(OnDownloadCommand)); }
             set { _downloadCommand = value; }
         }
-        
+
 
         private RelayCommand<object> _deleteCommand;
 
         public RelayCommand<object> DeleteCommand
         {
-            get { return _deleteCommand??(_deleteCommand=new RelayCommand<object>(OnDeleteCommand)); }
+            get { return _deleteCommand ?? (_deleteCommand = new RelayCommand<object>(OnDeleteCommand)); }
             set { _deleteCommand = value; }
         }
         private RelayCommand<object> _reNameCmd;
@@ -247,11 +247,11 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
 
         public RegularInspectionVModel()
         {
-          Messenger.Messengers.Register<bool>("AddRegion", (t) =>
-            {
-                if (t)
-                    UpdateData();
-            });
+            Messenger.Messengers.Register<bool>("AddRegion", (t) =>
+              {
+                  if (t)
+                      UpdateData();
+              });
 
             Messenger.Messengers.Register("LeftListRefresh", () =>
             {
@@ -307,6 +307,16 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             StartTime = DateTime.Now.AddDays(-90);
             EndTime = DateTime.Now;
             this.getPipeList();
+
+           
+        }
+
+        private void CloseAdd()
+        {
+            oneItem = null;
+            twoItem = null;
+            threeItem = null;
+            fatherItem = "";
         }
         /// <summary>
         /// 飞入图层
@@ -379,7 +389,8 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 string param = "";
                     param = "?section_id=" + SelectSectionModel?.Id+ "&period_id="+SelectPeriodModel?.Id+ "&new="+(IsNew ? 1 : 0) +"&time="+StartTime.ToString("yyyy-MM-dd hh:mm:ss") + "~" + EndTime.ToString("yyyy-MM-dd hh:mm:ss");
                 string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PipeList+ param);
-                this.PipeModels = (JsonUtil.DeserializeFromString<List<PipeModel>>(resStr));
+                this.PipeModels = new  ObservableCollection<PipeModel>((JsonUtil.DeserializeFromString<List<PipeModel>>(resStr)));
+                this.SetData(PipeModels);
             });
         }
         public void CloseAddWin()
@@ -394,25 +405,85 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             {
                 _newInspectionView = new NewInspectionView();
                  newInspectionVModel = new NewInspectionVModel();
-                _newInspectionView.DataContext = newInspectionVModel;
                 newInspectionVModel.HideWin = _newInspectionView.CloseWindow;
+                newInspectionVModel.HideWin += CloseAdd;
             }
+
             this.newInspectionVModel.Sections = this.Sections;
             this.newInspectionVModel.Periods = this.Periods;
             this.newInspectionVModel.PipeModels = this.PipeModels;
-            this.newInspectionVModel.SelectPipeModel = this.PipeModels[0];
+          
             this.newInspectionVModel.addRenderLayer = AddData;
             this.newInspectionVModel.updateData = getPipeList;
-            if (obj.ToString() != "0")
-            {
-              
-            }
+     
+            this.SetSelectItem(PipeModels, obj as PipeModel);
+
+          
+            this.newInspectionVModel.SelectPeriodModel = this.Periods.SingleOrDefault(t => t.Id == threeItem.Id);
+            this.newInspectionVModel.SelectSectionModel = this.Sections.SingleOrDefault(t => t.Id == twoItem.Id);
+            this.newInspectionVModel.SelectPipeModel = oneItem;
+            _newInspectionView.DataContext = newInspectionVModel;
             _newInspectionView.Owner = Application.Current.MainWindow;
             _newInspectionView.Left = 400;
             _newInspectionView.Top = Application.Current.MainWindow.Height * 0.2;
             _newInspectionView.Show();
+
         }
 
+
+        private PipeModel oneItem = null;
+        private PipeModel twoItem = null;
+        private PipeModel threeItem = null;
+        private string fatherItem = "";
+        private void SetSelectItem( ObservableCollection<PipeModel> list, PipeModel pipeModel)
+        {
+            //newInspectionVModel.SelectPipeModel = pipeModel;
+            //newInspectionVModel.SelectPeriodModel = pipeModel;
+            //newInspectionVModel.SelectSectionModel = pipeModel;
+
+            foreach (var item in list)//1级
+            {
+                if (threeItem != null) return;
+                if(item.Level=="1")
+                {
+                    oneItem = item;
+                }
+                if (item.Level == "2"&& item.Id== pipeModel.Father)
+                {
+                    twoItem = item;
+                    fatherItem = item.Id;
+                }
+                if (item.Id == pipeModel.Id && item.Level == "3"&& fatherItem!="")
+                {
+                    threeItem = item;
+                    return;
+                }
+                if (item.Child!=null&&item.Child.Count>0)
+                {
+                    SetSelectItem(new ObservableCollection<PipeModel>(item.Child), pipeModel);
+                }
+            }
+        }
+
+        private string FatherId = "";
+        private void SetData(ObservableCollection<PipeModel> list)
+        {
+            foreach (var item in list)//1级
+            {
+                if (item.Level == "2")
+                {
+                    FatherId = item.Id;
+                }
+                if (item.Level == "3")
+                {
+                    item.Father = FatherId;
+                }
+                if (item.Child!=null&&item.Child.Count > 0)
+                {
+                    SetData(new ObservableCollection<PipeModel>(item.Child));
+                }
+            }
+        }
         private void AddData(IRenderLayer renderLayer)
         {
             _renderLayers.Add(renderLayer);
@@ -626,6 +697,19 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             this.getPipeList();
             if (InspectRegions.Count == 0)
                 Messenger.Messengers.Notify("CreateNewInspection", true);
+
+            Task.Run(() =>
+            {
+                //获取阶段
+                string periodList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PeriodList);
+
+                this.Periods = new ObservableCollection<PeriodModel>(JsonUtil.DeserializeFromString<List<PeriodModel>>(periodList));
+
+                //获取标段
+                string sectionList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.SectionList);
+
+                this.Sections = new ObservableCollection<SectionModel>(JsonUtil.DeserializeFromString<List<SectionModel>>(sectionList));
+            });
         }
 
         private void UpdateData()
