@@ -268,7 +268,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             Task.Run(() =>
             {
                 this.TracingLineModels = new List<TracingLineModel>();
-                string param = "?page=1&page_size=20&start=" + StartPoi.Id + "&edn=" + EndPoi.Id;
+                string param = "?page=1&page_size=1000&start=" + StartPoi.Id + "&edn=" + EndPoi.Id;
                 string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.tracinglineList + param);
                 this.TracingLineModels = (JsonUtil.DeserializeFromString<List<TracingLineModel>>(resStr));
             });
@@ -277,9 +277,15 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         public void ChangedData(LineItem lineItem)
         {
             ChangedItem = lineItem;
+            this.SelectPipeModel = this.PipeModels.FirstOrDefault(t => t.Id == lineItem.pipe_id);
+            this.getStackList();
             this.Sn = lineItem.sn;
             this.PipeName = lineItem.name;
-            
+            this.SelectedItem = lineItem.type_id;
+            StartPoi = this.StakeModels.FirstOrDefault(t => t.Sn == lineItem.start_sn); 
+            EndPoi = this.StakeModels.FirstOrDefault(t => t.Sn == lineItem.end_sn);
+
+
         }
         public void ClearData()
         {

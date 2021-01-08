@@ -626,8 +626,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             this.getPipeList();
             if (InspectRegions.Count == 0)
                 Messenger.Messengers.Notify("CreateNewInspection", true);
-
- 
         }
 
         private void UpdateData()
