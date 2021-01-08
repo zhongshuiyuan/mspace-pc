@@ -430,7 +430,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                         Index =i+1,
                         Lng = xyz[0],
                         Lat = xyz[1],
-                };
+                        Height = xyz[2],
+                    };
                     list.Add(tracingLineModel);
                 }
                 TracingLineModels = list;

@@ -121,14 +121,14 @@
                 <DataGridTemplateColumn Header="起始桩号" Width="80">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock TextAlignment="Center" TextTrimming="WordEllipsis" ToolTip="{Binding start}" Text="{Binding start}"  FontSize="12"/>
+                            <TextBlock TextAlignment="Center" TextTrimming="WordEllipsis" ToolTip="{Binding start_sn}" Text="{Binding start_sn}"  FontSize="12"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="终止桩号" Width="80">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock TextAlignment="Center" TextTrimming="WordEllipsis" ToolTip="{Binding end}" Text="{Binding end}"  FontSize="12"/>
+                            <TextBlock TextAlignment="Center" TextTrimming="WordEllipsis" ToolTip="{Binding end_sn}" Text="{Binding end_sn}"  FontSize="12"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

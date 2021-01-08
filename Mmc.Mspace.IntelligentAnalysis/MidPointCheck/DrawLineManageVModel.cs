@@ -178,7 +178,9 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 lineItem.name = item["name"];
                 lineItem.pipe_id = item["pipe_id"];
                 lineItem.start = item["start"];
-                lineItem.end = item["end"];
+                lineItem.end = item["end"]; 
+                lineItem.start_sn = item["start_sn"];
+                lineItem.end_sn = item["end_sn"];
                 lineItem.isVisible = false;
                 lineItem.type_id = item["type_name"];//TypenameToNum(Convert.ToString(item["type_name"]));
                 lineItem.geom = "";

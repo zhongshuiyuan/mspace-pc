@@ -23,10 +23,12 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         public string sn { get; set; }
 
         public string pipe_id { get; set; }
-
         public string type_id { get; set; }
         public string start { get; set; }
         public string end { get; set; }
+
+        public string start_sn { get; set; }
+        public string end_sn { get; set; }
         public string geom { get; set; }
         public Guid guid { get; set; }
         public bool isVisible { get; set; }
