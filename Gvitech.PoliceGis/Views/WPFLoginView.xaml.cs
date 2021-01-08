@@ -329,6 +329,7 @@ namespace MMC.MSpace.Views
                 string userApi = UserCfgInterface.UserCng;
                 var resutl = HttpServiceHelper.Instance.GetRequestAsync(userApi);
                 CacheData.UserInfo = JsonUtil.DeserializeFromString<UserInfo>(resutl);
+                CacheData.UserInfo.loginPwd = tbLoginPassword.Password;
             }
             catch (Exception ex)
             {

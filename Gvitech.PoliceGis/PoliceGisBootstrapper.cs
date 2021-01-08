@@ -288,6 +288,7 @@ namespace MMC.MSpace
                 string userApi = Mmc.Mspace.Const.ConstDataInterface.UserCfgInterface.UserCng;
                 var resutl = HttpServiceHelper.Instance.GetRequestAsync(userApi);
                 CacheData.UserInfo = JsonUtil.DeserializeFromString<UserInfo>(resutl);
+                CacheData.UserInfo.loginPwd = loginPwd;
             }
             catch (Exception ex)
             {

@@ -17,6 +17,8 @@ namespace Mmc.Mspace.Common.Dto
         public string portrait { get; set; }
         public MspaceConfig mspace_config { get; set; }
         public int report_template { get; set; }
+        public string loginPwd { get; set; }
+
         //public ShellItemModel 
     }
     public class UserInfo2

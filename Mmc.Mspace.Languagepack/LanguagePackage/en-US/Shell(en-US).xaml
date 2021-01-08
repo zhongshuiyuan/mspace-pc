@@ -33,7 +33,7 @@
     <sys:String x:Key="Cityoverview">City overview</sys:String>
     <sys:String x:Key="UAV">UAV</sys:String>
     <sys:String x:Key="WireLinePatrol">Wire Line Patrol</sys:String>
-    <sys:String x:Key="Intelligentanalysis">analysis</sys:String>
+    <sys:String x:Key="Intelligentanalysis">TaskManagement</sys:String>
     <sys:String x:Key="Smartdevices">Smart devices</sys:String>
     <sys:String x:Key="Querylayer">Query layer：</sys:String>
     <sys:String x:Key="Keyword">Keyword：</sys:String>

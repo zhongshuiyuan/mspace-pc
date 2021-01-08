@@ -35,9 +35,9 @@
     <sys:String x:Key="UAV">无人机</sys:String>
     <sys:String x:Key="WireLinePatrol">电力巡航</sys:String>
     <sys:String x:Key="DrawLineManage">描线管理</sys:String>
-    
 
-    <sys:String x:Key="Intelligentanalysis">智能分析</sys:String>
+
+    <sys:String x:Key="Intelligentanalysis">任务管理</sys:String>
     <sys:String x:Key="Smartdevices">智能设备</sys:String>
     <sys:String x:Key="Querylayer">查询图层：</sys:String>
     <sys:String x:Key="Keyword">关键字：</sys:String>

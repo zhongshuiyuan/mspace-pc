@@ -754,8 +754,9 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             Task.Run(() =>
             {
                 //获取标段
-                string sectionList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.SectionList + "?pid="+SelectPipeModel.Id);
-                this.Sections = new ObservableCollection<SectionModel>(JsonUtil.DeserializeFromString<List<SectionModel>>(sectionList));
+                string sectionList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.SectionList);
+                List<SectionModel> list = JsonUtil.DeserializeFromString<List<SectionModel>>(sectionList);
+                this.Sections = new ObservableCollection<SectionModel>((list.Where(t => t.Pipe_id == SelectPipeModel.Id).ToList()));
             });
         }
 

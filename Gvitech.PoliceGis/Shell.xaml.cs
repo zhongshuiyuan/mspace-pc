@@ -134,7 +134,7 @@ namespace MMC.MSpace
                 {
                     window1 = new Window1();
                     window1.Left = 420;
-                    window1.Top = Application.Current.MainWindow.Height * 0.2;
+                    window1.Top = Application.Current.MainWindow.Height * 0.1;
                     window1.Show();
                 }
                 else

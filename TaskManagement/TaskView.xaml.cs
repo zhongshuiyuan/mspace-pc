@@ -1,4 +1,5 @@
-﻿using Mmc.Mspace.Services.HttpService;
+﻿using Mmc.Mspace.Common.Cache;
+using Mmc.Mspace.Services.HttpService;
 using QQ2564874169.Miniblink;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,11 @@ namespace TaskManagement
         private MiniblinkBrowser Browser = new MiniblinkBrowser();
         public TaskView()
         {
-            InitializeComponent(); string url = "http://wrj.mmcuav.cn/web?token=" + HttpServiceUtil.Token;
+            InitializeComponent();
+
+            //username=madmin&password=madmin123
+            
+            string url = "http://wrj.mmcuav.cn/web/#/?username=" + CacheData.UserInfo.username + "&password="+ CacheData.UserInfo.loginPwd;
             Browser.LoadUri(url);
             windowsFormsHost.Child = Browser; //把浏览器与前后台进行对接  
         }

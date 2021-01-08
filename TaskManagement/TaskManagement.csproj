@@ -88,6 +88,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Gvitech.PoliceGis.Common\Mmc.Mspace.Common.csproj">
+      <Project>{cd3991ed-0326-49cd-a83c-7816aafd88b7}</Project>
+      <Name>Mmc.Mspace.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gvitech.PoliceGis.Services\Mmc.Mspace.Services.csproj">
       <Project>{adcc12cb-e1d2-436a-8c33-47484ae76e08}</Project>
       <Name>Mmc.Mspace.Services</Name>
