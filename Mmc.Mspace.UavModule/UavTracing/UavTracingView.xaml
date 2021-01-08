@@ -463,8 +463,8 @@
            
         <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Stretch">
             <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
-                <RadioButton Margin="20,10" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Center" VerticalAlignment="Center" Content="按区域显示" Command="{Binding AreaListCmd}"  GroupName="DrawModel" Foreground="WhiteSmoke"  IsChecked="{Binding ModelIsChecked}" ></RadioButton>
-                <RadioButton Margin="20,10" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Center" VerticalAlignment="Center" Content="按任务显示" Command="{Binding MissionListCmd}"  GroupName="DrawModel" Foreground="WhiteSmoke"   IsChecked="{Binding DrawIsChecked}" ></RadioButton>
+                <RadioButton Margin="20,10" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Center" VerticalAlignment="Center" Content="按任务显示" Command="{Binding AreaListCmd}"  GroupName="DrawModel" Foreground="WhiteSmoke"  IsChecked="{Binding ModelIsChecked}" ></RadioButton>
+                <RadioButton Margin="20,10" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Center" VerticalAlignment="Center" Content="按区域显示" Command="{Binding MissionListCmd}"  GroupName="DrawModel" Foreground="WhiteSmoke"   IsChecked="{Binding DrawIsChecked}" ></RadioButton>
             </StackPanel>
                 <Expander IsExpanded="True"  Style="{DynamicResource StretchExpanderStyle2}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Expander.Header >
