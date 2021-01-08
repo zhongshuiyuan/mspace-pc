@@ -65,6 +65,16 @@ namespace Mmc.Mspace.Common.ShellService
 
         public void ShowMenuView(string groupname)
         {
+            //"IntelligentAnalysis"
+            if(groupname== "IntelligentAnalysis")
+            {
+                Messenger.Messenger.Messengers.Notify("IntelligentAnalysisShow",true);
+            }
+            else
+            {
+                Messenger.Messenger.Messengers.Notify("IntelligentAnalysisShow", false);
+
+            }
             if (groupname == "RegularInspection")
             {
                 Messenger.Messenger.Messengers.Notify("LeftMenuEnum", CommonContract.LeftMenuEnum.RegularInspectionView);

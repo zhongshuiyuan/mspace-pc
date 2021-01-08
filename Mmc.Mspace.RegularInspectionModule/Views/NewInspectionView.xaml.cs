@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QQ2564874169.Miniblink;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,13 @@ namespace Mmc.Mspace.RegularInspectionModule.Views
     /// </summary>
     public partial class NewInspectionView 
     {
+        //private MiniblinkBrowser Browser = new MiniblinkBrowser();
         public NewInspectionView()
         {
             InitializeComponent();
+            //string url = "http://baidu.com" ;
+            //Browser.LoadUri(url);
+            //windowsFormsHost.Child = Browser; //把浏览器与前后台进行对接  
         }
 
         public void CloseWindow()

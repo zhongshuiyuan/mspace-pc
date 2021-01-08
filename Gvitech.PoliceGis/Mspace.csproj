@@ -167,6 +167,10 @@
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="QQ2564874169.Miniblink, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\binPath\libs\QQ2564874169.Miniblink.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.Practices.Prism.UnityExtensions">
       <HintPath>..\libs\Microsoft.Practices.Prism.UnityExtensions.dll</HintPath>
@@ -174,9 +178,12 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Windows.Forms.DataVisualization.Design" />
     <Reference Include="System.Windows.Interactivity">
       <HintPath>..\libs\System.Windows.Interactivity.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Presentation" />
     <Reference Include="System.XML" />
     <Reference Include="WindowsBase" />
     <Reference Include="System.Windows.Forms" />
@@ -297,6 +304,9 @@
     <Compile Include="Views\UserMessagesView.xaml.cs">
       <DependentUpon>UserMessagesView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Window1.xaml.cs">
+      <DependentUpon>Window1.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\WPFLoginView.xaml.cs">
       <DependentUpon>WPFLoginView.xaml</DependentUpon>
     </Compile>
@@ -409,6 +419,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Window1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\WPFLoginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -511,6 +525,10 @@
       <Project>{a3f5fb96-7422-4f2f-a996-2c5aa2f5d798}</Project>
       <Name>System.Extensions</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\TaskManagement\TaskManagement.csproj">
+      <Project>{90b1433f-dc89-4fdb-8096-065836d093ae}</Project>
+      <Name>TaskManagement</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

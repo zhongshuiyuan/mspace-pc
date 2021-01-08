@@ -4,7 +4,6 @@
                     xmlns:vc="clr-namespace:Mmc.Mspace.Theme.Converter"
                     xmlns:helper="clr-namespace:Mmc.Mspace.Theme.Helper;assembly=Mmc.Mspace.Theme"
                     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-                    xmlns:model="clr-namespace:Mmc.Mspace.Models.AddressManagementModel"
                     xmlns:conver="clr-namespace:Mmc.Mspace.Theme.Converter">
     <conver:AddressMarginLevelConverter x:Key="AddressMarginLevelConverter"/>
     <conver:InspectionParameterConverter x:Key="inspectionParameterConverter"/>

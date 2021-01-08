@@ -8,6 +8,7 @@
      xmlns:Pub="clr-namespace:Mmc.Mspace.Theme.Pop;assembly=Mmc.Mspace.Theme"
    xmlns:mvvm="http://www.galasoft.ch/mvvmlight"
      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
+    xmlns:task="clr-namespace:TaskManagement;assembly=TaskManagement"
     xmlns:dic2="clr-namespace:System.Collections;assembly=mscorlib"
     xmlns:controls="clr-namespace:Mmc.Mspace.Theme.Controls;assembly=Mmc.Mspace.Theme"
     AllowsTransparency="True"
@@ -66,7 +67,6 @@
             <ColumnDefinition/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-
         <ContentControl Name="contentView" 	Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Grid.ColumnSpan="3"/>
 
         <Canvas Name="popView" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Grid.ColumnSpan="3"/>

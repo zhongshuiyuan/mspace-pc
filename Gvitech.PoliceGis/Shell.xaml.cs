@@ -35,6 +35,7 @@ using Mmc.Mspace.Services.HttpService;
 using Mmc.Windows.Utils;
 using System.Threading;
 using System.Threading.Tasks;
+using QQ2564874169.Miniblink;
 
 namespace MMC.MSpace
 {
@@ -110,7 +111,8 @@ namespace MMC.MSpace
 
             userMessageVModel?.GetWindowPosition();
         }
-
+        private MiniblinkBrowser Browser = new MiniblinkBrowser();
+        Window1 window1 = null;
         private void Shell_Loaded(object sender, RoutedEventArgs e)
         {
             this.InitializeShellService();
@@ -126,6 +128,23 @@ namespace MMC.MSpace
             Messenger.Messengers.Register<bool>("BottomMenuEnum", (t) => { ShowBottomMenu(t); });
             Messenger.Messengers.Register<bool>("BottomMenuEnumNavigation", (t) => { ShowBottomNavigationMenu(t); });
             Messenger.Messengers.Register<bool>("openComparison", (t) => { this.CancelComparison.Visibility = Visibility.Visible; });
+       
+            Messenger.Messengers.Register<bool>("IntelligentAnalysisShow", (t) => {
+                if (t)
+                {
+                    window1 = new Window1();
+                    window1.Left = 420;
+                    window1.Top = Application.Current.MainWindow.Height * 0.2;
+                    window1.Show();
+                }
+                else
+                {
+                    if (window1 == null) return;
+                    window1.Close();
+                }
+               
+            });
+          
             //描线管理
             Messenger.Messengers.Register<bool>("DrawLineManage", (t) => {
                 this.leftStatus.IsChecked = t;
