@@ -317,6 +317,18 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 Messages.ShowMessage("未描线，请描线后再次保存！");
                 return;
             }
+
+
+            for (int i = 0; i < TracingLineModels.Count; i++)
+            {
+                TracingLineModel tracingLineModel = new TracingLineModel();
+                tracingLineModel.Lat = TracingLineModels[0].Lat;
+                tracingLineModel.Lng = TracingLineModels[0].Lng;
+                tracingLineModel.Stake = TracingLineModels[0].Sn;
+                tracingLineModel.Height = TracingLineModels[0].Height;
+                string resStr1 = HttpServiceHelper.Instance.PostRequestForData(PipelineInterface.tracinglineCreate, JsonUtil.SerializeToString(tracingLineModel));
+            }
+        
             //校验数据
             string api = string.Empty;
             api = MarkInterface.AddLine;

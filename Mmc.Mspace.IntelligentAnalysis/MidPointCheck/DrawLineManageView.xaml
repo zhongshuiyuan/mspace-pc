@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck"
         xmlns:Helper="clr-namespace:Mmc.Mspace.Theme.Helper;assembly=Mmc.Mspace.Theme"
         mc:Ignorable="d"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:blankWindow="http://GFramework.org"
         xmlns:controls="clr-namespace:Mmc.Mspace.Theme.Controls;assembly=Mmc.Mspace.Theme"
         Title="DrawLineManageView" Height="499" Width="852" ResizeMode="NoResize" ShowInTaskbar="False" Style="{StaticResource AllowsTransparencyWindowStyle2}">
@@ -36,10 +37,15 @@
                      Helper:TextBoxHelper.IsNeedClearButton="False" Helper:TextBoxHelper.ButtonCommand="{Binding SearchCmd}"
                      Text="{Binding ReportSearchText,UpdateSourceTrigger=PropertyChanged}" Margin="17,8" />
         </DockPanel>
-        <DataGrid Grid.Row="2" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Grid.ColumnSpan="2"  AlternationCount="2"  Margin="10 0" VerticalGridLinesBrush="Black" HorizontalGridLinesBrush="Transparent"
+        <DataGrid Grid.Row="2" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Grid.ColumnSpan="2"  AlternationCount="2"  Margin="10 0" VerticalGridLinesBrush="Black"  HorizontalGridLinesBrush="Transparent"
                      BorderBrush="Black"   
                       CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False"   
-                      Name="MidLinedg" ItemsSource="{Binding DrawLineListCollection}">
+                      Name="MidLinedg"  ItemsSource="{Binding DrawLineListCollection}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction  Command="{Binding Path=DataContext.SelectCommand,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="HorizontalContentAlignment" Value="Center"/>

@@ -1,4 +1,5 @@
-﻿using Gvitech.CityMaker.RenderControl;
+﻿using Gvitech.CityMaker.FdeGeometry;
+using Gvitech.CityMaker.RenderControl;
 using Mmc.Framework.Services;
 using Mmc.Mspace.Common.Messenger;
 using Mmc.Mspace.Common.Models;
@@ -8,9 +9,11 @@ using Mmc.Mspace.IntelligentAnalysisModule.AreaWidth;
 using Mmc.Mspace.Services.HttpService;
 using Mmc.Mspace.Theme.Pop;
 using Mmc.Windows.Utils;
+using Mmc.Wpf.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,6 +46,14 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         public ICommand MidPositionCmd { get; set; }
         public ICommand ChangeCmd { get; set; }
         public ICommand VisualCmd { get; set; }
+
+        private RelayCommand<object> _selectCommand;
+
+        public RelayCommand<object> SelectCommand
+        {
+            get { return _selectCommand ?? (_selectCommand = new RelayCommand<object>(OnSelectCommand)); }
+            set { _selectCommand = value; }
+        }
         public override void Initialize()
         {
             base.Initialize();
@@ -51,6 +62,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             this.CloseCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
                 IsChecked = false;
+                this.DelObjs();
                 drawLineManageView.Hide();
             }); 
             this.CreatLineCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
@@ -151,13 +163,91 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
 
             drawLineManageView.Show();
         }
-     
+    
+        private void OnSelectCommand(object obj)
+        {
+            DelObjs();
+            polylines = new List<IPolyline>();
+            var lineItem = obj as LineItem;
+            var poly0 = GviMap.GeoFactory.CreateFromWKT(lineItem.geom) as IPolyline;
+            if (poly0 != null )
+            {
+                polylines.Add(poly0);
+            }
+            SetVideo();
+        }
+
         public override void OnUnchecked()
         {
             drawLineManageView.Hide();
             newDrawLineVModel?.HideWin();
             base.OnUnchecked();
             Messenger.Messengers.Notify("DrawLineManage", false);
+        }
+        private IGeometry Buffer(IPolyline polyline, double dis)
+        {
+            var poly = polyline.Clone2(gviVertexAttribute.gviVertexAttributeNone);
+            var topo = poly as ITopologicalOperator2D;
+            return topo.Buffer2D(dis, gviBufferStyle.gviBufferCapround);
+        }
+        private string _radius = "1";
+        private void SetVideo()
+        {
+            if (polylines.Count >0)
+            {
+                //ITopologicalOperator3D topologicalOperator3D =polylines[0]
+                IGeometry geo_1 = Buffer(polylines[0], Convert.ToDouble(_radius) / 100000);
+                geo_1.SpatialCRS = GviMap.SpatialCrs;
+           
+                IRenderPolygon render = GviMap.ObjectManager.CreateRenderPolygon(geo_1 as IPolygon, GviMap.LinePolyManager.SurfaceSym, GviMap.ProjectTree.RootID);
+                ////polygon.SpatialCRS = GviMap.SpatialCrs;
+                render?.SetFdeGeometry(geo_1);
+                render.VisibleMask = gviViewportMask.gviViewAllNormalView;
+                render.Symbol.BoundarySymbol.Color = Color.FromArgb(255, 0, 255, 255);
+                geo_1 = render.GetFdeGeometry() as IPolygon;//IMultiPolygon;
+                geo_1.SpatialCRS = GviMap.SpatialCrs;
+                guids.Add(render.Guid);
+                GviMap.Camera.FlyToObject(render.Guid, gviActionCode.gviActionFlyTo);
+                for (int i = 0; i < polylines[0].PointCount; i++)
+                {
+                    var point = polylines[0].GetPoint(i);
+                    var topoPoi = point as ITopologicalOperator2D;
+                    if (topoPoi.Intersection2D(geo_1) == null)
+                    {
+                        _problemPoints.Add(point);
+                        CreatRenPoi(point);
+                    }
+                }
+
+            }
+        }
+
+        private void DelObjs()
+        {
+            foreach (var item in guids)
+            {
+                GviMap.ObjectManager.DeleteObject(item);
+            }
+            guids.Clear();
+        }
+        List<IPolyline> polylines = new List<IPolyline>();
+        ObservableCollection<IPoint> _problemPoints = new ObservableCollection<IPoint>();
+        List<Guid> guids = new List<Guid>();
+        public List<LineItem> lineItems = new List<LineItem>();
+        private void CreatRenPoi(IPoint point)
+        {
+            var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
+            poi.SetPostion(point.X, point.Y, 2);
+            poi.Size = 30;
+            poi.ShowName = true;
+            poi.MaxVisibleDistance = 5000;
+            poi.MinVisibleDistance = 100;
+            //poi.Name = onePerson.name;
+            poi.SpatialCRS = GviMap.SpatialCrs;
+            poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "alphabet_P");//Helpers.ResourceHelper.FindResourceByKey("userImg").ToString();//
+            IRenderPOI rpoi = GviMap.ObjectManager.CreateRenderPOI(poi);
+            rpoi.DepthTestMode = gviDepthTestMode.gviDepthTestAdvance;
+            guids.Add(rpoi.Guid);
         }
         private void GetLineData()
         {
@@ -183,7 +273,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 lineItem.end_sn = item["end_sn"];
                 lineItem.isVisible = false;
                 lineItem.type_id = item["type_name"];//TypenameToNum(Convert.ToString(item["type_name"]));
-                lineItem.geom = "";
+                lineItem.geom = item["geom"];
                 lineItem.IsChecked = false;
                 DrawLineListCollection.Add(lineItem);
             }
