@@ -627,18 +627,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             if (InspectRegions.Count == 0)
                 Messenger.Messengers.Notify("CreateNewInspection", true);
 
-            Task.Run(() =>
-            {
-                //获取阶段
-                string periodList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PeriodList);
-
-                this.Periods = new ObservableCollection<PeriodModel>(JsonUtil.DeserializeFromString<List<PeriodModel>>(periodList));
-
-                //获取标段
-                string sectionList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.SectionList);
-
-                this.Sections = new ObservableCollection<SectionModel>(JsonUtil.DeserializeFromString<List<SectionModel>>(sectionList));
-            });
+ 
         }
 
         private void UpdateData()

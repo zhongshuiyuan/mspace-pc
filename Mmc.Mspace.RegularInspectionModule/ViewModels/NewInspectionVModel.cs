@@ -55,7 +55,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
 
         }
-       
+
         private List<PipeModel> _pipeModels = new List<PipeModel>();
         public List<PipeModel> PipeModels
         {
@@ -67,7 +67,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
         }
 
-        private DateTime _createTime=DateTime.Now;   
+        private DateTime _createTime = DateTime.Now;
         /// <summary>
         /// 创建时间
         /// </summary>
@@ -88,7 +88,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             set { _name = value; OnPropertyChanged("Name"); }
         }
 
-        private string _uploadText="请选择文件";
+        private string _uploadText = "请选择文件";
 
         public string UploadText
         {
@@ -98,7 +98,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
 
 
 
-        private bool _localCheck=true;
+        private bool _localCheck = true;
         /// <summary>
         /// 本地上传
         /// </summary>
@@ -133,7 +133,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 {
                     UploadText = "请选择文件";
                 }
-                OnPropertyChanged("ServerCheck"); 
+                OnPropertyChanged("ServerCheck");
             }
         }
 
@@ -159,7 +159,10 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         public PipeModel SelectPipeModel
         {
             get { return _selectPipeModel; }
-            set { _selectPipeModel = value; OnPropertyChanged("SelectPipeModel");
+            set { _selectPipeModel = value;
+             
+                OnPropertyChanged("SelectPipeModel");
+                getSectionList();
             }
         }
 
@@ -227,7 +230,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
         }
 
-        private DateTime _inspectionDate=DateTime.Now;
+        private DateTime _inspectionDate = DateTime.Now;
 
         public DateTime InspectionDate
         {
@@ -267,7 +270,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             set { _uploadFileCommand = value; }
         }
 
-        
+
 
         //关闭新增窗口
         private void OnCancelCommand()
@@ -307,11 +310,11 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             {
                 foreach (string file in openFile.FileNames)
                 {
-                    LoadFiles= file;
+                    LoadFiles = file;
                 }
             }
         }
-     
+
 
         private void loadLayer(string _fileAddress, double cycleTime, int _index)
         {
@@ -332,7 +335,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
 
         }
 
-        private  void AddData(string filetype, string fileAddress, string guid, double cycleTime, int index)
+        private void AddData(string filetype, string fileAddress, string guid, double cycleTime, int index)
         {
             newrender = new Dictionary<Guid, string>();
             if (index >= 0)
@@ -343,16 +346,16 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                         AddShpDataSource(fileAddress, guid, index);
                         break;
                     case "ImageGroupLayer":
-                         AddImageDataSource(fileAddress, guid, index, cycleTime: cycleTime);
+                        AddImageDataSource(fileAddress, guid, index, cycleTime: cycleTime);
                         break;
                     case "TileGroupLayer":
-                         AddTileDataSource(fileAddress, guid, index);
+                        AddTileDataSource(fileAddress, guid, index);
                         break;
                     case "DataSetGroupLayer":
                         AddFdbDataSource(fileAddress, guid, index);
                         break;
                     case "Video":
-                       
+
                         break;
                 }
             }
@@ -456,7 +459,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         /// <summary>
         /// 解析上传文件
         /// </summary>
-        private  void ParseUpload()
+        private void ParseUpload()
         {
             //本地加载
             if (LocalCheck)
@@ -511,7 +514,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     break;
             }
         }
-        private void AddShpDataSource(string fileAddress, string guid , int _index = -1,bool isLocal = true)
+        private void AddShpDataSource(string fileAddress, string guid, int _index = -1, bool isLocal = true)
         {
             OperateDataStatus status = OperateDataStatus.LOADFAILED;
             try
@@ -538,7 +541,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 renderLayers = DataBaseService.Instance.AddFeatureDatasource(layerConfig, out status);
                 if (status == OperateDataStatus.LOADSUCCESSED)//renderLayers != null
                 {
-                    newrender.Add(new Guid(renderLayers[0].Guid),typeString);
+                    newrender.Add(new Guid(renderLayers[0].Guid), typeString);
 
                     addRenderLayer(RenderLayer.CreateRenderLayer(renderLayers[0] as IRenderLayer));
                     if (!isLocal)
@@ -554,7 +557,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
         }
 
-        private  void AddImageDataSource(string fileAddress,string guid, int _index, double cycleTime = 0, bool isLocal = true)
+        private void AddImageDataSource(string fileAddress, string guid, int _index, double cycleTime = 0, bool isLocal = true)
         {
             OperateDataStatus status = OperateDataStatus.LOADFAILED;
 
@@ -562,55 +565,55 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             {
                 //Task.Run(() =>
                 //{
-                    ImageLayerConfig layerConfig = new ImageLayerConfig()
-                    {
-                        ConnInfoString = fileAddress,
-                        AlphaEnabled = "false",  //启动A通道
-                        Guid = guid,
-                        IsLocal = isLocal
-                    };
-                    if (isLocal)
-                    {
-                        layerConfig.AliasName = Path.GetFileNameWithoutExtension(fileAddress);
-                        layerConfig.ConType = "File";
-                        //layerConfig.HashCode = hashCode;
-                        layerConfig.AddTime = DateTime.Today;
-                        layerConfig.CycleTime = cycleTime;
-                    }
-                    else
-                    {
-                        layerConfig.ConType = "WMTS";
-                    }
+                ImageLayerConfig layerConfig = new ImageLayerConfig()
+                {
+                    ConnInfoString = fileAddress,
+                    AlphaEnabled = "false",  //启动A通道
+                    Guid = guid,
+                    IsLocal = isLocal
+                };
+                if (isLocal)
+                {
+                    layerConfig.AliasName = Path.GetFileNameWithoutExtension(fileAddress);
+                    layerConfig.ConType = "File";
+                    //layerConfig.HashCode = hashCode;
+                    layerConfig.AddTime = DateTime.Today;
+                    layerConfig.CycleTime = cycleTime;
+                }
+                else
+                {
+                    layerConfig.ConType = "WMTS";
+                }
 
-                    var renderLayer = DataBaseService.Instance.AddImageLayer(layerConfig, out status);
-                    if (renderLayer != null)
+                var renderLayer = DataBaseService.Instance.AddImageLayer(layerConfig, out status);
+                if (renderLayer != null)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            newrender.Add(new Guid(renderLayer.Guid), typeString);
+                        newrender.Add(new Guid(renderLayer.Guid), typeString);
                             //_renderLayers.Add(renderLayer);
                             addRenderLayer(renderLayer);
-                            if (!isLocal)
-                            {
-                                Messages.ShowMessage("网络图层加载成功");
-                            }
-                            else if (_index != -1)
-                            {
+                        if (!isLocal)
+                        {
+                            Messages.ShowMessage("网络图层加载成功");
+                        }
+                        else if (_index != -1)
+                        {
                                 //ChangeStatue(status, _index);
                                 Messages.ShowMessage("数据加载成功");
-                            }
-                        });
-                    }
-                    else
-                    {
-                        //失败
-                      
-                    }
+                        }
+                    });
+                }
+                else
+                {
+                    //失败
+
+                }
                 //});
             }
             catch (Exception ex)
             {
-               
+
             }
 
         }
@@ -621,45 +624,45 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             //打开文件
             try
             {
-                    string name = string.Empty;
-                    if (isLocal)
-                    {
-                        name = Path.GetFileNameWithoutExtension(fileAddress);
-                    }
-                    else
-                    {
-                        name = fileAddress.Split(':', '@')[1];
-                    }
-                    TileLayerConfig layerConfig = new TileLayerConfig()
-                    {
-                        AliasName = name,
-                        ConnInfoString = fileAddress,
-                        Guid = guid,
-                        IsLocal = isLocal,
-                    };
+                string name = string.Empty;
+                if (isLocal)
+                {
+                    name = Path.GetFileNameWithoutExtension(fileAddress);
+                }
+                else
+                {
+                    name = fileAddress.Split(':', '@')[1];
+                }
+                TileLayerConfig layerConfig = new TileLayerConfig()
+                {
+                    AliasName = name,
+                    ConnInfoString = fileAddress,
+                    Guid = guid,
+                    IsLocal = isLocal,
+                };
 
-                    var renderLayer = DataBaseService.Instance.Add3DTileLayer(layerConfig, out status);
-                    if (renderLayer != null)
+                var renderLayer = DataBaseService.Instance.Add3DTileLayer(layerConfig, out status);
+                if (renderLayer != null)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-                        Application.Current.Dispatcher.Invoke(() =>
+                        newrender.Add(new Guid(renderLayer.Guid), typeString);
+                        addRenderLayer(renderLayer);
+                        if (!isLocal)
                         {
-                            newrender.Add(new Guid(renderLayer.Guid), typeString);
-                            addRenderLayer(renderLayer);
-                            if (!isLocal)
-                            {
 
-                                Messages.ShowMessage("网络图层加载成功");
-                            }
-                            else if (_index != -1)
-                            {
-                                Messages.ShowMessage("数据加载成功");
-                            }
-                        });
-                    }
-                    else
-                    {
-                    }
-               
+                            Messages.ShowMessage("网络图层加载成功");
+                        }
+                        else if (_index != -1)
+                        {
+                            Messages.ShowMessage("数据加载成功");
+                        }
+                    });
+                }
+                else
+                {
+                }
+
                 //
             }
             catch (Exception ex)
@@ -673,7 +676,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             OperateDataStatus status = OperateDataStatus.LOADFAILED;
             try
             {
-             
+
                 string name = string.Empty;
                 var con = new ConnectionInfo();
                 if (isLocal)
@@ -715,7 +718,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     //HashCode = hashCode
                 };
                 var renderLayers = DataBaseService.Instance.AddFeatureDatasource(layerConfig, out status);
-               
+
                 if (renderLayers != null && status != OperateDataStatus.DATAEXISTED)//&& alreadyExist==false//
                 {
                     newrender.Add(new Guid(renderLayers[0].Guid), typeString);
@@ -736,7 +739,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 }
                 if (status == OperateDataStatus.DATAEXISTED)
                 {
-                  
+
                 }
             }
             catch (Exception ex)
@@ -745,7 +748,17 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
 
         }
-    
+
+        private void getSectionList()
+        {
+            Task.Run(() =>
+            {
+                //获取标段
+                string sectionList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.SectionList + "?pid="+SelectPipeModel.Id);
+                this.Sections = new ObservableCollection<SectionModel>(JsonUtil.DeserializeFromString<List<SectionModel>>(sectionList));
+            });
+        }
+
         #endregion
         private void OnCreateCommand()
         {
