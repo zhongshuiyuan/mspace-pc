@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:helper="clr-namespace:Mmc.Mspace.Theme.Helper;assembly=Mmc.Mspace.Theme"
         mc:Ignorable="d"
         xmlns:blankWindow="http://GFramework.org"
@@ -52,19 +52,31 @@
       
         <DockPanel Grid.Row="5">
             <TextBlock Text="是否显示：" FontSize="16" VerticalAlignment="Center" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
-            <ComboBox x:Name="VisibleOrNot" HorizontalAlignment="Left" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="5,5,0,5"></ComboBox>
+            <ComboBox x:Name="VisibleOrNot" HorizontalAlignment="Left" SelectedItem="{Binding IsShowItem}" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="5,5,0,5"></ComboBox>
           
         </DockPanel>
 
         <DockPanel Grid.Row="6">
             <TextBlock Text="起始桩号：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <!--<TextBox Text="{Binding StartPoi}"  helper:TextBoxHelper.IsNeedClearButton="False"  HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="32" Width="50" Margin="5,0,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>-->
-            <ComboBox HorizontalAlignment="Left" SelectedValuePath="id" DisplayMemberPath="Sn" Style="{DynamicResource DefaultComboBoxStyle}" ItemsSource="{Binding StakeModels}" SelectedItem="{Binding StartPoi}" Height="32" Width="180" Margin="5,5,0,5"></ComboBox>
+            <ComboBox HorizontalAlignment="Left" IsDropDownOpen="{Binding StartIsDropDownOpen}" SelectedValuePath="id" DisplayMemberPath="Sn" IsEditable="True" x:Name="startPoicobx" Style="{DynamicResource DefaultComboBoxStyle}"  ItemsSource="{Binding StakeModels}" SelectedItem="{Binding StartPoi}" Height="32" Width="180" Margin="5,5,0,5">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="KeyUp">
+                        <i:InvokeCommandAction  Command="{Binding Path=DataContext.StartSearchCommand,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding Text,ElementName=startPoicobx}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ComboBox>
         </DockPanel>
         <DockPanel Grid.Row="7" >
             <TextBlock Text="终止桩号：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <!--<TextBox Text="{Binding EndPoi}"  helper:TextBoxHelper.IsNeedClearButton="False" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="32" Width="50" Margin="0,0,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>-->
-            <ComboBox HorizontalAlignment="Left" SelectedItem="{Binding EndPoi}" SelectedValuePath="id" DisplayMemberPath="Sn" ItemsSource="{Binding StakeModels}" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="5,5,0,5"></ComboBox>
+            <ComboBox HorizontalAlignment="Left" IsDropDownOpen="{Binding EndIsDropDownOpen}" SelectedItem="{Binding EndPoi}" IsEditable="True" SelectedValuePath="id" x:Name="endPoicobx" DisplayMemberPath="Sn" ItemsSource="{Binding StakeModels2}" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="5,5,0,5">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="KeyUp">
+                        <i:InvokeCommandAction  Command="{Binding Path=DataContext.EndSearchCommand,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding Text,ElementName=endPoicobx}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ComboBox>
         </DockPanel>
         <DockPanel Grid.Row="8" HorizontalAlignment="Center">
             <Button Content="{DynamicResource OK}"  Style="{StaticResource DefaultButtonStyle}" Command="{Binding NewLineCmd}" Grid.Column="0"  HorizontalAlignment="Center" Height="32" Margin="0 0 0 0" Grid.Row="2" VerticalAlignment="Center" Width="80" />

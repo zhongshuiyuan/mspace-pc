@@ -57,7 +57,23 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 _sn = value; OnPropertyChanged("Sn");
             }
         }
+
+        private bool _startIsDropDownOpen;
+
+        public bool StartIsDropDownOpen
+        {
+            get { return _startIsDropDownOpen; }
+            set { _startIsDropDownOpen = value; OnPropertyChanged("StartIsDropDownOpen"); }
+        }
+        private bool _endIsDropDownOpen;
+
+        public bool EndIsDropDownOpen
+        {
+            get { return _endIsDropDownOpen; }
+            set { _endIsDropDownOpen = value; OnPropertyChanged("EndIsDropDownOpen"); }
+        }
         
+
         private string _pipe;
         public string Pipe
         {
@@ -77,6 +93,15 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             }
         }
 
+        private string _isShowItem;
+
+        public string IsShowItem
+        {
+            get { return _isShowItem; }
+            set { _isShowItem = value; OnPropertyChanged("IsShowItem"); }
+        }
+
+
         private string _SelectedItem;
 
         public string SelectedItem
@@ -95,7 +120,6 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             {
                 _selectPipeModel = value;
                 OnPropertyChanged("SelectPipeModel");
-                getStackList();
             }
         }
         private List<PipeModel> _pipeModels = new List<PipeModel>();
@@ -118,7 +142,16 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 OnPropertyChanged("StakeModels");
             }
         }
-
+        private List<StakeModel> _stakeModels2 = new List<StakeModel>();
+        public List<StakeModel> StakeModels2
+        {
+            get { return _stakeModels2; }
+            set
+            {
+                _stakeModels2 = value;
+                OnPropertyChanged("StakeModels2");
+            }
+        }
         private List<TracingLineModel> _tracingLineModels = new List<TracingLineModel>();
         public List<TracingLineModel> TracingLineModels
         {
@@ -141,6 +174,26 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         }        
         public ICommand NewLineCmd { get; set; }
         public ICommand GoDrawLine { get; set; }
+
+
+        private RelayCommand<object> _startSearchCommand;
+
+        public RelayCommand<object> StartSearchCommand
+        {
+
+            get { return _startSearchCommand ?? (_startSearchCommand = new RelayCommand<object>(OnSearchCommand)); }
+            set { _startSearchCommand = value; }
+        }
+        private RelayCommand<object> _endSearchCommand;
+
+        public RelayCommand<object> EndSearchCommand
+        {
+
+            get { return _endSearchCommand ?? (_endSearchCommand = new RelayCommand<object>(OnEndSearchCommand)); }
+            set { _endSearchCommand = value; }
+        }
+        
+
 
         private RelayCommand _cancelCommand;
         public RelayCommand CancelCommand
@@ -199,20 +252,25 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 }
                 this.HideParentsWin();
                 //隐藏列表界面 
-                RegisterDrawLine();
+                if (SelectedItem == "手动")
+                {
+                    RegisterDrawLine();
+                }
+                else
+                {
+                    this.getAutomaticStackList();
+                }
 
-                if(traceListView==null)
+                if (traceListView==null)
                 {
                     traceListView = new TraceListView();
                     traceListView.Owner = Application.Current.MainWindow;
-                    traceListView.DataContext = this;
-                    this.gettracingline();
-                    traceListView.Show();
+              
                 }
-
+                traceListView.DataContext = this;
                 traceListView.Left = 50;
                 traceListView.Top = Application.Current.MainWindow.Height * 0.55;
-                this.gettracingline();
+          
                 traceListView.Show();
             });
 
@@ -227,6 +285,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         {
             this.DelObjs();
         }
+
+
         //关闭新增窗口
         private void OnCancelCommand()
         {
@@ -260,6 +320,34 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             newDrawLineView.Top = Application.Current.MainWindow.Height * 0.05;
             newDrawLineView.Show();
         }
+
+        private void OnSearchCommand(object obj)
+        {
+            StakeModels = new List<StakeModel>();
+            if (obj == null) return;
+
+            string text = obj.ToString();
+            if (string.IsNullOrEmpty(text)) return;
+            getStackList(text);
+            if (StakeModels.Count > 0)
+            {
+                StartIsDropDownOpen = true;
+            }
+        }
+
+        private void OnEndSearchCommand(object obj)
+        {
+            StakeModels2 = new List<StakeModel>();
+            if (obj == null) return;
+
+            string text = obj.ToString();
+            if (string.IsNullOrEmpty(text)) return;
+            getStackList2(text);
+            if (StakeModels2.Count > 0)
+            {
+                EndIsDropDownOpen = true;
+            }
+        }
         /// <summary>
         /// 获取描点列表
         /// </summary>
@@ -268,7 +356,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             Task.Run(() =>
             {
                 this.TracingLineModels = new List<TracingLineModel>();
-                string param = "?page=1&page_size=1000&start=" + StartPoi.Id + "&edn=" + EndPoi.Id;
+                string param = "?page=0&page_size=100&start=" + StartPoi.Id + "&end=" + EndPoi.Id;
                 string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.tracinglineList + param);
                 this.TracingLineModels = (JsonUtil.DeserializeFromString<List<TracingLineModel>>(resStr));
             });
@@ -278,7 +366,6 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         {
             ChangedItem = lineItem;
             this.SelectPipeModel = this.PipeModels.FirstOrDefault(t => t.Id == lineItem.pipe_id);
-            this.getStackList();
             this.Sn = lineItem.sn;
             this.PipeName = lineItem.name;
             this.SelectedItem = lineItem.type_id;
@@ -297,17 +384,30 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             this.EndPoi = null;
             this.SelectedItem = null;
         }
-
+        /// <summary>
+        /// 自动获取中线桩
+        /// </summary>
+        private void getAutomaticStackList()
+        {
+            this.TracingLineModels = new List<TracingLineModel>();
+            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex + "?limits=" + StartPoi.Id+","+EndPoi.Id);
+            this.TracingLineModels = (JsonUtil.DeserializeFromString<List<TracingLineModel>>(resStr));
+        }
         /// <summary>
         /// 获取中
         /// </summary>
-        private void getStackList()
+        private void getStackList(string sn)
+       {
+            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex + "?sn=" + sn);
+            this.StakeModels = (JsonUtil.DeserializeFromString<List<StakeModel>>(resStr));
+        }
+        /// <summary>
+        /// 获取中
+        /// </summary>
+        private void getStackList2(string sn)
         {
-            Task.Run(() =>
-            {
-                string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex+ "?pipe_id="+SelectPipeModel.Id);
-                this.StakeModels = (JsonUtil.DeserializeFromString<List<StakeModel>>(resStr));
-            });
+            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex + "?sn=" + sn);
+            this.StakeModels2 = (JsonUtil.DeserializeFromString<List<StakeModel>>(resStr));
         }
         public void getPipeList()
         {
@@ -324,8 +424,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 return;
             }
 
-
-     
+            
         
             //校验数据
             string api = string.Empty;
