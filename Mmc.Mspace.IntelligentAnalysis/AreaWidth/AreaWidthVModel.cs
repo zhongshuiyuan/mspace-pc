@@ -38,6 +38,15 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 base.SetAndNotifyPropertyChanged<ObservableCollection<IPoint>>(ref this._problemPoints, value, "ProblemPoints");
             }
         }
+
+        private string _titleText="边界宽度预警";
+
+        public string TitleText
+        {
+            get { return _titleText; }
+            set { _titleText = value; base.SetAndNotifyPropertyChanged<string>(ref this._titleText, value, "TitleText"); }
+        }
+
         private string _radius = "30";
         public string Radius
         {

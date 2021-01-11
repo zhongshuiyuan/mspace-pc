@@ -15,20 +15,13 @@ using System.Windows.Shapes;
 namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
 {
     /// <summary>
-    /// TraceListView.xaml 的交互逻辑
+    /// updatePointView.xaml 的交互逻辑
     /// </summary>
-    public partial class TraceListView 
+    public partial class updatePointView 
     {
-        public TraceListView()
+        public updatePointView()
         {
             InitializeComponent();
-            this.MidLinedg.LoadingRow += new EventHandler<DataGridRowEventArgs>(this.DgSceneRecord_LoadingRow);
-
-        }
-
-        private void DgSceneRecord_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            e.Row.Header = e.Row.GetIndex() + 1;
         }
     }
 }

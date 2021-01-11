@@ -18,32 +18,32 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.Models
         //    "is_del": "0",
         //    "traces": "1,2",
         //    "height": "1"
-        private int _index;
+        private int index;
 
         public int Index
         {
-            get { return _index; }
-            set { _index = value; NotifyPropertyChanged("Index"); }
+            get { return index; }
+            set { index = value; NotifyPropertyChanged("Index"); }
         }
 
 
-        private string _stake;
+        private string stake;
         public string Stake
         {
-            get => _stake;
+            get => stake;
             set
             {
-                _stake = value;
+                stake = value;
                 NotifyPropertyChanged("Stake");
             }
         }
-        private string _lng;
+        private string lng;
         public string Lng
         {
-            get { return _lng; }
+            get { return lng; }
             set
             {
-                _lng = value;
+                lng = value;
                 NotifyPropertyChanged("Lng");
             }
         }
@@ -58,13 +58,13 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.Models
             }
         }
 
-        private string _lat;
+        private string lat;
         public string Lat
         {
-            get => _lat;
+            get => lat;
             set
             {
-                _lat = value;
+                lat = value;
                 NotifyPropertyChanged("Lat");
             }
         }
@@ -92,27 +92,35 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.Models
             }
         }
 
-        private string _traces;
+        private StakeModel _poi;
+
+        public StakeModel Poi
+        {
+            get { return _poi; }
+            set { _poi = value; NotifyPropertyChanged("Poi"); }
+        }
+
+        private string traces;
 
         public string Traces
         {
-            get => _traces;
+            get => traces;
             set
             {
-                _traces = value;
+                traces = value;
                 NotifyPropertyChanged("Traces");
             }
         }
 
 
-        private string _height;
+        private string height;
 
         public string Height
         {
-            get { return _height; }
+            get { return height; }
             set
             {
-                _height = value;
+                height = value;
                 NotifyPropertyChanged("Height");
             }
         }
@@ -130,12 +138,12 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.Models
         }
 
 
-        private string _sn;
+        private string sn;
 
         public string Sn
         {
-            get { return _sn; }
-            set { _sn = value; NotifyPropertyChanged("Id"); }
+            get { return sn; }
+            set { sn = value; NotifyPropertyChanged("Sn"); }
         }
 
         private bool _isChecked;
@@ -145,6 +153,17 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.Models
             get { return _isChecked; }
             set { _isChecked = value; NotifyPropertyChanged("IsChecked"); }
         }
+
+    }
+
+
+    public class TracingModel
+    {
+        public string stake;
+        public string sn;
+        public string height;
+        public string lat;
+        public string lng;
 
     }
 }

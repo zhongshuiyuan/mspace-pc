@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                         
         xmlns:controls="clr-namespace:Mmc.Mspace.Theme.Controls;assembly=Mmc.Mspace.Theme"
            xmlns:blankWindow="http://GFramework.org"
         mc:Ignorable="d"
@@ -26,7 +28,7 @@
             <Button Width="88" HorizontalAlignment="Right" Height="32" Style="{StaticResource DefaultuploadButtonStyle}" Content="保存" Command="{Binding SavePointCommand}"  BorderThickness="0" Margin="10,5,15,5">
             </Button>
         </DockPanel>
-        <DataGrid Grid.Row="2" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Grid.ColumnSpan="2"  AlternationCount="2"  Margin="10 0" VerticalGridLinesBrush="Black" HorizontalGridLinesBrush="Transparent"
+        <DataGrid Grid.Row="2" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Grid.ColumnSpan="2"  AlternationCount="2"  Margin="10 0" VerticalGridLinesBrush="Black" HeadersVisibility="Column"  HorizontalGridLinesBrush="Transparent"
                      BorderBrush="Black"   
                       CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False"   
                       Name="MidLinedg" ItemsSource="{Binding TracingLineModels}">
@@ -64,17 +66,20 @@
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="序号" Width="140" >
+                <DataGridTemplateColumn Width="60"
+                                        Header="序号"
+                                        IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock TextAlignment="Center"  TextTrimming="WordEllipsis" ToolTip="{Binding Index}" Text="{Binding Index}"  FontSize="12"/>
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Header}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="对应桩号" Width="117">
+                <DataGridTemplateColumn Header="对应桩号" Width="150">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock TextAlignment="Center" TextTrimming="WordEllipsis" ToolTip="{Binding Sn}" Text="{Binding Sn}"  FontSize="12"/>
+                            <ComboBox HorizontalAlignment="Left"  SelectedValuePath="id" DisplayMemberPath="Sn" Style="{DynamicResource DefaultComboBoxStyle}"  ItemsSource="{Binding DataContext.SelectStakeModels,RelativeSource={RelativeSource AncestorType=Window}}" SelectedItem="{Binding Poi,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="32" Width="150" >
+                            </ComboBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -93,7 +98,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                
-                <!--<DataGridTemplateColumn Header="操作" Width="170">
+                <DataGridTemplateColumn Header="操作" Width="170">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -103,7 +108,7 @@
                                                 MouseOverRIcon="{DynamicResource Account_View_H}"  
                                                 PressedRIcon="{DynamicResource Account_View_C}"
                                                 Style="{StaticResource AddandExportAccountBtnStyle}" 
-                                                Command="{Binding DataContext.ChangeCmd,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}" 
+                                                Command="{Binding DataContext.DeleteItemCommang,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}" 
                                                 CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"/>
                                 <controls:Buttons x:Name="bs2" Height="23" Width="30" Content=""  Margin="20,0,0,0"
 											    ToolTip="修改"
@@ -111,7 +116,7 @@
                                                 MouseOverRIcon="{DynamicResource Account_Edit_H}"  
                                                 PressedRIcon="{DynamicResource Account_Edit_C}"
                                                 Style="{StaticResource AddandExportAccountBtnStyle}" 
-                                                Command="{Binding DataContext.VisualCmd,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}" 
+                                                Command="{Binding DataContext.EditCommand,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}" 
                                                 CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"/>
 
                                 <controls:Buttons  Height="23" Width="30" Content=""  Margin="20,0,0,0"
@@ -125,11 +130,11 @@
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 
-        <StackPanel Grid.Row="3"  Width="180"  Orientation="Horizontal" HorizontalAlignment="Center"  Margin="10">
+        <!--<StackPanel Grid.Row="3"  Width="180"  Orientation="Horizontal" HorizontalAlignment="Center"  Margin="10">
             <controls:Buttons x:Name="bs5" Content=""
                                 RIcon="{DynamicResource FirstPageNew}"
                                 MouseOverRIcon="{DynamicResource FirstPageNew_H}"  
@@ -158,7 +163,7 @@
                                 PressedRIcon="{DynamicResource FinalPageNew_C}"
                                 Tag="{DynamicResource FinalPageNew_D}" 
                                 Style="{StaticResource AddandExportAccountBtnStyle}" Command="{Binding EndPageCmd}" Height="32" Width="32" Margin="5,0,0,0"/>
-        </StackPanel>
+        </StackPanel>-->
 
     </Grid>
 </blankWindow:BlankWindow>

@@ -60,6 +60,15 @@ namespace Mmc.Mspace.PoiManagerModule.Models
             set { _file  = value; NotifyPropertyChanged("File"); }
         }
 
+        private bool _firstEyeStatus=true;
+
+        public bool FirstEyeStatus
+        {
+            get { return _firstEyeStatus; }
+            set { _firstEyeStatus = value; NotifyPropertyChanged("FirstEyeStatus"); }
+        }
+
+
         private string _fileType;
 
         public string FileType

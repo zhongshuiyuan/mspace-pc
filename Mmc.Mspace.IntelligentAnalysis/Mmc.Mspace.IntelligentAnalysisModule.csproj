@@ -125,6 +125,9 @@
     <Compile Include="MidPointCheck\TraceListView.xaml.cs">
       <DependentUpon>TraceListView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MidPointCheck\updatePointView.xaml.cs">
+      <DependentUpon>updatePointView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\StakeModel.cs" />
     <Compile Include="Models\TracingLineModel.cs" />
     <Compile Include="MultiViewCompare\CompareViewExModel.cs" />
@@ -246,6 +249,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MidPointCheck\TraceListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MidPointCheck\updatePointView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

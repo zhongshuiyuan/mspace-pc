@@ -1,4 +1,5 @@
 ﻿using Gvitech.CityMaker.FdeGeometry;
+using Gvitech.CityMaker.Math;
 using Gvitech.CityMaker.RenderControl;
 using Mmc.Framework.Services;
 using Mmc.Mspace.Common.Messenger;
@@ -7,6 +8,7 @@ using Mmc.Mspace.Const.ConstDataInterface;
 using Mmc.Mspace.Const.ConstPath;
 using Mmc.Mspace.IntelligentAnalysisModule.AreaWidth;
 using Mmc.Mspace.Services.HttpService;
+using Mmc.Mspace.Services.NetRouteAnalysisService;
 using Mmc.Mspace.Theme.Pop;
 using Mmc.Windows.Utils;
 using Mmc.Wpf.Commands;
@@ -100,6 +102,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 if(TempItemList.Count==2)
                 {
                     AreaWidthVModel areaWidthVModel = new AreaWidthVModel();
+                    areaWidthVModel.TitleText = "边界宽度预警";
                     areaWidthVModel.lineItems = TempItemList;
                     areaWidthVModel.OnChecked();
                 }
@@ -123,6 +126,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 if (TempItemList.Count == 2)
                 {
                     AreaWidthVModel areaWidthVModel = new AreaWidthVModel();
+                    areaWidthVModel.TitleText = "中线桩位置核准";
                     areaWidthVModel.lineItems = TempItemList;
                     areaWidthVModel.OnChecked();
                 }
@@ -170,19 +174,41 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             DelObjs();
             polylines = new List<IPolyline>();
             var lineItem = obj as LineItem;
-            var poly0 = GviMap.GeoFactory.CreateFromWKT(lineItem.geom) as IPolyline;
-            if (poly0 != null )
+
+            var polyLine = GviMap.GeoFactory.CreatePolyline(lineItem.geom, GviMap.SpatialCrs);
+            if (polyLine == null) return;
+           
+            if (polyLine.EndPoint == null) return;
+            var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, GviMap.LinePolyManager.CurveSym);
+        
+            if (rLine == null) return;
+            rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
+            //GviMap.Camera.FlyToObject(rLine.Guid, gviActionCode.gviActionFlyTo);
+            //var poly0 = GviMap.GeoFactory.CreateFromWKT(lineItem.geom) as IPolyline;
+
+
+            GviMap.Camera.GetCamera2(out IPoint pointCamera, out IEulerAngle eulerAngle);
+            ////GviMap.Camera.FlyToEnvelope(point.Envelope);
+            eulerAngle.Tilt = -45;
+            eulerAngle.Heading = 210;
+            pointCamera.X = rLine.Envelope.MaxX;
+            pointCamera.Y = rLine.Envelope.MaxY;
+            pointCamera.Z = 2000;
+            GviMap.Camera.SetCamera2(pointCamera, eulerAngle, 0);
+            if (polyLine != null)
             {
-                polylines.Add(poly0);
+                polylines.Add(polyLine);
             }
             SetVideo();
         }
+
 
         public override void OnUnchecked()
         {
             drawLineManageView.Hide();
             newDrawLineVModel?.HideWin();
             base.OnUnchecked();
+            DelObjs();
             Messenger.Messengers.Notify("DrawLineManage", false);
         }
         private IGeometry Buffer(IPolyline polyline, double dis)
@@ -192,44 +218,73 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             return topo.Buffer2D(dis, gviBufferStyle.gviBufferCapround);
         }
         private string _radius = "1";
+        public Dictionary<string, Guid> poiList = new Dictionary<string, Guid>();
         private void SetVideo()
         {
             if (polylines.Count >0)
             {
-                //ITopologicalOperator3D topologicalOperator3D =polylines[0]
-                IGeometry geo_1 = Buffer(polylines[0], Convert.ToDouble(_radius) / 100000);
-                geo_1.SpatialCRS = GviMap.SpatialCrs;
-           
-                IRenderPolygon render = GviMap.ObjectManager.CreateRenderPolygon(geo_1 as IPolygon, GviMap.LinePolyManager.SurfaceSym, GviMap.ProjectTree.RootID);
-                ////polygon.SpatialCRS = GviMap.SpatialCrs;
-                render?.SetFdeGeometry(geo_1);
-                render.VisibleMask = gviViewportMask.gviViewAllNormalView;
-                render.Symbol.BoundarySymbol.Color = Color.FromArgb(255, 0, 255, 255);
-                geo_1 = render.GetFdeGeometry() as IPolygon;//IMultiPolygon;
-                geo_1.SpatialCRS = GviMap.SpatialCrs;
-                guids.Add(render.Guid);
-                GviMap.Camera.FlyToObject(render.Guid, gviActionCode.gviActionFlyTo);
                 for (int i = 0; i < polylines[0].PointCount; i++)
                 {
                     var point = polylines[0].GetPoint(i);
-                    var topoPoi = point as ITopologicalOperator2D;
-                    if (topoPoi.Intersection2D(geo_1) == null)
-                    {
-                        _problemPoints.Add(point);
-                        CreatRenPoi(point);
-                    }
-                }
 
+                    var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
+
+                    poi.SetPostion(point.X, point.Y);
+                    poi.Size = 50;
+                    poi.ShowName = false;
+                    poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");
+                    poi.SpatialCRS = GviMap.SpatialCrs;
+                    var rPoi = GviMap.ObjectManager.CreateRenderPOI(poi);
+                    rPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
+                    this.poiList.Add(rPoi.Guid.ToString(), rPoi.Guid);
+                }
             }
+        }
+        public IPolygon UpdateZ(IPolygon geo, double Z)
+        {
+            bool flag = geo == null;
+            IPolygon result;
+            if (flag)
+            {
+                result = geo;
+            }
+            else
+            {
+                geo = (geo.Clone2(gviVertexAttribute.gviVertexAttributeZ) as IPolygon);
+                int num;
+                for (int i = 0; i < geo.ExteriorRing.PointCount; i = num + 1)
+                {
+                    IPoint point = geo.ExteriorRing.GetPoint(i);
+                    point.Z = Z;
+                    geo.ExteriorRing.UpdatePoint(i, point);
+                    num = i;
+                }
+                result = geo;
+            }
+            return result;
         }
 
         private void DelObjs()
         {
+            ClearPatrolList();
             foreach (var item in guids)
             {
                 GviMap.ObjectManager.DeleteObject(item);
             }
             guids.Clear();
+        }
+        public void ClearPatrolList()
+        {
+            Dictionary<string, Guid> expr_07 = this.poiList;
+            bool flag = expr_07 == null || expr_07.Count > 0;
+            if (flag)
+            {
+                foreach (KeyValuePair<string, Guid> current in this.poiList)
+                {
+                    GviMap.ObjectManager.DeleteObject(current.Value);
+                }
+            }
+            this.poiList = new Dictionary<string, Guid>();
         }
         List<IPolyline> polylines = new List<IPolyline>();
         ObservableCollection<IPoint> _problemPoints = new ObservableCollection<IPoint>();
@@ -298,7 +353,9 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                     deleteString = deleteString + Convert.ToString(item.id)+",";
                 }
             }
-            if(deleteString =="?ids=")
+
+       
+            if (deleteString =="?ids=")
             {
                 //Messages.ShowMessage("");
             }
@@ -309,6 +366,11 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 string resStr = HttpServiceHelper.Instance.GetRequest(url);
             }
             GetLineData();
+            if (DrawLineListCollection.Count == 0)
+            {
+                DelObjs();
+
+            }
         }
         private void ChangeIsChecked(LineItem lineItem)
         {

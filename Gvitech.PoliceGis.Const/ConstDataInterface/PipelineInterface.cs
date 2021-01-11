@@ -19,7 +19,8 @@ namespace Mmc.Mspace.Const.ConstDataInterface
         public const string stakeindex = "/api/stake/index";//中线桩列表
         public const string tracinglineList = "/api/tracing-line/index";//描点列表
         public const string tracinglineCreate= "/api/tracing-line/create";//添加
-
+        public const string tracinglinebatch = "/api/tracing-line/batch";//批量添加
+        
 
 
 

@@ -1,4 +1,5 @@
 ﻿using Gvitech.CityMaker.FdeGeometry;
+using Gvitech.CityMaker.Math;
 using Gvitech.CityMaker.RenderControl;
 using Mmc.Framework.Draw;
 using Mmc.Framework.Services;
@@ -6,6 +7,7 @@ using Mmc.MathUtil;
 using Mmc.Mspace.Common.Models;
 using Mmc.Mspace.Const.ConstDataInterface;
 using Mmc.Mspace.IntelligentAnalysisModule.Models;
+using Mmc.Mspace.PoiManagerModule.Dto;
 using Mmc.Mspace.PoiManagerModule.Models;
 using Mmc.Mspace.Services.HttpService;
 using Mmc.Mspace.Theme.Pop;
@@ -16,6 +18,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -36,6 +40,10 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         private DrawCustomerUC drawCustomer;
         // public Action<InspectModel, string> AddTIF;
         private NewDrawLineView newDrawLineView = null;
+        private updatePointView _updatePointView = null;
+
+
+        
 
         private TraceListView traceListView = null;
         private string Geom = "";
@@ -93,7 +101,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             }
         }
 
-        private string _isShowItem;
+        private string _isShowItem="是";
 
         public string IsShowItem
         {
@@ -152,8 +160,23 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 OnPropertyChanged("StakeModels2");
             }
         }
-        private List<TracingLineModel> _tracingLineModels = new List<TracingLineModel>();
-        public List<TracingLineModel> TracingLineModels
+
+        private List<StakeModel> _selectStakeModels = new List<StakeModel>();
+        /// <summary>
+        /// 手动中需选择的中线桩
+        /// </summary>
+        public List<StakeModel> SelectStakeModels
+        {
+            get { return _selectStakeModels; }
+            set
+            {
+                _selectStakeModels = value;
+                OnPropertyChanged("SelectStakeModels");
+            }
+        }
+
+        private ObservableCollection<TracingLineModel> _tracingLineModels = new ObservableCollection<TracingLineModel>();
+        public ObservableCollection<TracingLineModel> TracingLineModels
         {
             get { return _tracingLineModels; }
             set
@@ -192,7 +215,16 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             get { return _endSearchCommand ?? (_endSearchCommand = new RelayCommand<object>(OnEndSearchCommand)); }
             set { _endSearchCommand = value; }
         }
-        
+
+        private RelayCommand<object> _deleteItemCommang;
+
+        public RelayCommand<object> DeleteItemCommang
+        {
+            get { return _deleteItemCommang??(_deleteItemCommang=new RelayCommand<object>(OnDeleteItemCommang)); }
+            set { _deleteItemCommang = value; }
+        }
+
+
 
 
         private RelayCommand _cancelCommand;
@@ -216,7 +248,14 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             set { _savePointCommand = value; }
         }
 
-        
+        private RelayCommand<object> _editCommand;
+
+        public RelayCommand<object> EditCommand
+        {
+            get { return _editCommand ?? (_editCommand = new RelayCommand<object>(OnEditCommand)); }
+            set { _editCommand = value; }
+        }
+
         public NewDrawLineVModel()
         {
             this.NewLineCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
@@ -225,6 +264,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             });
             this.GoDrawLine = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
+                TracingLineModels = new ObservableCollection<TracingLineModel>();
                 if (string.IsNullOrEmpty(Sn))
                 {
                     Messages.ShowMessage("请选输入描线编号！");
@@ -251,13 +291,26 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                     return;
                 }
                 this.HideParentsWin();
+                getSelectStakeList();
                 //隐藏列表界面 
                 if (SelectedItem == "手动")
                 {
+           
+
+                    if (ChangedItem!=null)
+                    {
+                    this.gettracinglineList();
+
+                    }
+                    else
+                    {
                     RegisterDrawLine();
+
+                    }
                 }
                 else
                 {
+                  
                     this.getAutomaticStackList();
                 }
 
@@ -270,7 +323,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 traceListView.DataContext = this;
                 traceListView.Left = 50;
                 traceListView.Top = Application.Current.MainWindow.Height * 0.55;
-          
+             
                 traceListView.Show();
             });
 
@@ -279,6 +332,10 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
 
         private void OnSavePointCommand() {
             this.AddLineData();
+        }
+        private void OnEditCommand(object obj)
+        {
+            if (obj == null) return;
         }
 
         private void OnDeletePointCommand()
@@ -305,10 +362,10 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 RCDrawManager.Instance.PolylineDraw.UnRegister(GviMap.AxMapControl);
                 traceListView.Hide();
                 this.DelObjs();
+                TracingLineModels = new ObservableCollection<TracingLineModel>();
                 Geom = "";
                 this.ShowParentsWin();
             }
-            ChangedItem = null;
         }
         public void ShowDrawWin()
         {
@@ -334,6 +391,27 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 StartIsDropDownOpen = true;
             }
         }
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="obj"></param>
+        private void OnDeleteItemCommang(object obj)
+        {
+            if (obj == null) return;
+            TracingLineModel tracingLineModel = obj as TracingLineModel;
+            if (Messages.ShowMessageDialog("提示", "是否删除当前描点？"))
+            {
+                //删除数据
+                List<string> list = points.ToList();
+                list.RemoveAt(tracingLineModel.Index);
+                TracingLineModels.RemoveAt(tracingLineModel.Index);
+                //清楚地图重新画
+                polylines = new List<IPolyline>();
+                DelObjs();
+                DrawAutoLine();
+
+            }
+        }
 
         private void OnEndSearchCommand(object obj)
         {
@@ -355,10 +433,10 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         {
             Task.Run(() =>
             {
-                this.TracingLineModels = new List<TracingLineModel>();
+                TracingLineModels = new ObservableCollection<TracingLineModel>();
                 string param = "?page=0&page_size=100&start=" + StartPoi.Id + "&end=" + EndPoi.Id;
                 string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.tracinglineList + param);
-                this.TracingLineModels = (JsonUtil.DeserializeFromString<List<TracingLineModel>>(resStr));
+                this.TracingLineModels = (JsonUtil.DeserializeFromString<ObservableCollection<TracingLineModel>>(resStr));
             });
         }
         private LineItem ChangedItem = null;
@@ -369,9 +447,10 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             this.Sn = lineItem.sn;
             this.PipeName = lineItem.name;
             this.SelectedItem = lineItem.type_id;
+            getStackList(lineItem.start_sn);
+            getStackList2(lineItem.end_sn);
             StartPoi = this.StakeModels.FirstOrDefault(t => t.Sn == lineItem.start_sn); 
-            EndPoi = this.StakeModels.FirstOrDefault(t => t.Sn == lineItem.end_sn);
-
+            EndPoi = this.StakeModels2.FirstOrDefault(t => t.Sn == lineItem.end_sn);
 
         }
         public void ClearData()
@@ -389,15 +468,133 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         /// </summary>
         private void getAutomaticStackList()
         {
-            this.TracingLineModels = new List<TracingLineModel>();
+            this.TracingLineModels = new ObservableCollection<TracingLineModel>();
             string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex + "?limits=" + StartPoi.Id+","+EndPoi.Id);
-            this.TracingLineModels = (JsonUtil.DeserializeFromString<List<TracingLineModel>>(resStr));
+            this.TracingLineModels = (JsonUtil.DeserializeFromString<ObservableCollection<TracingLineModel>>(resStr));
+            this.DrawAutoLine();
+        }
+
+        /// <summary>
+        /// 手动获取中线桩
+        /// </summary>
+        private void gettracinglineList()
+        {
+            this.TracingLineModels = new ObservableCollection<TracingLineModel>();
+            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.tracinglineList + "?start=" + StartPoi.Id + "&end=" + EndPoi.Id);
+            this.TracingLineModels = (JsonUtil.DeserializeFromString<ObservableCollection<TracingLineModel>>(resStr));
+            DrawAutoLine();
+        }
+        /// <summary>
+        /// 手动获取中线桩
+        /// </summary>
+        private void getSelectStakeList()
+        {
+            this.SelectStakeModels = new List<StakeModel>();
+            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex + "?limits=" + StartPoi.Id + "," + EndPoi.Id);
+            this.SelectStakeModels = (JsonUtil.DeserializeFromString<List<StakeModel>>(resStr));
+
+
+        }
+        List<IPolyline> polylines = new List<IPolyline>();
+        ObservableCollection<IPoint> _problemPoints = new ObservableCollection<IPoint>();
+        private void DrawAutoLine()
+        {
+            string header = "linestring z (";
+            string end = ")";
+            string line = "";
+
+            for (int i = 0; i < TracingLineModels.Count; i++)
+            {
+                TracingLineModels[i].Poi = this.SelectStakeModels[i];//默认赋值
+                if (i== TracingLineModels.Count-1)
+                {
+                    line += (TracingLineModels[i].Lng + " " + TracingLineModels[i].Lat + " " + (string.IsNullOrEmpty(TracingLineModels[i].Height) ? "0" : TracingLineModels[i].Height));
+                }
+                else
+                {
+                    line += (TracingLineModels[i].Lng + " " + TracingLineModels[i].Lat + " " + (string.IsNullOrEmpty(TracingLineModels[i].Height) ? "0" : TracingLineModels[i].Height) + ",");
+
+                }
+            }
+             Geom = header + line + end;
+     
+            var polyLine = GviMap.GeoFactory.CreatePolyline(Geom, GviMap.SpatialCrs);
+
+            var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, GviMap.LinePolyManager.CurveSym);
+
+            rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
+            //GviMap.Camera.FlyToObject(rLine.Guid, gviActionCode.gviActionFlyTo);
+            GviMap.Camera.GetCamera2(out IPoint pointCamera, out IEulerAngle eulerAngle);
+            ////GviMap.Camera.FlyToEnvelope(point.Envelope);
+            eulerAngle.Tilt = -45;
+            eulerAngle.Heading = 210;
+            pointCamera.X = rLine.Envelope.MaxX;
+            pointCamera.Y = rLine.Envelope.MaxY;
+            pointCamera.Z = 2000;
+            GviMap.Camera.SetCamera2(pointCamera, eulerAngle, 0);
+            //var polyLine = GviMap.GeoFactory.CreatePolyline(Geom, GviMap.SpatialCrs);
+            //ICurveSymbol CurveSym = null;
+            //CurveSym = GviMap.LinePolyManager.CurveSym;
+            //var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, CurveSym);
+            //rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
+
+
+            //guids.Add(rLine.Guid);
+            //GviMap.Camera.FlyToObject(rLine.Guid, gviActionCode.gviActionFlyTo);
+            //var poly0 = GviMap.GeoFactory.CreateFromWKT(Geom) as IPolyline;
+
+            if (polyLine != null)
+            {
+                polylines.Add(polyLine);
+            }
+            SetVideo();
+
+        }
+        private IGeometry Buffer(IPolyline polyline, double dis)
+        {
+            var poly = polyline.Clone2(gviVertexAttribute.gviVertexAttributeNone);
+            var topo = poly as ITopologicalOperator2D;
+            return topo.Buffer2D(dis, gviBufferStyle.gviBufferCapround);
+        }
+        private string _radius = "1";
+        private void SetVideo()
+        {
+            if (polylines.Count > 0)
+            {
+                for (int i = 0; i < polylines[0].PointCount; i++)
+                {
+                    var point = polylines[0].GetPoint(i);
+
+                    var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
+
+                    poi.SetPostion(point.X, point.Y);
+                    poi.Size = 50;
+                    poi.ShowName = false;
+                    poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");
+                    poi.SpatialCRS = GviMap.SpatialCrs;
+                    var rPoi = GviMap.ObjectManager.CreateRenderPOI(poi);
+                    rPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
+                }
+            }
+        }
+        private void CreatRenPoi(IPoint point)
+        {
+            var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
+            poi.SetPostion(point.X, point.Y, 2);
+            poi.Size = 30;
+            poi.ShowName = true;
+            poi.MaxVisibleDistance = 5000;
+            poi.MinVisibleDistance = 100;
+            //poi.Name = onePerson.name;
+            poi.SpatialCRS = GviMap.SpatialCrs;
+            poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "alphabet_P");//Helpers.ResourceHelper.FindResourceByKey("userImg").ToString();//
+            IRenderPOI rpoi = GviMap.ObjectManager.CreateRenderPOI(poi);
         }
         /// <summary>
         /// 获取中
         /// </summary>
         private void getStackList(string sn)
-       {
+        {
             string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex + "?sn=" + sn);
             this.StakeModels = (JsonUtil.DeserializeFromString<List<StakeModel>>(resStr));
         }
@@ -411,10 +608,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         }
         public void getPipeList()
         {
-            Task.Run(() => {
-                string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PipeList);
-                this.PipeModels = (JsonUtil.DeserializeFromString<List<PipeModel>>(resStr));
-            });
+            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PipeList);
+            this.PipeModels = (JsonUtil.DeserializeFromString<List<PipeModel>>(resStr));
         }
         private void  AddLineData()
         {
@@ -423,8 +618,6 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 Messages.ShowMessage("未描线，请描线后再次保存！");
                 return;
             }
-
-            
         
             //校验数据
             string api = string.Empty;
@@ -443,8 +636,13 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             }
             string url = MarkInterface.AddLine;          
             var jsonData = JsonUtil.SerializeToString(lineItem);
+         
             string resStr = HttpServiceHelper.Instance.PostRequestForData(url, jsonData);
-
+            if (resStr == "")
+            {
+                Messages.ShowMessage("新增失败，请检查数据是否存在！");
+                return;
+            }
             var list = JsonUtil.DeserializeFromString<dynamic>(resStr);
             string id = list["id"];
 
@@ -453,21 +651,31 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 Messages.ShowMessage("新增失败，请检查数据");
                 return;
             }
+            AddPipe(lineItem);
+            List<TracingModel> tracingModels = new List<TracingModel>();
             for (int i = 0; i < TracingLineModels.Count; i++)
             {
-                TracingLineModel tracingLineModel = new TracingLineModel();
-                tracingLineModel.Lat = TracingLineModels[0].Lat;
-                tracingLineModel.Lng = TracingLineModels[0].Lng;
-                tracingLineModel.Stake = TracingLineModels[0].Sn;
-                tracingLineModel.Height = TracingLineModels[0].Height;
-                tracingLineModel.Traces = id;
-                string resStr1 = HttpServiceHelper.Instance.PostRequestForData(PipelineInterface.tracinglineCreate, JsonUtil.SerializeToString(tracingLineModel));
+                TracingModel tracingModel = new TracingModel();
+                tracingModel.sn = TracingLineModels[i].Sn;
+                tracingModel.lng = TracingLineModels[i].Lng;
+                tracingModel.lat = TracingLineModels[i].Lat;
+                tracingModel.height = TracingLineModels[i].Height;
+                tracingModel.stake = TracingLineModels[i].Poi.Id;
+                TracingLineModels[i].Stake = TracingLineModels[i].Poi.Id;
+                tracingModels.Add(tracingModel);
+            }
+            string resStr1 = HttpServiceHelper.Instance.PostRequestForData(PipelineInterface.tracinglinebatch, JsonUtil.SerializeToString(tracingModels));
+            if (resStr1 == "")
+            {
+                Messages.ShowMessage("新增描点失败，请检查中线桩描点信息！");
+                return;
             }
             Messages.ShowMessage("新增成功");
             AddPipe(lineItem);
             newDrawLineView.Hide();
             traceListView.Hide();
             ChangedItem = null;
+            DelObjs();
         }
         private string TypenameToNum(string typename)
         {
@@ -502,6 +710,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                     SystemLog.Log(e);
                 }         
         }
+
+        private string[] points = null;
         private void PlanPolylineDraw_OnDrawFinished(object sender, object result)
         {
             var rPolyline = result as IRenderPolyline;
@@ -534,15 +744,16 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 int IndexofA = Geom.IndexOf(one);
                 int IndexofB = Geom.IndexOf(two);
                 string Ru = Geom.Substring(IndexofA + 1, IndexofB - IndexofA - 1);
-                string[] points = Ru.Split(',');
-                List<TracingLineModel> list = new List<TracingLineModel>();
+                points = Ru.Split(',');
+                ObservableCollection<TracingLineModel> list = new ObservableCollection<TracingLineModel>();
                 for (int i = 0; i < points.Count(); i++)
                 {
-                    string[] xyz =  points[0].Split(' ');
+                    string[] xyz =  points[i].Split(' ');
                     //int index = (Convert.ToInt32(StartPoi.Sn.Substring(2, StartPoi.Sn.Length - 2) ) + i);
                     TracingLineModel tracingLineModel = new TracingLineModel()
                     {
-                        Sn = "AA" + i+100,
+                        Poi = SelectStakeModels[i],
+                        Sn = SelectStakeModels[i].Sn,
                         Index =i+1,
                         Lng = xyz[0],
                         Lat = xyz[1],
@@ -562,7 +773,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 GviMap.ObjectManager.DeleteObject(item);
             }
             guids.Clear();
-            TracingLineModels = new List<TracingLineModel>();
+       
         }
 
 

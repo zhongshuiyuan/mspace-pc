@@ -243,6 +243,16 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _reNameCmd ?? (_reNameCmd = new RelayCommand<object>(OnReNameCommand)); }
             set { _reNameCmd = value; }
         }
+
+        private RelayCommand<PipeModel> _checkMapCommand;
+
+        public RelayCommand<PipeModel> CheckMapCommand
+        {
+            get { return _checkMapCommand?? (_checkMapCommand = new RelayCommand<PipeModel>(OnCheckMapCommand)); }
+            set { _checkMapCommand = value; }
+        }
+
+
         private List<IRenderLayer> _renderLayers;
 
         public RegularInspectionVModel()
@@ -464,7 +474,22 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 }
             }
         }
-
+        private void SetEyesItem(ObservableCollection<PipeModel> list, PipeModel pipeModel)
+        {
+            foreach (var item in list)//1级
+            {
+             
+                if (item.Id == pipeModel.Id )
+                {
+                    item.FirstEyeStatus = !item.FirstEyeStatus;
+                    return;
+                }
+                if (item.Child != null && item.Child.Count > 0)
+                {
+                    SetSelectItem(new ObservableCollection<PipeModel>(item.Child), pipeModel);
+                }
+            }
+        }
         private string FatherId = "";
         private void SetData(ObservableCollection<PipeModel> list)
         {
@@ -645,6 +670,37 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 if (PipeModels[i].Id == obj.Id)
                 {
                     PipeModels.Remove(PipeModels[i]);
+                }
+            }
+        }
+
+        private void OnCheckMapCommand(PipeModel obj)
+        {
+            if (obj == null) return;
+            SetEyesItem(PipeModels,obj);
+            //图层
+            setRederLayerVisible(obj.Map.Split('&')[0], obj.FirstEyeStatus);
+        }
+
+     
+        /// <summary>
+        /// 设置图层是否可见
+        /// </summary>
+        /// <param name="LayerGuid">图层guid</param>
+        /// <param name="viewPortIndex">图层视口序号，单屏状态为15,多屏状态下为视口序号，第一屏为0，第二为1，依此类推</param>
+        /// <param name="isVisilbe"></param>
+        public void setRederLayerVisible(string LayerGuid,  bool isVisilbe)
+        {
+            if (_renderLayers.Count > 0)
+            {
+                foreach (var layer in _renderLayers)
+                {
+
+                    if (layer.Guid == LayerGuid)
+                    {
+                        var renderable = layer.Renderable;
+                        renderable?.SetVisibleMask(GviMap.Viewport.ViewportMode,0, isVisilbe);
+                    }
                 }
             }
         }

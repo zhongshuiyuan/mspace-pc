@@ -821,7 +821,14 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 }); 
 
                 bool success = HttpServiceHelper.Instance.PostRequestForStatus(PipelineInterface.createstake, txtjson);
-
+                if(success)
+                {
+                    Messages.ShowMessage("添加成功！");
+                }
+                else
+                {
+                    Messages.ShowMessage("添加数据异常，请联系管理员！");
+                }
                 this.OnCancelCommand();
 
             });
