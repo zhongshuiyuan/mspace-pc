@@ -167,26 +167,28 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
 
             drawLineManageView.Show();
         }
-    
+        private LineItem selectLineItem = null;
         private void OnSelectCommand(object obj)
         {
             if (obj == null) return;
             DelObjs();
             polylines = new List<IPolyline>();
-            var lineItem = obj as LineItem;
+            selectLineItem = obj as LineItem;
 
-            var polyLine = GviMap.GeoFactory.CreatePolyline(lineItem.geom, GviMap.SpatialCrs);
+            var polyLine = GviMap.GeoFactory.CreatePolyline(selectLineItem.geom, GviMap.SpatialCrs);
             if (polyLine == null) return;
            
             if (polyLine.EndPoint == null) return;
-            var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, GviMap.LinePolyManager.CurveSym);
+            CurveSymbol curveSymbol = new CurveSymbol();
+            curveSymbol.Color = ColorConvert.Argb(100, 238, 103, 35);//GviMap.LinePolyManager.CurveSym
+            curveSymbol.Width = 20f;
+            var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
         
             if (rLine == null) return;
             guids.Add(rLine.Guid);
             rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
             //GviMap.Camera.FlyToObject(rLine.Guid, gviActionCode.gviActionFlyTo);
             //var poly0 = GviMap.GeoFactory.CreateFromWKT(lineItem.geom) as IPolyline;
-
 
             GviMap.Camera.GetCamera2(out IPoint pointCamera, out IEulerAngle eulerAngle);
             ////GviMap.Camera.FlyToEnvelope(point.Envelope);
@@ -229,9 +231,19 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                     var point = polylines[0].GetPoint(i);
 
                     var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
-
+                    if(i==0)
+                    {
+                        poi.Name = selectLineItem.start_sn;
+                        poi.ShowName = true;
+                    }
+                    if (i == polylines[0].PointCount-1)
+                    {
+                        poi.Name = selectLineItem.end_sn;
+                        poi.ShowName = true;
+                    }
                     poi.SetPostion(point.X, point.Y);
                     poi.Size = 50;
+                  
                     poi.ShowName = false;
                     poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");
                     poi.SpatialCRS = GviMap.SpatialCrs;

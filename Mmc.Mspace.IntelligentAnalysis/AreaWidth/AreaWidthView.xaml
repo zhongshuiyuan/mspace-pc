@@ -13,7 +13,6 @@
             <Grid.ColumnDefinitions>
             <ColumnDefinition Width="215"/>
             <ColumnDefinition Width="215"/>
-           
         </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"></RowDefinition>
@@ -23,7 +22,7 @@
             <RowDefinition Height="126"/>
                 
         </Grid.RowDefinitions>
-        <Border  Grid.Row="0" Background="#292C35" Grid.Column="0" Grid.ColumnSpan="2" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True"/>
+        <Border  Grid.Row="0" Background="{DynamicResource  titleBackground}" Grid.Column="0" Grid.ColumnSpan="2" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True"/>
         <TextBlock  blankWindow:BlankWindow.Draggable="True"  Grid.Row="0" Grid.Column="0" Text="{Binding TitleText}" Height="15" Width="120" Margin="18,2,0,8" Foreground="White"  FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" />
         <Button Grid.Row="0" Grid.Column="1"  Command="{Binding CloseCmd}"  Style="{StaticResource ButtonCloseStyle}" Height="36" Width="36" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="0,2,5,0"  />
 

@@ -576,8 +576,10 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
              Geom = header + line + end;
      
             var polyLine = GviMap.GeoFactory.CreatePolyline(Geom, GviMap.SpatialCrs);
-
-            var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, GviMap.LinePolyManager.CurveSym);
+            CurveSymbol curveSymbol = new CurveSymbol();
+            curveSymbol.Color = ColorConvert.Argb(100, 238, 103, 35);//GviMap.LinePolyManager.CurveSym
+            curveSymbol.Width = 20f;
+            var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
 
             rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
             //GviMap.Camera.FlyToObject(rLine.Guid, gviActionCode.gviActionFlyTo);
