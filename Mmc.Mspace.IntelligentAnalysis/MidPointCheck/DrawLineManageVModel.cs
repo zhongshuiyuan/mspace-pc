@@ -49,7 +49,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             }
         }
 
-     
+        
+        private SelectView selectView = null;
         private NewDrawLineVModel newDrawLineVModel = null;
 
         public ICommand CreatLineCmd { get; set; }
@@ -69,6 +70,26 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             get { return _selectCommand ?? (_selectCommand = new RelayCommand<object>(OnSelectCommand)); }
             set { _selectCommand = value; }
         }
+        private RelayCommand _updateSaveCommand;
+
+        public RelayCommand UpdateSaveCommand
+        {
+            get { return _updateSaveCommand ?? (_updateSaveCommand = new RelayCommand(OnUpdateSaveCommand)); }
+            set { _updateSaveCommand = value; }
+        }
+        private RelayCommand _selectCancelCommand;
+
+        public RelayCommand SelectCancelCommand
+        {
+            get { return _selectCancelCommand ?? (_selectCancelCommand = new RelayCommand(OnSelectCancelCommand)); }
+            set { _selectCancelCommand = value; }
+        }
+        
+        /// <summary>
+        /// 边界预警 0  中线桩位置1
+        /// </summary>
+        private int AreaWithStatus = 0;
+        
         public override void Initialize()
         {
             base.Initialize();
@@ -114,10 +135,12 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 }
                 if(TempItemList.Count==2)
                 {
-                    AreaWidthVModel areaWidthVModel = new AreaWidthVModel();
-                    areaWidthVModel.TitleText = "边界宽度预警";
-                    areaWidthVModel.lineItems = TempItemList;
-                    areaWidthVModel.OnChecked();
+                     AreaWithStatus = 0;
+                    selectView = new SelectView();
+                    selectView.DataContext = this;
+                    selectView.Owner = drawLineManageView;
+                    selectView.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    selectView.ShowDialog();
                 }
                 else
                 {
@@ -138,10 +161,12 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 }
                 if (TempItemList.Count == 2)
                 {
-                    AreaWidthVModel areaWidthVModel = new AreaWidthVModel();
-                    areaWidthVModel.TitleText = "中线桩位置核准";
-                    areaWidthVModel.lineItems = TempItemList;
-                    areaWidthVModel.OnChecked();
+                    AreaWithStatus = 1;
+                    selectView = new SelectView();
+                    selectView.DataContext = this;
+                    selectView.Owner = drawLineManageView;
+                    selectView.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                    selectView.ShowDialog();
                 }
                 else
                 {
@@ -180,6 +205,33 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         {
             drawLineManageView.Show();
         }
+        private void OnSelectCancelCommand()
+        {
+            selectView.Close();
+        }
+        private void OnUpdateSaveCommand() {
+            if(TempItemList.Where(t=>t.IsRoot).Count()<1)
+            {
+                Messages.ShowMessage("您未选择自动描线作为基准线，无法进行核准！！");
+                return;
+            }
+            selectView.Close();
+            if(AreaWithStatus==0)
+            {
+                AreaWidthVModel areaWidthVModel = new AreaWidthVModel();
+                areaWidthVModel.TitleText = "边界宽度预警";
+                areaWidthVModel.lineItems = TempItemList;
+                areaWidthVModel.OnChecked();
+            }
+            else
+            {
+                AreaWidthVModel areaWidthVModel = new AreaWidthVModel();
+                areaWidthVModel.TitleText = "中线桩位置核准";
+                areaWidthVModel.lineItems = TempItemList;
+                areaWidthVModel.OnChecked();
+            }
+        }
+
         private LineItem selectLineItem = null;
         private void OnSelectCommand(object obj)
         {

@@ -180,6 +180,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         public override void OnChecked()
         {
             base.OnChecked();
+            areaWidthView.Left = 250;
+            areaWidthView.Top = 220;
             areaWidthView.Show();
         }
 

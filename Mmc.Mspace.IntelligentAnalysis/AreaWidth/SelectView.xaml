@@ -15,8 +15,8 @@
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0" Background="{StaticResource titleBackground}" Grid.Column="0" Grid.ColumnSpan="2" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True" />
-        <TextBlock x:Name="TitleName" blankWindow:BlankWindow.Draggable="True"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="修改描点" Margin="18,0,0,0" Foreground="White"  FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Button Grid.Row="0" x:Name="CloseButton" Grid.Column="0" Grid.ColumnSpan="2"   Style="{DynamicResource ButtonCloseStyle}" Height="32" Width="32" HorizontalAlignment="Right" VerticalAlignment="Top" Command="{Binding UpdateCancelCommand}"  Margin="0,2,0,0" />
+        <TextBlock x:Name="TitleName" blankWindow:BlankWindow.Draggable="True"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="选择基准线" Margin="18,0,0,0" Foreground="White"  FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Button Grid.Row="0" x:Name="CloseButton" Grid.Column="0" Grid.ColumnSpan="2"   Style="{DynamicResource ButtonCloseStyle}" Height="32" Width="32" HorizontalAlignment="Right" VerticalAlignment="Top" Command="{Binding SelectCancelCommand}"  Margin="0,2,0,0" />
 
 
         <Grid Grid.Row="1" >
@@ -33,15 +33,20 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Margin="10,20,0,10" Grid.Row="1" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="以哪条描线作为基准线："></TextBlock>
-            <TextBlock Margin="10,0,0,10" Grid.Row="2" HorizontalAlignment="Center" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="经度："></TextBlock>
-            <TextBlock Margin="10,0,0,10" Grid.Row="2" HorizontalAlignment="Center" Grid.Column="1" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="纬度："></TextBlock>
+            <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Background="#1E1F26" Margin="10 0"></Border>
 
-            <RadioButton Grid.Row="3" Margin="0" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Left" VerticalAlignment="Center" Content="{Binding }" x:Name="pie" GroupName="AnalyseMidea" Foreground="#B3BBC5" IsChecked="{Binding LocalCheck}" ></RadioButton>
-            <RadioButton Grid.Row="4" Margin="0" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Left" VerticalAlignment="Center" Content="{Binding }" x:Name="rect" GroupName="AnalyseMidea" Foreground="#B3BBC5" IsChecked="{Binding ServerCheck}"></RadioButton>
+            <TextBlock Margin="10,20,0,10" Grid.Row="1" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="以哪条描线作为基准线：" VerticalAlignment="Center"></TextBlock>
+            <TextBlock Margin="10,5,0,5" Grid.Row="2" HorizontalAlignment="Center" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  VerticalAlignment="Center" Text="描线"></TextBlock>
+            <TextBlock Margin="10,5,0,5" Grid.Row="2" HorizontalAlignment="Center" Grid.Column="1" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}" VerticalAlignment="Center"  Text="名称"></TextBlock>
 
-            <TextBlock Margin="10,0,0,10" Grid.Row="3" HorizontalAlignment="Center" Grid.Column="1" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="{Binding }"></TextBlock>
-            <TextBlock Margin="10,0,0,10" Grid.Row="4" HorizontalAlignment="Center" Grid.Column="1" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="{Binding}"></TextBlock>
+            <Border Grid.Row="3" Grid.Column="0" Grid.RowSpan="2" Opacity="0.2"
+       Grid.ColumnSpan="2" Background="#131418" Margin="10 0"></Border>
+
+            <RadioButton Grid.Row="3"  Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Left" VerticalAlignment="Center" Content="{Binding TempItemList[0].sn}" x:Name="pie" GroupName="AnalyseMidea" Foreground="#B3BBC5" IsChecked="{Binding TempItemList[0].IsRoot}"  Margin="20,0,0,0"></RadioButton>
+            <RadioButton Grid.Row="4" Margin="20,0,0,0" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Left" VerticalAlignment="Center" Content="{Binding TempItemList[1].sn}" x:Name="rect" GroupName="AnalyseMidea" Foreground="#B3BBC5" IsChecked="{Binding TempItemList[1].IsRoot}"></RadioButton>
+
+            <TextBlock Margin="10,0,0,10" Grid.Row="3" HorizontalAlignment="Center" Grid.Column="1" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="{Binding TempItemList[0].pipe_name}"></TextBlock>
+            <TextBlock Margin="10,0,0,10" Grid.Row="4" HorizontalAlignment="Center" Grid.Column="1" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="{Binding TempItemList[1].pipe_name}"></TextBlock>
             <Button Grid.Row="7" Grid.ColumnSpan="2" Content="{DynamicResource OK}" Command="{Binding UpdateSaveCommand}" Style="{StaticResource DefaultButtonStyle}"  Grid.Column="0"  HorizontalAlignment="Center" Height="36"   VerticalAlignment="Center" Width="80" Grid.RowSpan="2" />
 
         </Grid>
