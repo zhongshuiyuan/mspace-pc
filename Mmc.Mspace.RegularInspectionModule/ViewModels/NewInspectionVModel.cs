@@ -319,7 +319,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
         }
 
-
         private void loadLayer(string _fileAddress, double cycleTime, int _index)
         {
             //string filetype = _filetype;
@@ -419,40 +418,36 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             switch (_extension)
             {
                 case ".shp":
-                    typeString = "ShpGroupLayer";
-                    break;
                 case ".SHP":
                     typeString = "ShpGroupLayer";
                     break;
                 case ".tdbx":
-                    typeString = "TileGroupLayer";
-                    break;
                 case ".TDBX":
                     typeString = "TileGroupLayer";
                     break;
                 case ".tif":
-                    typeString = "ImageGroupLayer";
-                    break;
                 case ".TIF":
                     typeString = "ImageGroupLayer";
                     break;
                 case ".tds":
-                    typeString = "ImageGroupLayer";
-                    break;
                 case ".TDS":
                     typeString = "ImageGroupLayer";
                     break;
                 case ".fdb":
-                    typeString = "DataSetGroupLayer";
-                    break;
                 case ".FDB":
                     typeString = "DataSetGroupLayer";
                     break;
                 case ".mp4":
-                    typeString = "Video";
-                    break;
                 case ".MP4":
                     typeString = "Video";
+                    break;
+                case ".jpg":
+                case ".png":
+                case ".bmp":
+                case ".JPG":
+                case ".PNG":
+                case ".BMP":
+                    typeString = "Img";
                     break;
                 default:
                     typeString = "";

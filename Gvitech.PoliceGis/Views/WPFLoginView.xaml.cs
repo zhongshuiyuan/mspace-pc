@@ -120,11 +120,11 @@ namespace MMC.MSpace.Views
                     {
                         if (!string.IsNullOrWhiteSpace(logoConfig.LoginTopTitleIcon.ToString()))
                         {
-                            topIcon.Source = logoConfig.LoginTopTitleIcon;
+                            //topIcon.Source = logoConfig.LoginTopTitleIcon;
                         }
                         else
                         {
-                            topIcon.Source = null;
+                            //topIcon.Source = null;
                         }
 
                     }
@@ -145,11 +145,11 @@ namespace MMC.MSpace.Views
                     {
                         if (!string.IsNullOrWhiteSpace(logoConfig.BottomTitleIcon.ToString()))
                         {
-                            bottomIcon.Source = logoConfig.BottomTitleIcon;
+                            //bottomIcon.Source = logoConfig.BottomTitleIcon;
                         }
                         else
                         {
-                            bottomIcon.Source = null;
+                            //bottomIcon.Source = null;
                         }
                     }
 

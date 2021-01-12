@@ -145,6 +145,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                     newDrawLineVModel.ShowParentsWin = ShowWin;
                     newDrawLineVModel.AddPipe += AddLinePipe;
                 }
+                DelObjs();
                 newDrawLineVModel.ChangedData(obj as LineItem);
                 newDrawLineVModel.ShowDrawWin();
             });
@@ -164,7 +165,6 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         }
         private void ShowWin()
         {
-
             drawLineManageView.Show();
         }
         private LineItem selectLineItem = null;
@@ -192,8 +192,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
 
             GviMap.Camera.GetCamera2(out IPoint pointCamera, out IEulerAngle eulerAngle);
             ////GviMap.Camera.FlyToEnvelope(point.Envelope);
-            eulerAngle.Tilt = -45;
-            eulerAngle.Heading = 210;
+            eulerAngle.Tilt = -90;
+            eulerAngle.Heading = 110;
             pointCamera.X = rLine.Envelope.MaxX;
             pointCamera.Y = rLine.Envelope.MaxY;
             pointCamera.Z = 2000;
@@ -205,11 +205,15 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             SetVideo();
         }
 
-
         public override void OnUnchecked()
         {
             drawLineManageView.Hide();
             newDrawLineVModel?.HideWin();
+          
+            if(newDrawLineVModel!=null&& newDrawLineVModel.HideAdd!=null)
+            {
+                newDrawLineVModel?.HideAdd();
+            }
             base.OnUnchecked();
             DelObjs();
             Messenger.Messengers.Notify("DrawLineManage", false);
@@ -342,7 +346,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 lineItem.start_sn = item["start_sn"];
                 lineItem.end_sn = item["end_sn"];
                 lineItem.isVisible = false;
-                lineItem.type_id = item["type_name"];//TypenameToNum(Convert.ToString(item["type_name"]));
+                lineItem.type = item["type"]=="1"?"自动":"手动";
                 lineItem.geom = item["geom"];
                 lineItem.IsChecked = false;
                 DrawLineListCollection.Add(lineItem);

@@ -3,7 +3,7 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
 
-    <sys:String x:Key="LogoText">MSpace无人机云调度平台</sys:String>
+    <sys:String x:Key="LogoText">龙慧无人机飞控平台</sys:String>
     <sys:String x:Key="BackStart">回到原点</sys:String>
     <sys:String x:Key="Location">坐标定位</sys:String>
     <sys:String x:Key="Query">查询</sys:String>

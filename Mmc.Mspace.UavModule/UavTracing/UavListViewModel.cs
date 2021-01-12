@@ -358,7 +358,7 @@ namespace Mmc.Mspace.UavModule.UavTracing
             this.uavTracingView.Left = shellView.Left + 10;
             this.uavTracingView.Top = shellView.Top + 10;
             this.uavTracingView.Width = 390;
-            this.uavTracingView.Height = 450;
+            this.uavTracingView.Height = 750;
             this.uavTracingView.DataContext = this;
             this.uavTracingView.Show();
 

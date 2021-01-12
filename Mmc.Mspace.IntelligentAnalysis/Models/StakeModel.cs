@@ -38,6 +38,36 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.Models
                 NotifyPropertyChanged("Name");
             }
         }
+        private string lng;
+        public string Lng
+        {
+            get { return lng; }
+            set
+            {
+                lng = value;
+                NotifyPropertyChanged("Lng");
+            }
+        }
+        private string lat;
+        public string Lat
+        {
+            get => lat;
+            set
+            {
+                lat = value;
+                NotifyPropertyChanged("Lat");
+            }
+        }
+        private string height;
+        public string Height
+        {
+            get => height;
+            set
+            {
+                height = value;
+                NotifyPropertyChanged("Height");
+            }
+        }
         private string _time;
         public string Time
         {

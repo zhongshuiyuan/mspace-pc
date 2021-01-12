@@ -91,7 +91,7 @@
     <sys:String x:Key="NotMatchDataType">数据类型不匹配，请重新选择数据</sys:String>
 
 
-    <sys:String x:Key="CreateRegular">新增描线</sys:String>
+    <sys:String x:Key="CreateRegular">新增影像</sys:String>
     <sys:String x:Key="Regulargoal">标段名称：</sys:String>
     <sys:String x:Key="RegularDate">时间：</sys:String>
     <sys:String x:Key="CreateRegularWater">请输入或者选中目标</sys:String>

@@ -45,7 +45,7 @@
         <ComboBox Height="32" Grid.Row="1" Helper:TextBoxHelper.Watermark="所有阶段"  Grid.Column="3" Width="99" ItemsSource="{Binding Periods}" SelectedValuePath="id" DisplayMemberPath="Name" SelectedItem="{Binding SelectPeriodModel}" Style="{DynamicResource DefaultComboBoxStyle}"></ComboBox>
 
         <TextBlock Text="标段：" Grid.Row="1"  Grid.Column="0" FontSize="14" Foreground="#B3BBC5" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-        <ComboBox x:Name="biaoduanCombox" Helper:TextBoxHelper.Watermark="所有标段" Grid.Row="1" SelectedValuePath="id" DisplayMemberPath="Sn" Grid.Column="1" ItemsSource="{Binding Sections}" SelectedItem="{Binding SelectSectionModel}" Height="32" Width="99" Style="{DynamicResource DefaultComboBoxStyle}" ></ComboBox>
+        <ComboBox x:Name="biaoduanCombox" Helper:TextBoxHelper.Watermark="所有标段" Grid.Row="1" SelectedValuePath="id" DisplayMemberPath="Name" Grid.Column="1" ItemsSource="{Binding Sections}" SelectedItem="{Binding SelectSectionModel}" Height="32" Width="99" Style="{DynamicResource DefaultComboBoxStyle}" ></ComboBox>
 
         <TextBlock Text="日期：" Margin="10 0 0 0 " Grid.Row="2"  Grid.Column="0" FontSize="14" Foreground="#B3BBC5" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
         <DatePicker Height="28"  Grid.Row="2"  SelectedDate="{x:Static system:DateTime.Today}" HorizontalAlignment="Stretch"  Text="{Binding StartTime,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Width="99" Style="{DynamicResource DatePickerStyle1}" ></DatePicker>

@@ -164,6 +164,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.Models
         public string height;
         public string lat;
         public string lng;
+        public string traces;
 
+        
     }
 }

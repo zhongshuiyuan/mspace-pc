@@ -75,8 +75,8 @@
 
             <Border Grid.Row="0" Background="#292C35" blankWindow:BlankWindow.Draggable="True" BorderThickness="0,0,0,1" BorderBrush="Black" ClipToBounds="False">
                 <Grid>
-                    <Image x:Name="topIcon" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left"
-                           VerticalAlignment="Center" Margin="11,0" Source="{StaticResource LoginMspaceIcon}" IsHitTestVisible="False"/>
+                    <!--<Image x:Name="topIcon" MaxWidth="48" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Left"
+                           VerticalAlignment="Center" Margin="11,0" Source="{StaticResource LoginMspaceIcon}" IsHitTestVisible="False"/>-->
 
                     <Border HorizontalAlignment="Center" VerticalAlignment="Center" ClipToBounds="False" IsHitTestVisible="False">
                         <Grid>
@@ -171,8 +171,8 @@
             <Border Grid.Row="2" Background="#292C35" BorderThickness="0,1,0,0">
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Image x:Name="bottomIcon" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" Source="{StaticResource LoginBottomIcon}"/>
-                    <TextBlock x:Name="bottomTitle" Margin="8,0" FontSize="14" Foreground="White" Text="MSpace无人机云调度平台" FontWeight="Bold" Opacity="0.5" VerticalAlignment="Center"/>
+                    <!--<Image x:Name="bottomIcon" MaxHeight="48" Stretch="Uniform" StretchDirection="DownOnly" Source="{StaticResource LoginBottomIcon}"/>-->
+                    <TextBlock x:Name="bottomTitle" Margin="8,0" FontSize="14" Foreground="White" Text="龙慧无人机飞控平台" FontWeight="Bold" Opacity="0.5" VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <Border.BorderBrush>

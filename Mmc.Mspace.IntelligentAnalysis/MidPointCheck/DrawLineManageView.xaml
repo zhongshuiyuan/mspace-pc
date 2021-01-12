@@ -120,7 +120,7 @@
                 <DataGridTemplateColumn Header="描线方式" Width="60">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock TextAlignment="Center" TextTrimming="WordEllipsis" ToolTip="{Binding type_id}" Text="{Binding type_id}"  FontSize="12"/>
+                            <TextBlock TextAlignment="Center" TextTrimming="WordEllipsis" ToolTip="{Binding type}" Text="{Binding type}"  FontSize="12"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

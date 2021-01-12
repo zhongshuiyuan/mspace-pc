@@ -181,11 +181,11 @@ namespace MMC.MSpace
                     {
                         if (!string.IsNullOrWhiteSpace(logoConfig.TopTitleIcon.ToString()))
                         {
-                            img1.Source = logoConfig.TopTitleIcon;
+                            //img1.Source = logoConfig.TopTitleIcon;
                         }
                         else
                         {
-                            img1.Source = null;
+                            //img1.Source = null;
                         }
 
                     }

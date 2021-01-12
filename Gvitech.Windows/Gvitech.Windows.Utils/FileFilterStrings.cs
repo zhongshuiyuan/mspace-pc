@@ -28,7 +28,7 @@ namespace Mmc.Windows.Utils
 
         public const string KML = "Kml File(*.kml)|*.kml";
 
-        public const string Support = "Support Files|*.shp;*.tdbx;*.tif;*.fdb;*.tds;*.SHP;*.TDBX;*.TIF;*.FDB;*.TDS;*.mp4;*.MP4";
+        public const string Support = "Support Files|*.shp;*.tdbx;*.tif;*.fdb;*.tds;*.SHP;*.TDBX;*.TIF;*.FDB;*.TDS;*.mp4;*.MP4;*.BMP;*.PNG;*.JPG";
 
     }
 }

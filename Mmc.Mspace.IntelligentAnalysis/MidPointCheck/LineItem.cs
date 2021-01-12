@@ -25,7 +25,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         public string pipe_id { get; set; }
         public string pipe_name { get; set; }
         
-        public string type_id { get; set; }
+        public string type { get; set; }
         public string start { get; set; }
         public string end { get; set; }
 

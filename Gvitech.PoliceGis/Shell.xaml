@@ -128,7 +128,7 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Height="36" Name="imgdock" MinWidth="363" Orientation="Horizontal" HorizontalAlignment="Left" Visibility="Collapsed">
-                <Image HorizontalAlignment="Left" Name="img1" Margin="16,12" MaxWidth="48" MaxHeight="48" Source="{StaticResource Mmc_Logo}"  Stretch="Uniform" StretchDirection="DownOnly"></Image>
+                <!--<Image HorizontalAlignment="Left" Name="img1" Margin="16,12" MaxWidth="48" MaxHeight="48" Source="{StaticResource Mmc_Logo}"  Stretch="Uniform" StretchDirection="DownOnly"></Image>-->
                 <Label x:Name="topTitle" HorizontalContentAlignment="Left" Foreground="#ffffff" FontSize="16" VerticalContentAlignment="Center"  Content="{DynamicResource LogoText}" Margin="0,0,10,0"></Label>
             </StackPanel>
 

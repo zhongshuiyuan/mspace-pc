@@ -106,7 +106,7 @@
         <DockPanel >
             <DockPanel DockPanel.Dock="Left" Name="leftView" >
                 <StackPanel DockPanel.Dock="Left" Name="imgdock" MinWidth="363" Orientation="Horizontal" HorizontalAlignment="Left">
-                    <Image HorizontalAlignment="Left" Name="img1" Margin="20,0,10,0" Width="46" Height="46" Source="{StaticResource Mmc_Logo}"  Stretch="Uniform" ></Image>
+                    <!--<Image HorizontalAlignment="Left" Name="img1" Margin="20,0,10,0" Width="46" Height="46" Source="{StaticResource Mmc_Logo}"  Stretch="Uniform" ></Image>-->
                     <TextBlock HorizontalAlignment="Left" Foreground="#ffffff" FontSize="16" VerticalAlignment="Center"  Text="{DynamicResource LogoText}" Margin="0,0,10,0"></TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
