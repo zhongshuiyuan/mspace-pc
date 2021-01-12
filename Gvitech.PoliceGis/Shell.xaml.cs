@@ -133,6 +133,8 @@ namespace MMC.MSpace
                 if (t)
                 {
                     window1 = new Window1();
+                    window1.Height = Application.Current.MainWindow.Height * 0.8;
+                    window1.Width = Application.Current.MainWindow.Width -600;
                     window1.Left = 420;
                     window1.Top = Application.Current.MainWindow.Height * 0.1;
                     window1.Show();

@@ -182,6 +182,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, GviMap.LinePolyManager.CurveSym);
         
             if (rLine == null) return;
+            guids.Add(rLine.Guid);
             rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
             //GviMap.Camera.FlyToObject(rLine.Guid, gviActionCode.gviActionFlyTo);
             //var poly0 = GviMap.GeoFactory.CreateFromWKT(lineItem.geom) as IPolyline;
@@ -323,6 +324,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 lineItem.sn = item["sn"];
                 lineItem.name = item["name"];
                 lineItem.pipe_id = item["pipe_id"];
+                lineItem.pipe_name = item["pipe_name"];
                 lineItem.start = item["start"];
                 lineItem.end = item["end"]; 
                 lineItem.start_sn = item["start_sn"];

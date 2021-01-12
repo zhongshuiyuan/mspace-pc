@@ -113,7 +113,7 @@
                 <DataGridTemplateColumn Header="对应管线" Width="117">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock TextAlignment="Center" TextTrimming="WordEllipsis" ToolTip="{Binding pipe_id}" Text="{Binding pipe_id}"  FontSize="12"/>
+                            <TextBlock TextAlignment="Center" TextTrimming="WordEllipsis" ToolTip="{Binding pipe_name}" Text="{Binding pipe_name}"  FontSize="12"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
