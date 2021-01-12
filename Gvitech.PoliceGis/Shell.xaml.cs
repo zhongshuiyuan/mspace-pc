@@ -281,6 +281,7 @@ namespace MMC.MSpace
                     }
                     regularInspectionVModel?.MapControlEventManagement(true);
                     this.comparison.Visibility = Visibility.Visible;
+                    comparisonVModel.UpdateSource();
                     this.comparison.Content = comparisonView;
                     this.leftView.Content = regularInspectionView;
                     //RegInsDataRenderManager.Instance.RecoverRenderLayer();

@@ -403,6 +403,15 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 this.SetData(PipeModels);
             });
         }
+
+        public void getPipeList2()
+        {
+            string param = "";
+            param = "?section_id=" + SelectSectionModel?.Id + "&period_id=" + SelectPeriodModel?.Id + "&new=" + (IsNew ? 1 : 0) + "&time=" + StartTime.ToString("yyyy-MM-dd hh:mm:ss") + "~" + EndTime.ToString("yyyy-MM-dd hh:mm:ss");
+            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PipeList + param);
+            this.PipeModels = new ObservableCollection<PipeModel>((JsonUtil.DeserializeFromString<List<PipeModel>>(resStr)));
+            this.SetData(PipeModels);
+        }
         public void CloseAddWin()
         {
             if (newInspectionVModel != null)
@@ -424,7 +433,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             this.newInspectionVModel.PipeModels = this.PipeModels;
           
             this.newInspectionVModel.addRenderLayer = AddData;
-            this.newInspectionVModel.updateData = getPipeList;
+            this.newInspectionVModel.updateData = getPipeList2;
      
             this.SetSelectItem(PipeModels, obj as PipeModel);
 
@@ -513,7 +522,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         {
             _renderLayers.Add(renderLayer);
             GetMapSource();
-            this.getPipeList();
             this.updateRenderLayer();
         }
         private void OnImportCommand(object parameter)

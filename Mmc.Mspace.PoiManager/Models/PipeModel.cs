@@ -68,9 +68,7 @@ namespace Mmc.Mspace.PoiManagerModule.Models
             set { _firstEyeStatus = value; NotifyPropertyChanged("FirstEyeStatus"); }
         }
 
-
         private string _fileType;
-
         public string FileType
         {
             get => Map?.Split('&')[1];

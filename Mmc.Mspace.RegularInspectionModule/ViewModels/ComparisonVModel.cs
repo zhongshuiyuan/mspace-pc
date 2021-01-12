@@ -42,11 +42,36 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _staticStakes; }
             set { _staticStakes = value; }
         }
+
+        private ObservableCollection<SectionModel> _sections = new ObservableCollection<SectionModel>();
+        /// <summary>
+        /// 标段
+        /// </summary>
+        public ObservableCollection<SectionModel> Sections
+        {
+            get { return _sections; }
+            set { _sections = value; OnPropertyChanged("Sections"); }
+        }
         private List<StakeModel> _filterStakes = new List<StakeModel>();
         public List<StakeModel> FilterStakes
         {
             get { return _filterStakes; }
             set { _filterStakes = value; OnPropertyChanged("FilterStakes"); }
+        }
+
+        private SectionModel _selectSectionModel;
+        /// <summary>
+        /// 标段选中
+        /// </summary>
+        public SectionModel SelectSectionModel
+        {
+            get { return _selectSectionModel; }
+            set
+            {
+                _selectSectionModel = value;
+                this.getStake();
+                OnPropertyChanged("SelectSectionModel");
+            }
         }
         private ObservableCollection<StakeModel> _stakes = new ObservableCollection<StakeModel>();
         /// <summary>
@@ -67,8 +92,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             set
             {
                 _selectPipeModel = value;
-                this.FilterStakes=new List<StakeModel>();
-                this.FilterStake();
+                
                 OnPropertyChanged("SelectPipeModel");
             }
         }
@@ -120,9 +144,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
 
         public ComparisonVModel()
         {
-            this.getSource();
             this.GetMapSource();
-
             //关闭对比
             Messenger.Messengers.Register<bool>("closeComparison",(status)=> {
                 var shellView = ServiceManager.GetService<IShellService>(null).ShellWindow;
@@ -243,9 +265,28 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         {
             Task.Run(() =>
             {
-                string stakeList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakelist+ "?pipe_id="+SelectPipeModel.Id+"&sn="+SelectStakeModel.Sn);
+                if(SelectPipeModel == null)
+                {
+                    Messages.ShowMessage("请先选择对应的管线信息！");
+                    return;
+                }
+                if (SelectSectionModel == null)
+                {
+                    Messages.ShowMessage("请先选择对应的标段信息！");
+                    return;
+                }
+                if (SelectStakeModel == null)
+                {
+                    Messages.ShowMessage("请先选择对应的中线桩信息！");
+                    return;
+                }
+                string stakeList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakelist+ "?pipe_id="+SelectPipeModel.Id+ "&section_id=" + SelectSectionModel.Id + "&sn="+SelectStakeModel.Id);
                 this.FilterStakes = JsonUtil.DeserializeFromString<List<StakeModel>>(stakeList);
             });
+        }
+        public void UpdateSource()
+        {
+            getSource();
         }
         private void getSource()
         {
@@ -254,11 +295,20 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 //获取管线
                 string periodList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.pipeindex);
                 this.Periods = new ObservableCollection<PipeModel>(JsonUtil.DeserializeFromString<List<PipeModel>>(periodList));
-                //获取中线桩
-                string stakeList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex);
-                this.StaticStakes = JsonUtil.DeserializeFromString<List<StakeModel>>(stakeList);
-                this.Stakes =new ObservableCollection<StakeModel>(StaticStakes);
+             
+
+                //获取标段
+                string sectionList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.SectionList);
+                this.Sections = new ObservableCollection<SectionModel>(JsonUtil.DeserializeFromString<List<SectionModel>>(sectionList));
             });
+        }
+
+
+        private void getStake()
+        {
+            //获取中线桩
+            string stakeList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex+ "?section_id="+ SelectSectionModel.Id);
+            this.Stakes = JsonUtil.DeserializeFromString<ObservableCollection<StakeModel>>(stakeList);
         }
     }
 

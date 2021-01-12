@@ -102,7 +102,7 @@
                 <views:BootomToolView x:Name="bottomTool" />
             </StackPanel>
             <ContentControl x:Name="BottomMenu" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
-            <ContentControl x:Name="comparison" Visibility="Collapsed" Margin="363 0 0 0"  HorizontalAlignment="Stretch"   Height="200">
+            <ContentControl x:Name="comparison" Visibility="Collapsed" Margin="363 0 0 0"  HorizontalAlignment="Stretch"   Height="240">
             </ContentControl>
         </StackPanel>
 

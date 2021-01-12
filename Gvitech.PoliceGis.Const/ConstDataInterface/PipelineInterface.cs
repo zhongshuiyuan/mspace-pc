@@ -21,8 +21,15 @@ namespace Mmc.Mspace.Const.ConstDataInterface
         public const string tracinglineCreate= "/api/tracing-line/create";//添加
         public const string tracinglinebatch = "/api/tracing-line/batch";//批量添加
         public const string tracingupdate = "/api/tracing/update";//批量添加
+        public const string tracingexport = "/api/tracing/export-warn";//导出
+        public const string tracingexportfly = "/api/tracing/export-fly";//导出
+
         
-        
+
+
+
+
+
     }
 
 }

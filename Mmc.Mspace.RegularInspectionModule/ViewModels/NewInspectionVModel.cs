@@ -55,7 +55,22 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
 
         }
+        private RelayCommand<object> _startSearchCommand;
 
+        public RelayCommand<object> StartSearchCommand
+        {
+
+            get { return _startSearchCommand ?? (_startSearchCommand = new RelayCommand<object>(OnSearchCommand)); }
+            set { _startSearchCommand = value; }
+        }
+        private RelayCommand<object> _endSearchCommand;
+
+        public RelayCommand<object> EndSearchCommand
+        {
+
+            get { return _endSearchCommand ?? (_endSearchCommand = new RelayCommand<object>(OnEndSearchCommand)); }
+            set { _endSearchCommand = value; }
+        }
         private ObservableCollection<PipeModel> _pipeModels = new ObservableCollection<PipeModel>();
         public ObservableCollection<PipeModel> PipeModels
         {
@@ -64,6 +79,40 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             {
                 _pipeModels = value;
                 OnPropertyChanged("PipeModels");
+            }
+        }
+        private bool _startIsDropDownOpen;
+
+        public bool StartIsDropDownOpen
+        {
+            get { return _startIsDropDownOpen; }
+            set { _startIsDropDownOpen = value; OnPropertyChanged("StartIsDropDownOpen"); }
+        }
+        private bool _endIsDropDownOpen;
+
+        public bool EndIsDropDownOpen
+        {
+            get { return _endIsDropDownOpen; }
+            set { _endIsDropDownOpen = value; OnPropertyChanged("EndIsDropDownOpen"); }
+        }
+        private List<StakeModel> _stakeModels = new List<StakeModel>();
+        public List<StakeModel> StakeModels
+        {
+            get { return _stakeModels; }
+            set
+            {
+                _stakeModels = value;
+                OnPropertyChanged("StakeModels");
+            }
+        }
+        private List<StakeModel> _stakeModels2 = new List<StakeModel>();
+        public List<StakeModel> StakeModels2
+        {
+            get { return _stakeModels2; }
+            set
+            {
+                _stakeModels2 = value;
+                OnPropertyChanged("StakeModels2");
             }
         }
 
@@ -76,7 +125,24 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _createTime; }
             set { _createTime = value; OnPropertyChanged("CreateTime"); }
         }
-
+        private StakeModel _startPoi;
+        public StakeModel StartPoi
+        {
+            get { return _startPoi; }
+            set
+            {
+                _startPoi = value; OnPropertyChanged("StartPoi");
+            }
+        }
+        private StakeModel _endPoi;
+        public StakeModel EndPoi
+        {
+            get { return _endPoi; }
+            set
+            {
+                _endPoi = value; OnPropertyChanged("EndPoi");
+            }
+        }
 
         private string _name;
         /// <summary>
@@ -137,21 +203,6 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
         }
 
-        private string _startStake;
-
-        public string StartStake
-        {
-            get { return _startStake; }
-            set { _startStake = value; OnPropertyChanged("StartStake"); }
-        }
-
-        private string _endStake;
-
-        public string EndStake
-        {
-            get { return _endStake; }
-            set { _endStake = value; OnPropertyChanged("EndStake"); }
-        }
         private PipeModel _selectPipeModel;
         /// <summary>
         /// 管线选中
@@ -215,6 +266,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
         }
 
+
         public InspectRegion SelectedItem
         {
             get { return _selectedItem; }
@@ -273,8 +325,32 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _uploadFileCommand ?? (_uploadFileCommand = new RelayCommand(OnUploadFileCommand)); }
             set { _uploadFileCommand = value; }
         }
+        private void OnEndSearchCommand(object obj)
+        {
+            StakeModels2 = new List<StakeModel>();
+            if (obj == null) return;
 
+            string text = obj.ToString();
+            if (string.IsNullOrEmpty(text)) return;
+            getStackList2(text);
+            if (StakeModels2.Count > 0)
+            {
+                EndIsDropDownOpen = true;
+            }
+        }
+        private void OnSearchCommand(object obj)
+        {
+            StakeModels = new List<StakeModel>();
+            if (obj == null) return;
 
+            string text = obj.ToString();
+            if (string.IsNullOrEmpty(text)) return;
+            getStackList(text);
+            if (StakeModels.Count > 0)
+            {
+                StartIsDropDownOpen = true;
+            }
+        }
 
         //关闭新增窗口
         private void OnCancelCommand()
@@ -283,8 +359,8 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             this.LoadFiles = "";
             this.LocalCheck = true;
             this.Name = "";
-            this.StartStake = "";
-            this.EndStake = "";
+            this.StartPoi = null;
+            this.EndPoi = null;
             this.SelectPeriodModel = null;
             this.SelectPipeModel = null;
             this.SelectSectionModel = null;
@@ -298,7 +374,22 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             InspectRegions = new ObservableCollection<InspectRegion>(InspectionService.Instance.GetAllRegion());
 
         }
-
+        /// <summary>
+        /// 获取中
+        /// </summary>
+        private void getStackList(string sn)
+        {
+            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex + "?sn=" + sn);
+            this.StakeModels = (JsonUtil.DeserializeFromString<List<StakeModel>>(resStr));
+        }
+        /// <summary>
+        /// 获取中
+        /// </summary>
+        private void getStackList2(string sn)
+        {
+            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex + "?sn=" + sn);
+            this.StakeModels2 = (JsonUtil.DeserializeFromString<List<StakeModel>>(resStr));
+        }
         #region //上传文件
 
         private void ClearCache()
@@ -779,9 +870,9 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 Messages.ShowMessage("请输入名称信息！");
                 return;
             }
-            if (string.IsNullOrEmpty(StartStake) || string.IsNullOrEmpty(EndStake))
+            if (StartPoi == null || EndPoi == null)
             {
-                Messages.ShowMessage("请填写完整的中线桩信息！");
+                Messages.ShowMessage("请输选择起始桩号！");
                 return;
             }
             Task.Run(()=>{
@@ -811,13 +902,14 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     period_id = this.SelectPeriodModel.Id,
                     time = this.CreateTime.ToString("yyyy-MM-dd hh:mm:ss"),
                     file = LoadFiles,
-                    start = this.StartStake,
-                    end = this.EndStake,
+                    start = this.StartPoi.Id,
+                    end = this.EndPoi.Id,
                 }); 
 
                 bool success = HttpServiceHelper.Instance.PostRequestForStatus(PipelineInterface.createstake, txtjson);
                 if(success)
                 {
+                    updateData();
                     Messages.ShowMessage("添加成功！");
                 }
                 else

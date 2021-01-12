@@ -9,7 +9,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="NewInspectionView" Height="410" Width="270"  Style="{DynamicResource AllowsTransparencyWindowStyle2}">
+        Title="NewInspectionView" Height="450" Width="270"  Style="{DynamicResource AllowsTransparencyWindowStyle2}">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadedCommand}"/>
@@ -40,6 +40,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -52,8 +53,8 @@
             <TextBlock Margin="10,10,0,10" Grid.Row="2" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="阶段："></TextBlock>
             <TextBlock Margin="10,6,0,6" Grid.Row="3" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="时间："></TextBlock>
             <TextBlock Margin="10,10,0,10" Grid.Row="4" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="名称："></TextBlock>
-            <TextBlock Margin="10,10,0,10" Grid.Row="5" Grid.Column="0"  Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="中线桩："></TextBlock>
-
+            <TextBlock Margin="10,10,0,10" Grid.Row="5" Grid.Column="0"  Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="起始桩号："></TextBlock>
+            <TextBlock Margin="10,10,0,10" Grid.Row="6" Grid.Column="0"  Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="终止桩号："></TextBlock>
             <ComboBox  Height="32" Margin="0 5 10 2" helper:TextBoxHelper.Watermark="{DynamicResource CreateRegularWater}" ContextMenu="{DynamicResource TextBoxContextMenu}" Grid.Row="0" Grid.Column="1" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding PipeModels}"   SelectedItem="{Binding SelectPipeModel}"  Style="{DynamicResource DefaultComboBoxStyle}"  Grid.ColumnSpan="2">
             </ComboBox>
             <ComboBox  Height="32" Margin="0 5 10 2" helper:TextBoxHelper.Watermark="{DynamicResource CreateRegularWater}" ContextMenu="{DynamicResource TextBoxContextMenu}" Grid.Row="1" Grid.Column="1" SelectedValuePath="Id" DisplayMemberPath="Sn" ItemsSource="{Binding Sections}"  SelectedItem="{Binding SelectSectionModel}" Style="{DynamicResource DefaultComboBoxStyle}"  Grid.ColumnSpan="2">
@@ -65,30 +66,44 @@
             <TextBox  Margin="0 5 10 2" Grid.Row="4" Height="32" Grid.Column="1" Width="Auto" Style="{DynamicResource TbxWaterStyle}" VerticalContentAlignment="Center"
                                              helper:TextBoxHelper.IsNeedClearButton="False"    Text="{Binding Name,UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2"  />
 
-            <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Stretch" Grid.ColumnSpan="2"  >
-                <TextBox  Margin="0 5 10 2" Width="50" Height="32" Grid.Column="1"  Style="{DynamicResource TbxWaterStyle}" VerticalContentAlignment="Center"
+            <StackPanel Grid.Row="5"  Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Stretch" Grid.ColumnSpan="2"  >
+                <ComboBox HorizontalAlignment="Left" Margin="0 5 10 2" IsDropDownOpen="{Binding StartIsDropDownOpen}" SelectedValuePath="id" DisplayMemberPath="Sn" IsEditable="True" x:Name="startPoicobx" Style="{DynamicResource DefaultComboBoxStyle}"  ItemsSource="{Binding StakeModels}" SelectedItem="{Binding StartPoi}" Height="32" Width="170" >
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="KeyUp">
+                            <i:InvokeCommandAction  Command="{Binding Path=DataContext.StartSearchCommand,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding Text,ElementName=startPoicobx}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
+                <!--<TextBox  Margin="0 5 10 2" Width="50" Height="32" Grid.Column="1"  Style="{DynamicResource TbxWaterStyle}" VerticalContentAlignment="Center"
                                              helper:TextBoxHelper.IsNeedClearButton="False"    Text="{Binding StartStake,UpdateSourceTrigger=PropertyChanged}"  />
                 <TextBlock Grid.Row="4" Margin="10 0" Grid.Column="0" Style="{StaticResource DefaultTextBlockStyle}" Foreground="#B3BBC5" Text="~"></TextBlock>
 
                 <TextBox   Grid.Row="4" Height="32" Grid.Column="1" Width="50" Margin="10 0 0 0" Style="{DynamicResource TbxWaterStyle}" VerticalContentAlignment="Center"
-                                             helper:TextBoxHelper.IsNeedClearButton="False"  Text="{Binding EndStake,UpdateSourceTrigger=PropertyChanged}"  />
+                                             helper:TextBoxHelper.IsNeedClearButton="False"  Text="{Binding EndStake,UpdateSourceTrigger=PropertyChanged}"  />-->
 
 
             </StackPanel>
 
+            <ComboBox Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="2"  HorizontalAlignment="Left" IsDropDownOpen="{Binding EndIsDropDownOpen}" SelectedItem="{Binding EndPoi}" IsEditable="True" SelectedValuePath="id" x:Name="endPoicobx" DisplayMemberPath="Sn" ItemsSource="{Binding StakeModels2}" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="170" Margin="0 5 10 2">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="KeyUp">
+                        <i:InvokeCommandAction  Command="{Binding Path=DataContext.EndSearchCommand,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding Text,ElementName=endPoicobx}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ComboBox>
 
-            <StackPanel Orientation="Horizontal" Margin="20,10,1,10" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" >
+            <StackPanel Orientation="Horizontal" Margin="20,10,1,10" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" >
                 <RadioButton Margin="10,0,20,0" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Center" VerticalAlignment="Center" Content="本地" x:Name="pie" GroupName="AnalyseMidea" Foreground="#B3BBC5" IsChecked="{Binding LocalCheck}" ></RadioButton>
                 <RadioButton Margin="20,0" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Center" VerticalAlignment="Center" Content="网络" x:Name="rect" GroupName="AnalyseMidea" Foreground="#B3BBC5" IsChecked="{Binding ServerCheck}"></RadioButton>
             </StackPanel>
-            <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Stretch"  >
+            <StackPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Stretch"  >
                 <TextBox  Margin="30 5 10 2" Width="162" HorizontalAlignment="Stretch"  Height="32"  Style="{DynamicResource TbxWaterStyle}" VerticalContentAlignment="Center" IsEnabled="{Binding ServerCheck}"
                                    helper:TextBoxHelper.Watermark="{Binding UploadText}"          helper:TextBoxHelper.IsNeedClearButton="False"    Text="{Binding LoadFiles,UpdateSourceTrigger=PropertyChanged}"  />
                 <Button  Content="{DynamicResource Accountupload}" Style="{StaticResource DefaultuploadButtonStyle}"  HorizontalAlignment="Right" Height="24" Margin="0,5,10,5"  Command="{Binding UploadFileCommand}"  VerticalAlignment="Center" Width="44" />
 
             </StackPanel>
-            <Button Grid.Row="7" Grid.ColumnSpan="2" Content="{DynamicResource OK}" Command="{Binding CreateCommand}" Style="{StaticResource DefaultButtonStyle}"  Grid.Column="0"  HorizontalAlignment="Center" Height="36" Margin="41,0,122,30"  VerticalAlignment="Bottom" Width="80" Grid.RowSpan="2" />
-            <Button Grid.Row="7" Content="{DynamicResource Cancel}" Grid.Column="1" Command="{Binding CancelCommand}" Style="{StaticResource DefaultButtonStyle}"  HorizontalAlignment="Center" Height="36" Margin="75,0,22,30"  VerticalAlignment="Bottom" Width="80" Grid.RowSpan="2"/>
+            <Button Grid.Row="9" Grid.ColumnSpan="2" Content="{DynamicResource OK}" Command="{Binding CreateCommand}" Style="{StaticResource DefaultButtonStyle}"  Grid.Column="0"  HorizontalAlignment="Center" Height="36" Margin="41,0,122,30"  VerticalAlignment="Bottom" Width="80" Grid.RowSpan="2" />
+            <Button Grid.Row="9" Content="{DynamicResource Cancel}" Grid.Column="1" Command="{Binding CancelCommand}" Style="{StaticResource DefaultButtonStyle}"  HorizontalAlignment="Center" Height="36" Margin="75,0,22,30"  VerticalAlignment="Bottom" Width="80" Grid.RowSpan="2"/>
 
 
         </Grid>

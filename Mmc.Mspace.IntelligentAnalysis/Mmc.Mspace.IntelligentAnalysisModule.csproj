@@ -95,6 +95,9 @@
       <DependentUpon>AreaWidthView.xaml</DependentUpon>
     </Compile>
     <Compile Include="AreaWidth\AreaWidthVModel.cs" />
+    <Compile Include="AreaWidth\SelectView.xaml.cs">
+      <DependentUpon>SelectView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CharacterAnalysis\CharacAnalyPythonProcess.cs" />
     <Compile Include="CharacterAnalysis\CharacAnalysModel.cs" />
     <Compile Include="CharacterAnalysis\CharactAnalysView.xaml.cs">
@@ -221,6 +224,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="AreaWidth\AreaWidthView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AreaWidth\SelectView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -780,7 +780,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 tracingModel.lat = TracingLineModels[i].Lat;
                 tracingModel.height = TracingLineModels[i].Height;
                 tracingModel.stake = TracingLineModels[i].Poi.Id;
-                tracingModel.traces = TracingLineModels[i].Poi.Id;
+                tracingModel.traces = id;
                 tracingModels.Add(tracingModel);
             }
             string resStr1 = HttpServiceHelper.Instance.PostRequestForData(PipelineInterface.tracinglinebatch, JsonUtil.SerializeToString(tracingModels));

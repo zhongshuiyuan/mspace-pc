@@ -9,10 +9,10 @@
                          xmlns:controls="clr-namespace:Mmc.Mspace.Theme.Controls;assembly=Mmc.Mspace.Theme"
                          Title="AreaWidthView" Height="320" Width="440"  Style="{StaticResource AllowsTransparencyWindowStyle2}">
    
-        <Grid Margin="0,0,0,0">
+        <Grid >
             <Grid.ColumnDefinitions>
             <ColumnDefinition Width="215"/>
-            <ColumnDefinition Width="215"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"></RowDefinition>
@@ -31,7 +31,7 @@
             <Button Grid.Row="1" Grid.Column="0" Width="65" Height="30" Margin="5,2,10,0" Content="清除"  Style="{StaticResource DefaultButtonStyle}" Command="{Binding ClearDraw}" ></Button>
             <TextBlock Text="输入缓冲半径" Height="15"></TextBlock>
             <TextBox Text="{Binding Radius}" Height="15" Width="55" Margin="20,0,0,0" KeyDown="keydown" TextChanged="textChange"/>
-            <Button Grid.Row="1" Grid.Column="0" Width="65" Height="30" Margin="5,2,10,0" Content="保存"  Style="{StaticResource DefaultButtonStyle}" Command="{Binding SaveCmd}" ></Button>
+            <Button Grid.Row="1" Grid.Column="0" Width="65" Height="30" Margin="5,2,10,0" Content="导出"  Style="{StaticResource DefaultButtonStyle}" Command="{Binding SaveCmd}" ></Button>
             <Button Grid.Row="1" Grid.Column="0" Width="65" Height="30" Margin="5,2,10,0" Content="绘制边线"  Style="{StaticResource DefaultButtonStyle}" Command="{Binding DrawSide}" Visibility="Hidden"></Button>
             
         </DockPanel>

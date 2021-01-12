@@ -16,6 +16,14 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             get { return _isChecked; }
             set { _isChecked = value; NotifyPropertyChanged("IsChecked"); }
         }
+
+        private bool _isRoot;
+
+        public bool IsRoot
+        {
+            get { return _isRoot; }
+            set { _isRoot = value; NotifyPropertyChanged("IsRoot"); }
+        }
         public string id { get; set; }
         public string Number { get; set; }
 

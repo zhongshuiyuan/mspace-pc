@@ -37,6 +37,19 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 base.SetAndNotifyPropertyChanged<ObservableCollection<LineItem>>(ref this._drawLineListCollection, value, "DrawLineListCollection");               
             }
         }
+
+        List<LineItem> _tempItemList = new List<LineItem>();
+        public List<LineItem> TempItemList
+        {
+            get { return _tempItemList; }
+            set
+            {
+                _tempItemList = value;
+                base.SetAndNotifyPropertyChanged<List<LineItem>>(ref this._tempItemList, value, "TempItemList");
+            }
+        }
+
+     
         private NewDrawLineVModel newDrawLineVModel = null;
 
         public ICommand CreatLineCmd { get; set; }
@@ -91,7 +104,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             this.IsOpenCmd = new Mmc.Wpf.Commands.RelayCommand<LineItem>((lineitm) => ChangeIsChecked(lineitm));
             this.AreaWidthCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
-                var TempItemList = new List<LineItem>();
+                 TempItemList = new List<LineItem>();
                 foreach (var item in DrawLineListCollection)
                 {
                     if(item.IsChecked == true)
@@ -115,7 +128,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             });
             this.MidPositionCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
-                var TempItemList = new List<LineItem>();
+                 TempItemList = new List<LineItem>();
                 foreach (var item in DrawLineListCollection)
                 {
                     if (item.IsChecked == true)
@@ -224,7 +237,6 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             var topo = poly as ITopologicalOperator2D;
             return topo.Buffer2D(dis, gviBufferStyle.gviBufferCapround);
         }
-        private string _radius = "1";
         public Dictionary<string, Guid> poiList = new Dictionary<string, Guid>();
         private void SetVideo()
         {

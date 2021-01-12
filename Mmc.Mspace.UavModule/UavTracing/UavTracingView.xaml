@@ -474,7 +474,7 @@
                 </Expander.Header>
 
                 <Expander.Content>
-                    <TreeView ItemsSource="{Binding UavItemAreaModels}" Background="#292C35" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="380" SelectedItemChanged="TreeView_OnSelectedItemChanged">
+                    <TreeView ItemsSource="{Binding UavItemAreaModels}" Background="#292C35" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="680" SelectedItemChanged="TreeView_OnSelectedItemChanged">
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding UavItemModels}">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="sp">

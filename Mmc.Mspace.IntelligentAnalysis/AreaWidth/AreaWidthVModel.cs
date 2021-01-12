@@ -5,9 +5,11 @@ using Mmc.Framework.Services;
 using Mmc.MathUtil;
 using Mmc.Mspace.Common.Messenger;
 using Mmc.Mspace.Common.Models;
+using Mmc.Mspace.Const.ConstDataInterface;
 using Mmc.Mspace.Const.ConstPath;
 using Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck;
 using Mmc.Mspace.PoiManagerModule.Models;
+using Mmc.Mspace.Services.HttpService;
 using Mmc.Mspace.Theme.Pop;
 using Mmc.Windows.Services;
 using Mmc.Windows.Utils;
@@ -16,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,6 +68,14 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         public ICommand ClearDraw { get; set; }
         public ICommand Calculate { get; set; }
         public ICommand CloseCmd { get; set; }
+
+
+        private RelayCommand _saveCmd;
+        public RelayCommand SaveCmd
+        {
+            get { return _saveCmd ?? (_saveCmd = new RelayCommand(OnSaveCmd)); }
+            set { _saveCmd = value; }
+        }
         public override void Initialize()
         {
             base.Initialize();
@@ -90,6 +101,82 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             //    }
             //});
         }
+        public string _currentFileName = null;
+
+        private void OnSaveCmd()
+        {
+
+            var item = new
+            {
+                list = "",
+                line = lineItems[0].sn,
+                images ="",
+                start = lineItems[0].start_sn,
+                end = lineItems[0].end_sn,
+            };
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = FileFilterStrings.WORD;
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+
+                _currentFileName = saveFileDialog.FileName;
+
+
+
+                var httpDowLoadManager = new HttpDowLoadManager();
+                httpDowLoadManager.Token = HttpServiceUtil.Token;
+
+                Task.Run(() =>
+                {
+                    string downloadReport = string.Format("{0}?line={1}&start={2}&end={3}", PipelineInterface.tracingexport, lineItems[0].sn, lineItems[0].start_sn, lineItems[0].end);
+                    HttpServiceHelper.Instance.DownloadFile(PipelineInterface.tracingexport, _currentFileName, DownloadResult);
+                });
+                Messages.ShowMessage("导出成功！");
+            }
+
+
+            //string resStr1 = HttpServiceHelper.Instance.PostRequestForData(PipelineInterface.tracingexport, JsonUtil.SerializeToString(item));
+            //if (resStr1 == "")
+            //{
+            //    Messages.ShowMessage("导出失败,请重试或联系管理员");
+            //    return;
+            //}
+        }
+
+        public void DownloadResult(bool result)
+        {
+            if (result)
+            {
+                if (File.Exists(_currentFileName))
+                {
+                    System.Diagnostics.Process.Start(_currentFileName);
+                }
+                //Messages.ShowMessage(Helpers.ResourceHelper.FindKey("SAVESUCCESSED"));
+            }
+            else
+            {
+                Messages.ShowMessage(Helpers.ResourceHelper.FindKey("SAVEFAILED"));
+            }
+        }
+
+        //public void SaveFileDialog()
+        //{
+        //    string localFilePath, filepath;
+        //    SaveFileDialog fileDialog = new SaveFileDialog();
+        //    fileDialog.Filter = " Save to Result Files(*.)|*.*";//*.kml|All files(*.*)|
+        //    fileDialog.FileName = DateTime.Now.ToString("yyyyMMddHHmmss") + ".kml";
+        //    fileDialog.FilterIndex = 2;
+        //    fileDialog.AddExtension = true;
+        //    fileDialog.RestoreDirectory = true;
+        //    if (fileDialog.ShowDialog() == DialogResult.OK)
+        //    {
+        //        localFilePath = fileDialog.FileName.ToString();
+        //        _fileNameExt = localFilePath.Substring(localFilePath.LastIndexOf("\\") + 1);
+        //        filepath = localFilePath.Substring(0, localFilePath.LastIndexOf("\\"));
+        //        this.SaveToFile(localFilePath);
+        //    }
+        //}
+
         public override void OnChecked()
         {
             base.OnChecked();
