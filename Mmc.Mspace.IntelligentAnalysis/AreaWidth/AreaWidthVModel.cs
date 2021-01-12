@@ -1,4 +1,5 @@
 ﻿using Gvitech.CityMaker.FdeGeometry;
+using Gvitech.CityMaker.Math;
 using Gvitech.CityMaker.RenderControl;
 using Mmc.Framework.Draw;
 using Mmc.Framework.Services;
@@ -29,6 +30,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
 {
      public class AreaWidthVModel: CheckedToolItemModel
      {
+        public Action CancelWin;
         List<IPolyline> polylines = new List<IPolyline>();
         ObservableCollection<IPoint> _problemPoints = new ObservableCollection<IPoint>();
         List<Guid> guids = new List<Guid>();
@@ -192,15 +194,23 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         }
         private void Ca()
         {
+            delObjs();
             setData();
-            Cal();
-            Cal2();
+            if(lineItems[0].IsRoot)
+            {
+                Cal();
+            }
+            else
+            {
+                Cal2();
+            }
             Messages.ShowMessage("计算完成，问题点数目为:"+ Convert.ToString(_problemPoints.Count));
         }
         public void Hide()
         {
             ClearList();
-            areaWidthView.Hide();           
+            areaWidthView.Hide();
+            CancelWin();
             base.IsChecked = false;
         }
         private void RegisterDraw()
@@ -301,8 +311,6 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                     RCDrawManager.Instance.PolylineDraw.Register(GviMap.AxMapControl, drawCustomer, RCMouseOperType.PickPoint);
                     RCDrawManager.Instance.PolylineDraw.OnDrawFinished -= PlanPolylineDraw_OnDrawFinished;
                     RCDrawManager.Instance.PolylineDraw.OnDrawFinished += PlanPolylineDraw_OnDrawFinished;
-
-
                 }
                 catch (Exception e)
                 {
@@ -364,6 +372,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         }
         private void delObjs()
         {
+            ClearPatrolList();
             foreach (var item in guids)
             {
                 GviMap.ObjectManager.DeleteObject(item);
@@ -386,6 +395,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 delObjs();
                 areaWidthView.Hide();
             }
+            DrawLineCommand();
         }
         private void Cal()
         {
@@ -394,11 +404,9 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 //ITopologicalOperator3D topologicalOperator3D =polylines[0]
                 IGeometry geo_1 = Buffer(polylines[1], Convert.ToDouble(_radius) / 100000);
                 geo_1.SpatialCRS = GviMap.SpatialCrs;
-                //var type = geo_1.GeometryType;
-                //IRenderMultiPolygon render = GviMap.ObjectManager.CreateRenderMultiPolygon(geo_1 as IMultiPolygon, GviMap.LinePolyManager.SurfaceSym, GviMap.ProjectTree.RootID);
+        
                 IRenderPolygon render = GviMap.ObjectManager.CreateRenderPolygon(geo_1 as IPolygon, GviMap.LinePolyManager.SurfaceSym, GviMap.ProjectTree.RootID);
-
-                ////polygon.SpatialCRS = GviMap.SpatialCrs;
+           
                 render?.SetFdeGeometry(geo_1);
                 render.VisibleMask = gviViewportMask.gviViewAllNormalView;
                 render.Symbol.BoundarySymbol.Color = Color.FromArgb(255, 0, 255, 255);
@@ -423,6 +431,74 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             {
                 Messages.ShowMessage("边界不足两条，请检查");
             }
+        }
+
+        private void DrawLineCommand()
+        {
+            for (int i = 0; i < lineItems.Count; i++)
+            {
+                var polyLine = GviMap.GeoFactory.CreatePolyline(lineItems[i].geom, GviMap.SpatialCrs);
+                if (polyLine == null) return;
+
+                if (polyLine.EndPoint == null) return;
+                CurveSymbol curveSymbol = new CurveSymbol();
+                curveSymbol.Color = ColorConvert.Argb(100, 238, 103, 35);//GviMap.LinePolyManager.CurveSym
+                curveSymbol.Width = 20f;
+                var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
+
+                if (rLine == null) return;
+                guids.Add(rLine.Guid);
+                rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
+                //GviMap.Camera.FlyToObject(rLine.Guid, gviActionCode.gviActionFlyTo);
+                //var poly0 = GviMap.GeoFactory.CreateFromWKT(lineItem.geom) as IPolyline;
+
+                GviMap.Camera.GetCamera2(out IPoint pointCamera, out IEulerAngle eulerAngle);
+                ////GviMap.Camera.FlyToEnvelope(point.Envelope);
+                eulerAngle.Tilt = -90;
+                eulerAngle.Heading = 110;
+                pointCamera.X = rLine.Envelope.MaxX;
+                pointCamera.Y = rLine.Envelope.MaxY;
+                pointCamera.Z = 2000;
+                GviMap.Camera.SetCamera2(pointCamera, eulerAngle, 0);
+            }
+        
+            SetVideo();
+        }
+
+        public Dictionary<string, Guid> poiList = new Dictionary<string, Guid>();
+        private void SetVideo()
+        {
+            if (polylines.Count > 0)
+            {
+                for (int i = 0; i < polylines[0].PointCount; i++)
+                {
+                    var point = polylines[0].GetPoint(i);
+
+                    var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
+                    poi.SetPostion(point.X, point.Y);
+                    poi.Size = 50;
+
+                    poi.ShowName = false;
+                    poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");
+                    poi.SpatialCRS = GviMap.SpatialCrs;
+                    var rPoi = GviMap.ObjectManager.CreateRenderPOI(poi);
+                    rPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
+                    this.poiList.Add(rPoi.Guid.ToString(), rPoi.Guid);
+                }
+            }
+        }
+        public void ClearPatrolList()
+        {
+            Dictionary<string, Guid> expr_07 = this.poiList;
+            bool flag = expr_07 == null || expr_07.Count > 0;
+            if (flag)
+            {
+                foreach (KeyValuePair<string, Guid> current in this.poiList)
+                {
+                    GviMap.ObjectManager.DeleteObject(current.Value);
+                }
+            }
+            this.poiList = new Dictionary<string, Guid>();
         }
         private void Cal2()
         {

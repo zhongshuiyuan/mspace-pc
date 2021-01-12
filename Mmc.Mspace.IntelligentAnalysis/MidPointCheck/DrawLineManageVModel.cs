@@ -215,12 +215,14 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 Messages.ShowMessage("您未选择自动描线作为基准线，无法进行核准！！");
                 return;
             }
+            DelObjs();
             selectView.Close();
             if(AreaWithStatus==0)
             {
                 AreaWidthVModel areaWidthVModel = new AreaWidthVModel();
                 areaWidthVModel.TitleText = "边界宽度预警";
                 areaWidthVModel.lineItems = TempItemList;
+                areaWidthVModel.CancelWin = ShowWin;
                 areaWidthVModel.OnChecked();
             }
             else
@@ -228,8 +230,10 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 AreaWidthVModel areaWidthVModel = new AreaWidthVModel();
                 areaWidthVModel.TitleText = "中线桩位置核准";
                 areaWidthVModel.lineItems = TempItemList;
+                areaWidthVModel.CancelWin = ShowWin;
                 areaWidthVModel.OnChecked();
             }
+            drawLineManageView.Hide();
         }
 
         private LineItem selectLineItem = null;
