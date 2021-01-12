@@ -470,21 +470,25 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         {
             if (polylines.Count > 0)
             {
-                for (int i = 0; i < polylines[0].PointCount; i++)
+                for (int i = 0; i < polylines.Count; i++)
                 {
-                    var point = polylines[0].GetPoint(i);
+                    for (int j = 0; j < polylines[i].PointCount; j++)
+                    {
+                        var point = polylines[i].GetPoint(j);
 
-                    var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
-                    poi.SetPostion(point.X, point.Y);
-                    poi.Size = 50;
+                        var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
+                        poi.SetPostion(point.X, point.Y);
+                        poi.Size = 50;
 
-                    poi.ShowName = false;
-                    poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");
-                    poi.SpatialCRS = GviMap.SpatialCrs;
-                    var rPoi = GviMap.ObjectManager.CreateRenderPOI(poi);
-                    rPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
-                    this.poiList.Add(rPoi.Guid.ToString(), rPoi.Guid);
+                        poi.ShowName = false;
+                        poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");
+                        poi.SpatialCRS = GviMap.SpatialCrs;
+                        var rPoi = GviMap.ObjectManager.CreateRenderPOI(poi);
+                        rPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
+                        this.poiList.Add(rPoi.Guid.ToString(), rPoi.Guid);
+                    }
                 }
+               
             }
         }
         public void ClearPatrolList()

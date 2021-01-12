@@ -125,14 +125,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             this.IsOpenCmd = new Mmc.Wpf.Commands.RelayCommand<LineItem>((lineitm) => ChangeIsChecked(lineitm));
             this.AreaWidthCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
-                 TempItemList = new List<LineItem>();
-                foreach (var item in DrawLineListCollection)
-                {
-                    if(item.IsChecked == true)
-                    {
-                        TempItemList.Add(item);
-                    }
-                }
+                 TempItemList = DrawLineListCollection.Where(t => t.IsChecked).ToList();
                 if(TempItemList.Count==2)
                 {
                      AreaWithStatus = 0;
@@ -151,14 +144,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             });
             this.MidPositionCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
-                 TempItemList = new List<LineItem>();
-                foreach (var item in DrawLineListCollection)
-                {
-                    if (item.IsChecked == true)
-                    {
-                        TempItemList.Add(item);
-                    }
-                }
+                TempItemList = DrawLineListCollection.Where(t => t.IsChecked).ToList();
                 if (TempItemList.Count == 2)
                 {
                     AreaWithStatus = 1;
