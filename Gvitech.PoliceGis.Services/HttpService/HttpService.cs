@@ -937,7 +937,6 @@ namespace Mmc.Mspace.Services.HttpService
             {
 
                 HttpWebRequest myRequest = CreateRequestObj(url, 200000, "GET");
-                myRequest.ContentType = "application/x-www-form-urlencoded";
                 byte[] data = Encoding.UTF8.GetBytes(postData);
                 myRequest.ContentLength = data.Length;
                 using (Stream reqStream = myRequest.GetRequestStream())
