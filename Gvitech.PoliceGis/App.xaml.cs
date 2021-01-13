@@ -26,25 +26,25 @@ namespace MMC.MSpace
             base.OnStartup(e);
             AddLanguageResources();
 
-            string text = System.Windows.Forms.Application.LocalUserAppDataPath + "\\logs";
-            SystemLog.InitSysLog(text);
-            if (e.Args.Length > 0)
-            {
-                string key = Regex.Match(e.Args[0], @"(?<=://).+?(?=:|/|\Z)").Value;
-                SystemLog.WriteLog(e.Args[0]);
-                SystemLog.WriteLog(key);
-                //获取欲启动进程名
-                string arg = key;
-                var arr = arg.Split("_");
-                PoliceGisBootstrapper.loginUserName = arr[0];
-                PoliceGisBootstrapper.loginPwd = arr[1];
-            }
-            else
-            {
-                MessageBox.Show("请确保有用户名与密码");
-                Environment.Exit(0);
-                return;
-            }
+            //string text = System.Windows.Forms.Application.LocalUserAppDataPath + "\\logs";
+            //SystemLog.InitSysLog(text);
+            //if (e.Args.Length > 0)
+            //{
+            //    string key = Regex.Match(e.Args[0], @"(?<=://).+?(?=:|/|\Z)").Value;
+            //    SystemLog.WriteLog(e.Args[0]);
+            //    SystemLog.WriteLog(key);
+            //    //获取欲启动进程名
+            //    string arg = key;
+            //    var arr = arg.Split("_");
+            //    PoliceGisBootstrapper.loginUserName = arr[0];
+            //    PoliceGisBootstrapper.loginPwd = arr[1];
+            //}
+            //else
+            //{
+            //    MessageBox.Show("请确保有用户名与密码");
+            //    Environment.Exit(0);
+            //    return;
+            //}
             //获取欲启动进程名
             string strProcessName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
             //检查进程是否已经启动，已经启动则显示报错信息退出程序。 
