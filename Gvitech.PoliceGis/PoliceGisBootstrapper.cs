@@ -67,7 +67,7 @@ namespace MMC.MSpace
             PoliceGisBootstrapper.RegisterServices();
             SystemLog.Log("启动加载界面");
             double screenInchSize = ScreenHelper.GetScreenInchSize();
-            string[] files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + "Config\\Screen\\", "*inch.xaml");
+            string[] files = Directory.GetFiles("Config\\Screen\\", "*inch.xaml");
             Dictionary<double, string> dictionary = new Dictionary<double, string>();
             foreach (string text2 in files)
             {
