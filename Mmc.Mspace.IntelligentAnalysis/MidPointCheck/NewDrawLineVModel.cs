@@ -527,8 +527,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         {
             ChangedItem = lineItem;
             this.SelectPipeModel = this.PipeModels.FirstOrDefault(t => t.Id == lineItem.pipe_id);
-            this.Sn = lineItem.sn;
-            this.PipeName = lineItem.name;
+            this.Sn = lineItem.Sn;
+            this.PipeName = lineItem.Name;
             this.SelectedItem = lineItem.type;
             getStackList(lineItem.start_sn);
             getStackList2(lineItem.end_sn);
@@ -736,9 +736,9 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             string api = string.Empty;
             api = MarkInterface.AddLine;
             LineItem lineItem = new LineItem();
-            lineItem.name = PipeName;
+            lineItem.Name = PipeName;
             lineItem.pipe_id = SelectPipeModel.Id;
-            lineItem.sn = Sn;
+            //lineItem.sn = Sn;
             lineItem.type = TypenameToNum(SelectedItem);
             lineItem.start = StartPoi.Id;
             lineItem.end = EndPoi.Id;

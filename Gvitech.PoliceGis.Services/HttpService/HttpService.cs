@@ -935,8 +935,14 @@ namespace Mmc.Mspace.Services.HttpService
             //打开网络连接
             try
             {
+                HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(url);
+                myRequest.Method = "POST";
+                myRequest.Accept = "text/html, application/xhtml+xml, */*";
+                myRequest.ContentType = "application / x-www-form-urlencoded; charset = utf-8 ";
+                myRequest.AllowAutoRedirect = true;
+                myRequest.KeepAlive = true;
 
-                HttpWebRequest myRequest = CreateRequestObj(url, 200000, "GET");
+
                 byte[] data = Encoding.UTF8.GetBytes(postData);
                 myRequest.ContentLength = data.Length;
                 using (Stream reqStream = myRequest.GetRequestStream())

@@ -38,14 +38,14 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             }
         }
 
-        List<LineItem> _tempItemList = new List<LineItem>();
-        public List<LineItem> TempItemList
+        ObservableCollection<LineItem> _tempItemList = new ObservableCollection<LineItem>();
+        public ObservableCollection<LineItem> TempItemList
         {
             get { return _tempItemList; }
             set
             {
                 _tempItemList = value;
-                base.SetAndNotifyPropertyChanged<List<LineItem>>(ref this._tempItemList, value, "TempItemList");
+                base.SetAndNotifyPropertyChanged<ObservableCollection<LineItem>>(ref this._tempItemList, value, "TempItemList");
             }
         }
 
@@ -125,14 +125,13 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             this.IsOpenCmd = new Mmc.Wpf.Commands.RelayCommand<LineItem>((lineitm) => ChangeIsChecked(lineitm));
             this.AreaWidthCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
-                 TempItemList = DrawLineListCollection.Where(t => t.IsChecked).ToList();
+                 TempItemList = new ObservableCollection<LineItem>( DrawLineListCollection.Where(t => t.IsChecked).ToList());
                 if(TempItemList.Count==2)
                 {
                      AreaWithStatus = 0;
-                    if (selectView == null)
-                        selectView = new SelectView();
-                    selectView.DataContext = this;
+                    selectView = new SelectView();
                     selectView.Owner = drawLineManageView;
+                    selectView.DataContext = this;
                     selectView.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                     selectView.ShowDialog();
                 }
@@ -145,12 +144,11 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             });
             this.MidPositionCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
-                TempItemList = DrawLineListCollection.Where(t => t.IsChecked).ToList();
+                TempItemList = new ObservableCollection<LineItem>(DrawLineListCollection.Where(t => t.IsChecked).ToList());
                 if (TempItemList.Count == 2)
                 {
                     AreaWithStatus = 1;
-                    if (selectView == null)
-                        selectView = new SelectView();
+                    selectView = new SelectView();
                     selectView.DataContext = this;
                     selectView.Owner = drawLineManageView;
                     selectView.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -209,7 +207,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             {
                 AreaWidthVModel areaWidthVModel = new AreaWidthVModel();
                 areaWidthVModel.TitleText = "边界宽度预警";
-                areaWidthVModel.lineItems = TempItemList;
+                areaWidthVModel.lineItems = TempItemList.ToList();
                 areaWidthVModel.CancelWin = ShowWin;
                 areaWidthVModel.OnChecked();
             }
@@ -217,7 +215,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             {
                 AreaWidthVModel areaWidthVModel = new AreaWidthVModel();
                 areaWidthVModel.TitleText = "中线桩位置核准";
-                areaWidthVModel.lineItems = TempItemList;
+                areaWidthVModel.lineItems = TempItemList.ToList();
                 areaWidthVModel.CancelWin = ShowWin;
                 areaWidthVModel.OnChecked();
             }
@@ -393,8 +391,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             {
                 LineItem lineItem = new LineItem();
                 lineItem.id = item["id"];
-                lineItem.sn = item["sn"];
-                lineItem.name = item["name"];
+                lineItem.Sn = item["sn"];
+                lineItem.Name = item["name"];
                 lineItem.pipe_id = item["pipe_id"];
                 lineItem.pipe_name = item["pipe_name"];
                 lineItem.start = item["start"];

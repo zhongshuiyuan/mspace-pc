@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:gvifm="http://schemas.mmc.com/wpf"
             xmlns:blankWindow="http://GFramework.org"
-            Width="340" Style="{DynamicResource baseWindowStyle}" WindowStartupLocation="Manual"  ResizeMode="NoResize" >
+            Width="340" Style="{DynamicResource baseWindowStyle}" WindowStartupLocation="Manual" Height="780" ResizeMode="NoResize" >
     <FrameworkElement.Resources>
         <ResourceDictionary>
             <LinearGradientBrush x:Key="ExpanderArrowHoverFill" EndPoint="0,1" StartPoint="0,0">
@@ -474,7 +474,7 @@
                 </Expander.Header>
 
                 <Expander.Content>
-                    <TreeView ItemsSource="{Binding UavItemAreaModels}" Background="#292C35" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="680" SelectedItemChanged="TreeView_OnSelectedItemChanged">
+                    <TreeView ItemsSource="{Binding UavItemAreaModels}" Background="#292C35" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="520" SelectedItemChanged="TreeView_OnSelectedItemChanged" Margin="0,10">
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding UavItemModels}">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="sp">

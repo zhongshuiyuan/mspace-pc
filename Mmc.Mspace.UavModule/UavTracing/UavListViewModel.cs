@@ -130,6 +130,22 @@ namespace Mmc.Mspace.UavModule.UavTracing
             set { base.SetAndNotifyPropertyChanged<string>(ref this._socketState, value, "socketState"); }
         }
 
+
+        private bool _ModelIsChecked=true;
+
+        public bool ModelIsChecked
+        {
+            get { return _ModelIsChecked; }
+            set { base.SetAndNotifyPropertyChanged<bool>(ref this._ModelIsChecked, value, "ModelIsChecked"); }
+        }
+
+        private bool _DrawIsChecked;
+
+        public bool DrawIsChecked
+        {
+            get { return _DrawIsChecked; }
+            set { base.SetAndNotifyPropertyChanged<bool>(ref this._DrawIsChecked, value, "DrawIsChecked"); }
+        }
         public string WindowTitle { get; set; }
 
         public bool IsMultiScreen { get; set; }
@@ -181,7 +197,6 @@ namespace Mmc.Mspace.UavModule.UavTracing
             {
                 onReceiveMessage(p);
             });
-
         }
 
         public void CheckConnectState()
@@ -358,7 +373,7 @@ namespace Mmc.Mspace.UavModule.UavTracing
             this.uavTracingView.Left = shellView.Left + 10;
             this.uavTracingView.Top = shellView.Top + 10;
             this.uavTracingView.Width = 390;
-            this.uavTracingView.Height = 780;
+            this.uavTracingView.Height = 680;
             this.uavTracingView.DataContext = this;
             this.uavTracingView.Show();
 

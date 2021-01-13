@@ -1,4 +1,5 @@
 ﻿using Gvitech.CityMaker.FdeGeometry;
+using Gvitech.CityMaker.Math;
 using Mmc.Framework.Services;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,16 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             var btn = sender as Button;
             dynamic dataContext = btn.DataContext;
             IPoint poi = dataContext as IPoint;
-            GviMap.Camera.FlyToEnvelope(poi.Envelope);
+            //GviMap.Camera.FlyToEnvelope(poi.Envelope);
+
+            GviMap.Camera.GetCamera2(out IPoint pointCamera, out IEulerAngle eulerAngle);
+            ////GviMap.Camera.FlyToEnvelope(point.Envelope);
+            eulerAngle.Tilt = -90;
+            eulerAngle.Heading = 110;
+            pointCamera.X = poi.X;
+            pointCamera.Y = poi.Y;
+            pointCamera.Z = 1000;
+            GviMap.Camera.SetCamera2(pointCamera, eulerAngle, 0);
         }
 
         private void keydown(object sender, KeyEventArgs e)

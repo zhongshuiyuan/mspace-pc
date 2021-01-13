@@ -99,14 +99,14 @@
                 <DataGridTemplateColumn Header="描线编号" Width="140" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock TextAlignment="Center"  TextTrimming="WordEllipsis" ToolTip="{Binding sn}" Text="{Binding sn}"  FontSize="12"/>
+                            <TextBlock TextAlignment="Center"  TextTrimming="WordEllipsis" ToolTip="{Binding Sn}" Text="{Binding Sn}"  FontSize="12"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="描线名称" Width="117">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock TextAlignment="Center" TextTrimming="WordEllipsis" ToolTip="{Binding name}" Text="{Binding name}"  FontSize="12"/>
+                            <TextBlock TextAlignment="Center" TextTrimming="WordEllipsis" ToolTip="{Binding Name}" Text="{Binding Name}"  FontSize="12"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
