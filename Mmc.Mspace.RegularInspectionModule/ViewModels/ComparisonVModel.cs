@@ -228,6 +228,22 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 if (list[i].Map == null) continue;
                 if (_renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList().Count > 0)
                 {
+                    if(i==0)
+                    {
+                        _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView0;
+                    }
+                    if (i == 1)
+                    {
+                        _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView1;
+                    }
+                    if (i == 2)
+                    {
+                        _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView2;
+                    }
+                    if (i == 3)
+                    {
+                        _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView3;
+                    }
                     flyToRederLayer(list[i].Map.Split('&')[0]);
                     break;
                 }

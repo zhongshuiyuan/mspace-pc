@@ -107,7 +107,10 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
 
         private void OnSaveCmd()
         {
-
+            if (!isCal) {
+                Messages.ShowMessage("暂无计算数据，请先计算后再尝试导出！");
+                return;
+            }
             var item = new
             {
                 list = "",
@@ -122,16 +125,13 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             {
 
                 _currentFileName = saveFileDialog.FileName;
-
-
-
                 var httpDowLoadManager = new HttpDowLoadManager();
                 httpDowLoadManager.Token = HttpServiceUtil.Token;
 
                 Task.Run(() =>
                 {
-                    string downloadReport = string.Format("{0}?line={1}&start={2}&end={3}", PipelineInterface.tracingexport, lineItems[0].sn, lineItems[0].start_sn, lineItems[0].end);
-                    HttpServiceHelper.Instance.DownloadFile(PipelineInterface.tracingexport, _currentFileName, DownloadResult);
+                    string downloadReport = string.Format("{0}?token={1}", PipelineInterface.tracingexport, httpDowLoadManager.Token);
+                    HttpServiceHelper.Instance.DownloadPostFile(downloadReport, _currentFileName, JsonUtil.SerializeToString(item), DownloadResult);
                 });
                 Messages.ShowMessage("导出成功！");
             }
@@ -189,9 +189,12 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
 
         public override void OnUnchecked()//关闭事件
         {
+            isCal = false;
             base.OnUnchecked();
             areaWidthView.Hide();
         }
+
+        public bool isCal = false;
         private void Ca()
         {
             delObjs();
@@ -205,6 +208,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 Cal2();
             }
             Messages.ShowMessage("计算完成，问题点数目为:"+ Convert.ToString(_problemPoints.Count));
+            isCal = true;
         }
         public void Hide()
         {
@@ -365,9 +369,11 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         //}
         private void ClearList()
         {
+
             polylines.Clear();
             _problemPoints.Clear();
             delObjs();
+            isCal = false;
            // ProblemPoints2.Clear();
         }
         private void delObjs()

@@ -910,7 +910,72 @@ namespace Mmc.Mspace.Services.HttpService
 
             return result;
         }
+        /// <summary>
+        /// 以断点续传方式下载文件
+        /// </summary>
+        /// <param name="url">文件下载地址</param>
+        /// <param name="filePath">下载文件的保存路径</param>
+        /// <param name="OnFinish">回调函数</param>
+        public void DownloadPostFile(string url, string filePath, string postData, Action<bool> OnFinish)
+        {
+            //打开上次下载的文件或新建文件
+            long SPosition = 0;
+            FileStream FStream;
+            if (File.Exists(filePath))
+            {
+                FStream = File.OpenWrite(filePath);
+                SPosition = FStream.Length;
+                FStream.Seek(SPosition, SeekOrigin.Current); //移动文件流中的当前指针
+            }
+            else
+            {
+                FStream = new FileStream(filePath, FileMode.Create);
+                SPosition = 0;
+            }
+            //打开网络连接
+            try
+            {
 
+                HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(url);
+
+                myRequest.Method = "POST";
+
+
+                myRequest.Timeout = 20000;//请求超时时间
+
+                byte[] data = Encoding.UTF8.GetBytes(postData);
+
+                myRequest.ContentLength = data.Length;
+                using (Stream reqStream = myRequest.GetRequestStream())
+                {
+                    reqStream.Write(data, 0, data.Length);
+                    reqStream.Close();
+                }
+                if (SPosition > 0)
+                    myRequest.AddRange((int)SPosition);//设置Range值
+                                                       //向服务器请求，获得服务器的回应数据流
+
+                Stream myStream = myRequest.GetResponse().GetResponseStream();
+                byte[] btContent = new byte[512];
+                int intSize = 0;
+                intSize = myStream.Read(btContent, 0, 512);
+                while (intSize > 0)
+                {
+                    FStream.Write(btContent, 0, intSize);
+                    intSize = myStream.Read(btContent, 0, 512);
+                }
+                FStream.Close();
+                myStream.Close();
+                OnFinish(true);
+            }
+            catch (WebException WebEx)
+            {
+                FStream.Close();
+                OnFinish(false);
+                string statusCode = GetWebExceptionCode(WebEx);
+                throw new HttpException(statusCode);
+            }
+        }
         /// <summary>
         /// 以断点续传方式下载文件
         /// </summary>

@@ -372,6 +372,24 @@ namespace Mmc.Mspace.Services.HttpService
             }
 
         }
+
+        public void DownloadPostFile(string dataInterface, string filePath, string postData, Action<bool> OnFinish)
+        {
+            string url = CreateUrl(dataInterface);
+            try
+            {
+                HttpService.DownloadPostFile(url, filePath,  postData, OnFinish);
+            }
+            catch (HttpException ex)
+            {
+                throw new HttpException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
         public void DownloadWithVersion(string dataInterface, string filePath, Action<bool> OnFinish)
         {
             string url = CreateUrl(dataInterface);
