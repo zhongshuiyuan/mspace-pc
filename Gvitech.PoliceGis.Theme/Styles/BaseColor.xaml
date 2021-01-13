@@ -36,7 +36,7 @@
         <GradientStop Color="#1188FF" Offset="1"/>
     </LinearGradientBrush>
     <SolidColorBrush x:Key="LeftWindowTitleBg" Color="#1E2026" Opacity="0.5"/>
-    <SolidColorBrush x:Key="LeftWindowTitleBg2" Color="#000000" Opacity="0.9"/>
+    <SolidColorBrush x:Key="LeftWindowTitleBg2" Color="#000000" Opacity="0.7"/>
     <SolidColorBrush x:Key="LeftWindowBg" Color="#1E2026" Opacity="1"/>
     <SolidColorBrush x:Key="WindowTitleBg" Color="#292C35" Opacity="0.5"/>
 

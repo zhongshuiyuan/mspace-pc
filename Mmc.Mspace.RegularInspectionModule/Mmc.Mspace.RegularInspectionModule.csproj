@@ -194,6 +194,9 @@
     <Compile Include="Views\ScreenHintView.xaml.cs">
       <DependentUpon>ScreenHintView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\TimeView.xaml.cs">
+      <DependentUpon>TimeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\UploadView.xaml.cs">
       <DependentUpon>UploadView.xaml</DependentUpon>
     </Compile>
@@ -343,6 +346,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ScreenHintView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TimeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

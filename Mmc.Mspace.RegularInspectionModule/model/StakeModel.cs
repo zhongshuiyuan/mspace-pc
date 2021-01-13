@@ -57,7 +57,38 @@ namespace Mmc.Mspace.RegularInspectionModule.model
                 NotifyPropertyChanged("Map");
             }
         }
+        private string height;
 
+        public string Height
+        {
+            get { return height; }
+            set
+            {
+                height = value;
+                NotifyPropertyChanged("Height");
+            }
+        }
+        private string _lng;
+        public string Lng
+        {
+            get => _lng;
+            set
+            {
+                _lng = value;
+                NotifyPropertyChanged("Lng");
+            }
+        }
+
+        private string _lat;
+        public string Lat
+        {
+            get => _lat;
+            set
+            {
+                _lat = value;
+                NotifyPropertyChanged("Lat");
+            }
+        }
 
         private string _pipe_id;
 

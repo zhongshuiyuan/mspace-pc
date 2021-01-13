@@ -1,6 +1,7 @@
 ﻿using Gvitech.CityMaker.FdeGeometry;
 using Gvitech.CityMaker.Math;
 using Gvitech.CityMaker.RenderControl;
+using Microsoft.Office.Interop.Word;
 using Mmc.Framework.Draw;
 using Mmc.Framework.Services;
 using Mmc.MathUtil;
@@ -138,7 +139,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             //生成图片
             string NavigationImgCompletePath = NavigationImgPath + GetTimeStamp() + ".png";
 
-            bool b = GviMap.MapControl.ExportManager.ExportImage(NavigationImgCompletePath, 120, 120, true);
+            bool b = GviMap.MapControl.ExportManager.ExportImage(NavigationImgCompletePath, 480, 480, true);
             var item = new
             {
                 list = JsonUtil.SerializeToString(tracingModels),
@@ -151,7 +152,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 _currentFileName = saveFileDialog.FileName;
                 var httpDowLoadManager = new HttpDowLoadManager();
                 httpDowLoadManager.Token = HttpServiceUtil.Token;
-                Task.Run(() =>
+                System.Threading.Tasks.Task.Run(() =>
                 {
                     string downloadReport = string.Format("{0}?token={1}", PipelineInterface.tracingexport, httpDowLoadManager.Token);
                     HttpServiceHelper.Instance.DownloadPostFile(downloadReport, _currentFileName, JsonUtil.SerializeToString(item), DownloadResult);
@@ -161,7 +162,29 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 Messages.ShowMessage("导出成功！");
             }
         }
-
+        public bool WordToPDF(string sourcePath, string targetPath)
+        {
+            bool result = false;
+            Microsoft.Office.Interop.Word.Application application = new Microsoft.Office.Interop.Word.Application();
+            Document document = null;
+            try
+            {
+                application.Visible = false;
+                document = application.Documents.Open(sourcePath);
+                document.ExportAsFixedFormat(targetPath, WdExportFormat.wdExportFormatPDF);
+                result = true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                result = false;
+            }
+            finally
+            {
+                document.Close();
+            }
+            return result;
+        }
         /// <summary>
         /// 手动获取中线桩
         /// </summary>
@@ -182,6 +205,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             {
                 if (File.Exists(_currentFileName))
                 {
+                    //WordToPDF(_currentFileName,_currentFileName);
                     System.Diagnostics.Process.Start(_currentFileName);
                 }
                 //Messages.ShowMessage(Helpers.ResourceHelper.FindKey("SAVESUCCESSED"));

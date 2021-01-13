@@ -402,7 +402,7 @@
                             <DoubleAnimation Duration="0:0:0.2"  Storyboard.TargetName="tbMessage" Storyboard.TargetProperty="Opacity" To="0.6"/>
                         </Storyboard>
                     </ControlTemplate.Resources>
-                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="2" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
+                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" CornerRadius="2" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="true">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>

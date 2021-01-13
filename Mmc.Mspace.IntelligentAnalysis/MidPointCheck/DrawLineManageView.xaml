@@ -33,7 +33,7 @@
             <Button Width="88" Height="32" Style="{StaticResource DefaultuploadButtonStyle}" Content="新建描线" Command="{Binding CreatLineCmd}"  BorderThickness="0" Margin="10,5,5,5">
             </Button>
             <TextBox HorizontalAlignment="Left"  Style="{DynamicResource AddressTbxSearchStyle}"
-                     Width="231" Height="32" 
+                     Width="231" Height="32"  Background="{StaticResource DefaultTextBoxBackground}"
                      Helper:TextBoxHelper.IsNeedClearButton="False" Helper:TextBoxHelper.ButtonCommand="{Binding SearchCmd}"
                      Text="{Binding ReportSearchText,UpdateSourceTrigger=PropertyChanged}" Margin="17,8" />
         </DockPanel>
@@ -41,11 +41,11 @@
                      BorderBrush="Black"   
                       CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False"   
                       Name="MidLinedg"  ItemsSource="{Binding DrawLineListCollection}">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectionChanged">
+            <!--<i:Interaction.Triggers>
+                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
                     <i:InvokeCommandAction  Command="{Binding Path=DataContext.SelectCommand,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"/>
                 </i:EventTrigger>
-            </i:Interaction.Triggers>
+            </i:Interaction.Triggers>-->
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -150,6 +150,8 @@
                                                 Style="{StaticResource AddandExportAccountBtnStyle}" 
                                                 Command="{Binding DataContext.ChangeCmd,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}" 
                                                 CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"/>
+                                <ToggleButton x:Name="FirstEye"  Margin="20,0,0,0" ToolTip="是否显示" IsChecked="{Binding EyeStatus}"
+                                       Command="{Binding DataContext.SelectCommand,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}"  Style="{DynamicResource MapTogButtonStyle}" CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"></ToggleButton>
                                 <!--<controls:Buttons x:Name="bs2" Height="23" Width="30" Content=""  Margin="20,0,0,0"
 											    ToolTip="是否显示"
                                                 RIcon="{DynamicResource Account_Edit}"

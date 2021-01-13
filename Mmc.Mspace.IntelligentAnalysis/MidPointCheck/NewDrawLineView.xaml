@@ -7,14 +7,13 @@
         xmlns:helper="clr-namespace:Mmc.Mspace.Theme.Helper;assembly=Mmc.Mspace.Theme"
         mc:Ignorable="d"
         xmlns:blankWindow="http://GFramework.org"
-        Title="NewDrawLineView" Height="420" Width="320" ResizeMode="NoResize"  ShowInTaskbar="False" Style="{StaticResource AllowsTransparencyWindowStyle2}">
+        Title="NewDrawLineView" Height="370" Width="320" ResizeMode="NoResize"  ShowInTaskbar="False" Style="{StaticResource AllowsTransparencyWindowStyle2}">
     <Grid Margin="0,0,3.4,-0.8">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
@@ -44,22 +43,22 @@
             </ComboBox>
         </DockPanel>
         <DockPanel Grid.Row="3">
-            <!--<TextBlock Text="描线方式：" FontSize="16"  Margin="10,5,5,5" VerticalAlignment="Center" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
-            <ComboBox x:Name="DrawLineWay" HorizontalAlignment="Left"  SelectedItem="{Binding SelectedItem}"  Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="100" Margin="5,5,5,5"></ComboBox>-->
-            <Button x:Name="DrawlineBtn" Width="52" Height="24" Style="{StaticResource DefaultuploadButtonStyle}" Content="去描线" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,5,30,5" Command="{Binding GoDrawLine}">
+            <TextBlock Text="描线方式：" FontSize="16"  Margin="10,5,5,5" VerticalAlignment="Center" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
+            <ComboBox x:Name="DrawLineWay" HorizontalAlignment="Left"  SelectedItem="{Binding SelectedItem,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="100" ItemsSource="{Binding IsAutos}" Margin="5,5,5,5"></ComboBox>
+            <Button x:Name="DrawlineBtn" Width="52" Visibility="{Binding NoAuto}" Height="24" Style="{StaticResource DefaultuploadButtonStyle}" Content="去描线" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,5,30,5" Command="{Binding GoDrawLine}">
             </Button>
         </DockPanel>
       
-        <DockPanel Grid.Row="4">
+        <!--<DockPanel Grid.Row="4">
             <TextBlock Text="是否显示：" FontSize="16" VerticalAlignment="Center" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <ComboBox x:Name="VisibleOrNot" HorizontalAlignment="Left" SelectedItem="{Binding IsShowItem}" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="5,5,0,5"></ComboBox>
           
-        </DockPanel>
+        </DockPanel>-->
 
-        <DockPanel Grid.Row="5">
+        <DockPanel Grid.Row="5" Visibility="{Binding Auto}">
             <TextBlock Text="起始桩号：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <!--<TextBox Text="{Binding StartPoi}"  helper:TextBoxHelper.IsNeedClearButton="False"  HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="32" Width="50" Margin="5,0,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>-->
-            <ComboBox HorizontalAlignment="Left" IsDropDownOpen="{Binding StartIsDropDownOpen}" SelectedValuePath="id" DisplayMemberPath="Sn" IsEditable="True" x:Name="startPoicobx" Style="{DynamicResource DefaultComboBoxStyle}"  ItemsSource="{Binding StakeModels}" SelectedItem="{Binding StartPoi}" Height="32" Width="180" Margin="5,5,0,5" VerticalAlignment="Center">
+            <ComboBox HorizontalAlignment="Left"  IsDropDownOpen="{Binding StartIsDropDownOpen}" SelectedValuePath="id" DisplayMemberPath="Sn" IsEditable="True" x:Name="startPoicobx" Style="{DynamicResource DefaultComboBoxStyle}"  ItemsSource="{Binding StakeModels}" SelectedItem="{Binding StartPoi}" Height="32" Width="180" Margin="5,5,0,5" VerticalAlignment="Center">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="KeyUp">
                         <i:InvokeCommandAction  Command="{Binding Path=DataContext.StartSearchCommand,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding Text,ElementName=startPoicobx}"/>
@@ -67,7 +66,7 @@
                 </i:Interaction.Triggers>
             </ComboBox>
         </DockPanel>
-        <DockPanel Grid.Row="6" >
+        <DockPanel Grid.Row="6" Visibility="{Binding Auto}" >
             <TextBlock Text="终止桩号：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <!--<TextBox Text="{Binding EndPoi}"  helper:TextBoxHelper.IsNeedClearButton="False" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="32" Width="50" Margin="0,0,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>-->
             <ComboBox HorizontalAlignment="Left" IsDropDownOpen="{Binding EndIsDropDownOpen}" SelectedItem="{Binding EndPoi}" IsEditable="True" SelectedValuePath="id" x:Name="endPoicobx" DisplayMemberPath="Sn" ItemsSource="{Binding StakeModels2}" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="5,5,0,5">

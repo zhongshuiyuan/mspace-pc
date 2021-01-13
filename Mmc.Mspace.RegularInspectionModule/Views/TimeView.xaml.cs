@@ -12,26 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
+namespace Mmc.Mspace.RegularInspectionModule.Views
 {
     /// <summary>
-    /// NewDrawLineView.xaml 的交互逻辑
+    /// TimeView.xaml 的交互逻辑
     /// </summary>
-    public partial class NewDrawLineView
+    public partial class TimeView 
     {
-        public NewDrawLineView()
+        public TimeView()
         {
             InitializeComponent();
-            //VisibleOrNot.Items.Add("是");
-            //VisibleOrNot.Items.Add("否");
-        }
-        public void CloseWindow()
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                this.Close();
-            });
-
         }
     }
 }

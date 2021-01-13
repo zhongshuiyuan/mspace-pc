@@ -36,6 +36,11 @@ using Mmc.Windows.Utils;
 using System.Threading;
 using System.Threading.Tasks;
 using QQ2564874169.Miniblink;
+using Mmc.Mspace.RegularInspectionModule.model;
+using Mmc.Mspace.Const.ConstDataInterface;
+using System.Collections.Generic;
+using Gvitech.CityMaker.RenderControl;
+using Gvitech.CityMaker.Math;
 
 namespace MMC.MSpace
 {
@@ -68,6 +73,7 @@ namespace MMC.MSpace
             c_daListAnimation.BeginTime = TimeSpan.FromSeconds(1);//获取或设置此 Timeline 将要开始的时间。
             c_daListAnimation.FillBehavior = FillBehavior.HoldEnd;//获取或设置一个值，该值指定 Timeline 在活动周期结束后的行为方式。
             c_daListAnimation.Duration = new Duration(TimeSpan.FromSeconds(0.5));//获取或设置此时间线播放的时间长度，而不是计数重复。
+            getStackList();
         }
 
 
@@ -271,7 +277,6 @@ namespace MMC.MSpace
                         regularInspectionView.DataContext = regularInspectionVModel;
 
                     }
-
                     if (comparisonView == null)
                     {
                         comparisonView = new ComparisonView();
@@ -349,7 +354,63 @@ namespace MMC.MSpace
                 try { base.DragMove(); } catch (Exception) { }
             }
         }
+        private List<StakeModel> _stakeModels = new List<StakeModel>();
+        public List<StakeModel> StakeModels
+        {
+            get { return _stakeModels; }
+            set
+            {
+                _stakeModels = value;
+            }
+        }
+        /// <summary>
+        /// 获取中
+        /// </summary>
+        private void getStackList()
+        {
+            Task.Run(() =>
+            {
+                string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex);
+                this.StakeModels = (JsonUtil.DeserializeFromString<List<StakeModel>>(resStr));
+                DrawAutoLine();
+            });
+        }
+        List<Guid> guids = new List<Guid>();
+        IRenderPolyline rLine;
+        private void DrawAutoLine()
+        {
+            string header = "linestring z (";
+            string end = ")";
+            string line = "";
+            for (int i = 0; i < StakeModels.Count; i++)
+            {
+                if (i > this.StakeModels.Count - 1) return;
+                if (i == StakeModels.Count - 1)
+                {
+                    line += (StakeModels[i].Lng + " " + StakeModels[i].Lat + " " + (string.IsNullOrEmpty(StakeModels[i].Height) ? "0" : StakeModels[i].Height));
+                }
+                else
+                {
+                    line += (StakeModels[i].Lng + " " + StakeModels[i].Lat + " " + (string.IsNullOrEmpty(StakeModels[i].Height) ? "0" : StakeModels[i].Height) + ",");
 
+                }
+            }
+           string Geom = header + line + end;
+
+            var polyLine = GviMap.GeoFactory.CreatePolyline(Geom, GviMap.SpatialCrs);
+            CurveSymbol curveSymbol = new CurveSymbol();
+            curveSymbol.Color = ColorConvert.Argb(100, 255, 0, 0);//GviMap.LinePolyManager.CurveSym
+            curveSymbol.Width = 50f;
+             rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
+
+            rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
+            GviMap.Camera.FlyToEnvelope(polyLine.Envelope);
+            guids.Add(rLine.Guid);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.guandao.Content = "隐藏管道";
+            });
+        }
         private void Menu_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (e.ClickCount == 1)
@@ -606,6 +667,22 @@ namespace MMC.MSpace
         {
             this.CancelComparison.Visibility = Visibility.Collapsed;
             Messenger.Messengers.Notify("closeComparison", true);
+        }
+        private bool isVisible = true;
+        private void guandao_Click(object sender, RoutedEventArgs e)
+        {
+            if(isVisible)
+            {
+                this.guandao.Content = "显示管道";
+                rLine?.SetVisibleMask(GviMap.Viewport.ViewportMode, 0, false);
+                isVisible = false;
+            }
+            else
+            {
+                isVisible = true ;
+                this.guandao.Content = "隐藏管道";
+                rLine?.SetVisibleMask(GviMap.Viewport.ViewportMode, 0, true);
+            }
         }
     }
 }

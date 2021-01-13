@@ -7,6 +7,7 @@ using Mmc.Mspace.Common.Models;
 using Mmc.Mspace.Const.ConstDataInterface;
 using Mmc.Mspace.Const.ConstPath;
 using Mmc.Mspace.IntelligentAnalysisModule.AreaWidth;
+using Mmc.Mspace.IntelligentAnalysisModule.Models;
 using Mmc.Mspace.Services.HttpService;
 using Mmc.Mspace.Services.NetRouteAnalysisService;
 using Mmc.Mspace.Theme.Pop;
@@ -38,6 +39,16 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             }
         }
 
+        private string _ReportSearchText;
+
+        public string ReportSearchText
+        {
+            get { return _ReportSearchText; }
+            set { _ReportSearchText = value;
+                base.SetAndNotifyPropertyChanged<string>(ref this._ReportSearchText, value, "ReportSearchText");
+            }
+        }
+
         ObservableCollection<LineItem> _tempItemList = new ObservableCollection<LineItem>();
         public ObservableCollection<LineItem> TempItemList
         {
@@ -48,8 +59,17 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 base.SetAndNotifyPropertyChanged<ObservableCollection<LineItem>>(ref this._tempItemList, value, "TempItemList");
             }
         }
+        private ObservableCollection<TracingLineModel> _tracingLineModels = new ObservableCollection<TracingLineModel>();
+        public ObservableCollection<TracingLineModel> TracingLineModels
+        {
+            get { return _tracingLineModels; }
+            set
+            {
+                _tracingLineModels = value;
+                base.SetAndNotifyPropertyChanged<ObservableCollection<TracingLineModel>>(ref this._tracingLineModels, value, "TracingLineModels");
+            }
+        }
 
-        
         private SelectView selectView = null;
         private NewDrawLineVModel newDrawLineVModel = null;
 
@@ -63,11 +83,11 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         public ICommand ChangeCmd { get; set; }
         public ICommand VisualCmd { get; set; }
 
-        private RelayCommand<object> _selectCommand;
+        private RelayCommand<LineItem> _selectCommand;
 
-        public RelayCommand<object> SelectCommand
+        public RelayCommand<LineItem> SelectCommand
         {
-            get { return _selectCommand ?? (_selectCommand = new RelayCommand<object>(OnSelectCommand)); }
+            get { return _selectCommand ?? (_selectCommand = new RelayCommand<LineItem>(OnSelectCommand)); }
             set { _selectCommand = value; }
         }
         private RelayCommand _updateSaveCommand;
@@ -108,7 +128,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                     newDrawLineVModel = new NewDrawLineVModel();
                     newDrawLineVModel.HideParentsWin = drawLineManageView.Hide;
                     newDrawLineVModel.ShowParentsWin = ShowWin;
-                    newDrawLineVModel.AddPipe += AddLinePipe;
+                    newDrawLineVModel.AddPipe = AddLinePipe;
                 }
                 newDrawLineVModel.ClearData();
                 newDrawLineVModel.ShowDrawWin();
@@ -120,7 +140,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             });
             this.SearchCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
-                //DelItems();
+                DelItems();
             });
             this.IsOpenCmd = new Mmc.Wpf.Commands.RelayCommand<LineItem>((lineitm) => ChangeIsChecked(lineitm));
             this.AreaWidthCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
@@ -167,7 +187,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                     newDrawLineVModel = new NewDrawLineVModel();
                     newDrawLineVModel.HideParentsWin = drawLineManageView.Hide;
                     newDrawLineVModel.ShowParentsWin = ShowWin;
-                    newDrawLineVModel.AddPipe += AddLinePipe;
+                    newDrawLineVModel.AddPipe = AddLinePipe;
                 }
                 DelObjs();
                 newDrawLineVModel.ChangedData(obj as LineItem);
@@ -223,16 +243,35 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         }
 
         private LineItem selectLineItem = null;
-        private void OnSelectCommand(object obj)
+        private void OnSelectCommand(LineItem obj)
         {
             if (obj == null) return;
-            DelObjs();
-            polylines = new List<IPolyline>();
-            selectLineItem = obj as LineItem;
+            //DelObjs();
+            //polylines = new List<IPolyline>();
+            selectLineItem = obj ;
+            if(guids.Count>0&& guids.ContainsKey(selectLineItem.id))
+            {
+                SetVisibleMask(selectLineItem, selectLineItem.EyeStatus);
+                if (!selectLineItem.EyeStatus)
+                {
+                    Guid id = guids[selectLineItem.id];
+                    gettracinglineList(id, selectLineItem.id);
+                    SetVideo(rLines.SingleOrDefault(t => t.Guid == id).Guid);
+                }
+                else
+                {
+                    Guid id = guids[selectLineItem.id];
+                    ClearPatrolList(rLines.SingleOrDefault(t => t.Guid == id).Guid.ToString());
+                }
+                selectLineItem.EyeStatus = !selectLineItem.EyeStatus;
+                return;
+            }
 
+
+            if (guids.ContainsKey(selectLineItem.id)) return;
             var polyLine = GviMap.GeoFactory.CreatePolyline(selectLineItem.geom, GviMap.SpatialCrs);
             if (polyLine == null) return;
-           
+       
             if (polyLine.EndPoint == null) return;
             CurveSymbol curveSymbol = new CurveSymbol();
             curveSymbol.Color = ColorConvert.Argb(100, 238, 103, 35);//GviMap.LinePolyManager.CurveSym
@@ -240,7 +279,9 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
         
             if (rLine == null) return;
-            guids.Add(rLine.Guid);
+            rLines.Add(rLine);
+            gettracinglineList(rLine.Guid,selectLineItem.id);
+            guids.Add(selectLineItem.id,rLine.Guid);
             rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
             //GviMap.Camera.FlyToObject(rLine.Guid, gviActionCode.gviActionFlyTo);
             //var poly0 = GviMap.GeoFactory.CreateFromWKT(lineItem.geom) as IPolyline;
@@ -255,9 +296,27 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             GviMap.Camera.SetCamera2(pointCamera, eulerAngle, 0);
             if (polyLine != null)
             {
-                polylines.Add(polyLine);
+                polylines.Add(rLine.Guid,polyLine);
             }
-            SetVideo();
+        
+            selectLineItem.EyeStatus = true;
+        }
+
+        private void SetVisibleMask(LineItem line,bool visi)
+        {
+            Guid id = guids[line.id];
+            rLines.SingleOrDefault(t => t.Guid == id)?.SetVisibleMask(GviMap.Viewport.ViewportMode, 0, !visi);
+        }
+     
+        /// <summary>
+        /// 手动获取中线桩
+        /// </summary>
+        private void gettracinglineList(Guid guid,string id)
+        {
+            this.TracingLineModels = new ObservableCollection<TracingLineModel>();
+            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.tracinglineList + "?traces=" + id);
+            this.TracingLineModels = (JsonUtil.DeserializeFromString<ObservableCollection<TracingLineModel>>(resStr));
+            SetVideo(guid);
         }
 
         public override void OnUnchecked()
@@ -280,34 +339,27 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             return topo.Buffer2D(dis, gviBufferStyle.gviBufferCapround);
         }
         public Dictionary<string, Guid> poiList = new Dictionary<string, Guid>();
-        private void SetVideo()
+        private void SetVideo(Guid guid)
         {
-            if (polylines.Count >0)
+            if (TracingLineModels.Count >0)
             {
-                for (int i = 0; i < polylines[0].PointCount; i++)
+                for (int i = 0; i < TracingLineModels.Count; i++)
                 {
-                    var point = polylines[0].GetPoint(i);
+                    var point = TracingLineModels[i];
 
                     var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
-                    if(i==0)
-                    {
-                        poi.Name = selectLineItem.start_sn;
-                        poi.ShowName = true;
-                    }
-                    if (i == polylines[0].PointCount-1)
-                    {
-                        poi.Name = selectLineItem.end_sn;
-                        poi.ShowName = true;
-                    }
-                    poi.SetPostion(point.X, point.Y);
+             
+                    poi.MaxVisibleDistance = 10000.0;
+                    poi.MinVisibleDistance = 1.0;
+                    poi.Name = point.Sn;
+                    poi.ShowName = true;
+                    poi.SetPostion( Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat));
                     poi.Size = 50;
-                  
-                    poi.ShowName = false;
                     poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");
                     poi.SpatialCRS = GviMap.SpatialCrs;
                     var rPoi = GviMap.ObjectManager.CreateRenderPOI(poi);
                     rPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
-                    this.poiList.Add(rPoi.Guid.ToString(), rPoi.Guid);
+                    this.poiList.Add(rPoi.Guid.ToString(), guid);
                 }
             }
         }
@@ -337,50 +389,51 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
 
         private void DelObjs()
         {
-            ClearPatrolList();
+            ClearPatrolList(null);
             foreach (var item in guids)
             {
-                GviMap.ObjectManager.DeleteObject(item);
+                GviMap.ObjectManager.DeleteObject(item.Value);
             }
             guids.Clear();
         }
-        public void ClearPatrolList()
+        public void ClearPatrolList(string str)
         {
-            Dictionary<string, Guid> expr_07 = this.poiList;
+            Dictionary<string, Guid> expr_07 = null;
+
+            if (str == null)
+            {
+                expr_07 = this.poiList;
+            }
+            else
+            {
+                Guid guid = Guid.Parse(str);
+                expr_07 = this.poiList.Where(t => t.Value == guid).ToDictionary(product => product.Key, product => product.Value);
+
+            }
             bool flag = expr_07 == null || expr_07.Count > 0;
             if (flag)
             {
-                foreach (KeyValuePair<string, Guid> current in this.poiList)
+                foreach (KeyValuePair<string, Guid> current in expr_07)
                 {
-                    GviMap.ObjectManager.DeleteObject(current.Value);
+                    GviMap.ObjectManager.DeleteObject(Guid.Parse(current.Key));
+                    if (str != null)
+                        this.poiList.Remove(current.Key);
                 }
             }
-            this.poiList = new Dictionary<string, Guid>();
+            if (str == null)
+                this.poiList = new Dictionary<string, Guid>();
         }
-        List<IPolyline> polylines = new List<IPolyline>();
+        Dictionary<Guid,IPolyline> polylines = new Dictionary<Guid,IPolyline>();
+        List<IRenderPolyline> rLines = new List<IRenderPolyline>();
         ObservableCollection<IPoint> _problemPoints = new ObservableCollection<IPoint>();
-        List<Guid> guids = new List<Guid>();
+        Dictionary<string,Guid> guids = new Dictionary<string,Guid>();
         public List<LineItem> lineItems = new List<LineItem>();
-        private void CreatRenPoi(IPoint point)
-        {
-            var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
-            poi.SetPostion(point.X, point.Y, 2);
-            poi.Size = 30;
-            poi.ShowName = true;
-            poi.MaxVisibleDistance = 5000;
-            poi.MinVisibleDistance = 100;
-            //poi.Name = onePerson.name;
-            poi.SpatialCRS = GviMap.SpatialCrs;
-            poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "alphabet_P");//Helpers.ResourceHelper.FindResourceByKey("userImg").ToString();//
-            IRenderPOI rpoi = GviMap.ObjectManager.CreateRenderPOI(poi);
-            rpoi.DepthTestMode = gviDepthTestMode.gviDepthTestAdvance;
-            guids.Add(rpoi.Guid);
-        }
+    
         private void GetLineData()
         {
             DrawLineListCollection.Clear();
             var json = JsonUtil.DeserializeFromFile<dynamic>(AppDomain.CurrentDomain.BaseDirectory + ConfigPath.WebConnectConfig);
-            string url = string.Format("{0}/api/tracing/index", json.poiUrl);
+            string url = string.Format("{0}/api/tracing/index?page=1&page_size=100", json.poiUrl);
             var httpservice = new HttpService();
             httpservice.Token = HttpServiceUtil.Token;
             var uavResult = string.Empty;
@@ -405,6 +458,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 lineItem.IsChecked = false;
                 DrawLineListCollection.Add(lineItem);
             }
+            OnSelectCommand(DrawLineListCollection[0]);
         }
       
         private void AddLinePipe(LineItem lineItem)

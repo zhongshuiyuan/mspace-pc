@@ -8,6 +8,7 @@ using Mmc.Mspace.Common.ShellService;
 using Mmc.Mspace.Const.ConstDataInterface;
 using Mmc.Mspace.PoiManagerModule.Models;
 using Mmc.Mspace.RegularInspectionModule.model;
+using Mmc.Mspace.RegularInspectionModule.Views;
 using Mmc.Mspace.Services.DataSourceServices;
 using Mmc.Mspace.Services.HttpService;
 using Mmc.Mspace.Services.MapHostService;
@@ -21,6 +22,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Mmc.Mspace.RegularInspectionModule.ViewModels
 {
@@ -152,6 +154,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 mapView.Width = shellView.Width;
                 mapView.Left = shellView.Left;
                 mapView.UpdateLayout();
+                this.closewin();
                 //退出恢复单屏模式
                 GviMap.Viewport.ViewportMode = gviViewportMode.gviViewportSinglePerspective;
                 GviMap.AxMapControl.InteractMode = gviInteractMode.gviInteractNormal;
@@ -190,14 +193,37 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             StakeModel stake = stakeModel as StakeModel;
             stake.IsChecked = !stake.IsChecked;
         }
+        TimeView timeView1 = null;
+        TimeView timeView2 = null;
+        TimeView timeView3 = null;
+        TimeView timeView4 = null;
+        private void closewin()
+        {
+            if (timeView1 != null)
+            {
+                timeView1.Close();
+            }
+            if (timeView2 != null)
+            {
+                timeView2.Close();
+            }
+            if (timeView3 != null)
+            {
+                timeView3.Close();
+            }
+            if (timeView4 != null)
+            {
+                timeView4.Close();
+            }
+        }
         /// <summary>
         /// 多期对比
         /// </summary>
         /// <param name="obj"></param>
         private void OnComparisonCommand(object obj)
         {
-
-            if(_renderLayers.Count<1)
+            closewin();
+            if (_renderLayers.Count<1)
             {
                 Messages.ShowMessage("当前视角过高或当前地图中没有相关模型！");
                 return;
@@ -222,30 +248,67 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
 
             Messenger.Messengers.Notify(CommonContract.MessengerKey.Openscreen.ToString(), list.Count.ToString());
             Messenger.Messengers.Notify("openComparison",true);
-
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i].Map == null) continue;
+                if (list[i].Map == null)
+                {
+                     timeView1 = new TimeView();
+                    timeView1.Owner = Application.Current.MainWindow;
+                    timeView1.WindowStartupLocation = WindowStartupLocation.Manual;
+                    timeView1.Top = 60;
+                    timeView1.Left = 100;
+                    timeView1.TimeText.Text = list[i].Time;
+                    timeView1.Show();
+                    continue;
+                }
                 if (_renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList().Count > 0)
                 {
-                    if(i==0)
+
+                    if (i == 0)
                     {
+                        timeView1 = new TimeView();
+                        timeView1.Owner = Application.Current.MainWindow;
+                        timeView1.WindowStartupLocation = WindowStartupLocation.Manual;
+                        timeView1.Top = 60;
+                        timeView1.Left = (list.Count < 3 || list.Count == 4) ? mapView.Width / 2 - 300 : mapView.Width / 3 - 300;
+                        timeView1.TimeText.Text = list[i].Time;
+                        timeView1.Show();
                         _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView0;
                     }
                     if (i == 1)
                     {
+                        timeView2 = new TimeView();
+                        timeView2.Owner = Application.Current.MainWindow;
+                        timeView2.WindowStartupLocation = WindowStartupLocation.Manual;
+                        timeView2.Top = 60;
+                        timeView2.Left = (list.Count < 3 || list.Count == 4) ? mapView.Width - 300 : (mapView.Width / 3) *2 - 300;
+                        timeView2.TimeText.Text = list[i].Time;
+                        timeView2.Show();
                         _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView1;
                     }
                     if (i == 2)
                     {
+                        timeView3 = new TimeView();
+                        timeView3.Owner = Application.Current.MainWindow;
+                        timeView3.WindowStartupLocation = WindowStartupLocation.Manual;
+                        timeView3.Top = (list.Count < 4 ? 0 : mapView.Height / 2) + 60;
+                        timeView3.Left = (list.Count == 3) ? mapView.Width -300 : mapView.Width / 2 - 300;
+                        timeView3.TimeText.Text = list[i].Time;
+                        timeView3.Show();
                         _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView2;
                     }
                     if (i == 3)
                     {
+                        timeView4 = new TimeView();
+                        timeView4.Owner = Application.Current.MainWindow;
+                        timeView4.WindowStartupLocation = WindowStartupLocation.Manual;
+                        timeView4.Top = mapView.Height / 2 + 60;
+                        timeView4.Left = mapView.Width -300;
+                        timeView4.TimeText.Text = list[i].Time;
+                        timeView4.Show();
                         _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView3;
                     }
                     flyToRederLayer(list[i].Map.Split('&')[0]);
-                    break;
                 }
             }
         }
@@ -303,6 +366,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         public void UpdateSource()
         {
             getSource();
+            closewin();
         }
         private void getSource()
         {

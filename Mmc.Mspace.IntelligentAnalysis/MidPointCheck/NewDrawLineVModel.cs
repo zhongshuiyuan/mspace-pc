@@ -107,7 +107,36 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         public string IsShowItem
         {
             get { return _isShowItem; }
-            set { _isShowItem = value; OnPropertyChanged("IsShowItem"); }
+            set 
+            {
+                _isShowItem = value;
+                OnPropertyChanged("IsShowItem");
+
+            }
+        }
+
+        private Visibility _auto= Visibility.Collapsed;
+
+        public Visibility Auto
+        {
+            get { return _auto; }
+            set { _auto = value; OnPropertyChanged("Auto"); }
+        }
+
+        private Visibility _noAuto = Visibility.Visible;
+
+        public Visibility NoAuto
+        {
+            get { return _noAuto; }
+            set { _noAuto = value; OnPropertyChanged("NoAuto"); }
+        }
+
+        private List<string> _IsAutos;
+
+        public List<string> IsAutos
+        {
+            get { return _IsAutos??(_IsAutos=new List<string>()); }
+            set { _IsAutos = value; }
         }
 
 
@@ -116,7 +145,21 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         public string SelectedItem
         {
             get { return _SelectedItem; }
-            set { _SelectedItem = value; OnPropertyChanged("SelectedItem"); }
+            set 
+            {
+                _SelectedItem = value;
+                OnPropertyChanged("SelectedItem");
+                if(_SelectedItem=="自动")
+                {
+                    Auto = Visibility.Visible;
+                    NoAuto = Visibility.Collapsed;
+                }
+                else
+                {
+                    Auto = Visibility.Collapsed;
+                    NoAuto = Visibility.Visible;
+                }
+            }
         }
         private PipeModel _selectPipeModel;
         /// <summary>
@@ -264,13 +307,6 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             set { _deletePointCommand = value; }
         }
 
-        private RelayCommand _savePointCommand;
-        public RelayCommand SavePointCommand
-        {
-            get { return _savePointCommand ?? (_savePointCommand = new RelayCommand(OnSavePointCommand)); }
-            set { _savePointCommand = value; }
-        }
-
         private RelayCommand<TracingLineModel> _editCommand;
 
         public RelayCommand<TracingLineModel> EditCommand
@@ -290,6 +326,13 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         
         public NewDrawLineVModel()
         {
+            IsAutos = new List<string>()
+            {
+                "自动",
+                "手动"
+            };
+            SelectedItem = "自动";
+            OnPropertyChanged("SelectedItem");
             this.NewLineCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
                AddLineData();               
@@ -297,16 +340,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             this.GoDrawLine = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
                 TracingLineModels = new ObservableCollection<TracingLineModel>();
-                if (string.IsNullOrEmpty(PipeName))
-                {
-                    Messages.ShowMessage("请选输入描线名称！");
-                    return;
-                }
-                if (SelectPipeModel == null)
-                {
-                    Messages.ShowMessage("请选择对应管线！");
-                    return;
-                }
+             
                 //if (SelectedItem == null)
                 //{
                 //    Messages.ShowMessage("请选择描线方式！");
@@ -370,9 +404,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             DelObjs();
             traceListView.Hide();
         }
-        private void OnSavePointCommand() {
-            this.AddLineData();
-        }
+     
         private void OnVisualCmd(TracingLineModel obj)
         {
             ChangeTracingLineModel = new TracingLineModel();
@@ -539,7 +571,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             this.StartPoi = null;
             this.EndPoi = null;
             this.EndPoi = null;
-            this.SelectedItem = null;
+            Geom = "";
+            this.SelectedItem = "自动";
         }
         /// <summary>
         /// 自动获取中线桩
@@ -599,6 +632,9 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 }
             }
              Geom = header + line + end;
+
+
+            if (SelectedItem == "自动") return;
      
             var polyLine = GviMap.GeoFactory.CreatePolyline(Geom, GviMap.SpatialCrs);
             CurveSymbol curveSymbol = new CurveSymbol();
@@ -634,51 +670,21 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         }
 
         public Dictionary<string, Guid> poiList = new Dictionary<string, Guid>();
-        private void SetStartEndVideo()
-        {
-            //start
-            var startpoi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
-            startpoi.SetPostion( Convert.ToDouble(StartPoi.Lng) , Convert.ToDouble(StartPoi.Lat));
-            startpoi.Size = 50;
-            startpoi.ShowName = false;
-            startpoi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");
-            startpoi.SpatialCRS = GviMap.SpatialCrs;
-            var startrPoi = GviMap.ObjectManager.CreateRenderPOI(startpoi);
-            startrPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
-            this.poiList.Add(startrPoi.Guid.ToString(), startrPoi.Guid);
-            //end
-            var endpoi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
-            endpoi.SetPostion(Convert.ToDouble(EndPoi.Lng), Convert.ToDouble(EndPoi.Lat));
-            endpoi.Size = 50;
-            endpoi.ShowName = false;
-            endpoi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");
-            endpoi.SpatialCRS = GviMap.SpatialCrs;
-            var rPoi = GviMap.ObjectManager.CreateRenderPOI(endpoi);
-            rPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
-            this.poiList.Add(rPoi.Guid.ToString(), rPoi.Guid);
-
-
-            GviMap.Camera.GetCamera2(out IPoint pointCamera, out IEulerAngle eulerAngle);
-            eulerAngle.Tilt = -90;
-            eulerAngle.Heading = 210;
-            pointCamera.X = startpoi.Envelope.MaxX;
-            pointCamera.Y = startpoi.Envelope.MaxY;
-            pointCamera.Z = 3000;
-            GviMap.Camera.SetCamera2(pointCamera, eulerAngle, 0);
-        }
         private void SetVideo()
         {
-            if (polylines.Count > 0)
+            if (TracingLineModels.Count > 0)
             {
-                for (int i = 0; i < polylines[0].PointCount; i++)
+                for (int i = 0; i < TracingLineModels.Count; i++)
                 {
-                    var point = polylines[0].GetPoint(i);
+                    var point = TracingLineModels[i];
 
                     var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
-
-                    poi.SetPostion(point.X, point.Y);
+                    poi.Name = point.Sn;
+                    poi.SetPostion(Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat));
                     poi.Size = 50;
-                    poi.ShowName = false;
+                    poi.ShowName = true;
+                    poi.MaxVisibleDistance = 10000.0;
+                    poi.MinVisibleDistance = 1.0;
                     poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");
                     poi.SpatialCRS = GviMap.SpatialCrs;
                     var rPoi = GviMap.ObjectManager.CreateRenderPOI(poi);
@@ -712,20 +718,31 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
 
         private bool checkData()
         {
-            if (string.IsNullOrEmpty(Geom))
+            if (SelectedItem!="自动"&&string.IsNullOrEmpty(Geom))
             {
                 Messages.ShowMessage("未描线，请描线后再次保存！");
                 return false;
             }
-            var Lats = TracingLineModels.Select(t => t.Lat);
-            var Lngs = TracingLineModels.Select(t => t.Lng);
-            var Stakes = TracingLineModels.Select(t => t.Stake);
-
+            if (string.IsNullOrEmpty(PipeName))
+            {
+                Messages.ShowMessage("请选输入描线名称！");
+                return false;
+            }
+            if (SelectPipeModel == null)
+            {
+                Messages.ShowMessage("请选择对应管线！");
+                return false;
+            }
             return true;
         }
         private void  AddLineData()
         {
             if (!checkData()) return;
+            if(SelectedItem != "手动")
+            {
+                getSelectStakeList();
+                getAutomaticStackList();
+            }
         
             //校验数据
             string api = string.Empty;
@@ -794,8 +811,11 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             Messages.ShowMessage("新增成功");
             AddPipe(lineItem);
             newDrawLineView.Hide();
-            traceListView.Hide();
             ChangedItem = null;
+            if (SelectedItem == "手动")
+            {
+                traceListView.Hide();
+            }
             DelObjs();
         }
         private string TypenameToNum(string typename)

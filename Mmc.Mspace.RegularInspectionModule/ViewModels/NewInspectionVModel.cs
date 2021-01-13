@@ -901,6 +901,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     section_id = this.SelectSectionModel.Id,
                     file_type = LocalCheck ? 0 : 1,//文件类型
                     map = map,
+                    type = typeString,//类型
                     period_id = this.SelectPeriodModel.Id,
                     time = this.CreateTime.ToString("yyyy-MM-dd hh:mm:ss"),
                     file = LoadFiles,
