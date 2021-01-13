@@ -341,7 +341,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         private void OnSearchCommand(object obj)
         {
             StakeModels = new List<StakeModel>();
-            if (obj == null) return;
+            if (obj == null|| obj.ToString() == "") return;
 
             string text = obj.ToString();
             if (string.IsNullOrEmpty(text)) return;
@@ -403,9 +403,11 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             openFile.Filter = FileFilterStrings.Support;
             if (openFile.ShowDialog() == true)
             {
+                Name = openFile.SafeFileName.Split('.')[0];
                 foreach (string file in openFile.FileNames)
                 {
                     LoadFiles = file;
+                   
                 }
             }
         }

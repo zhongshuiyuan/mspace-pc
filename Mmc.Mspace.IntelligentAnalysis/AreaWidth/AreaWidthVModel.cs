@@ -128,11 +128,11 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             for (int i = 0; i < TracingLineModels.Count; i++)
             {
                 TracingModel tracingModel = new TracingModel();
-                tracingModel.sn = TracingLineModels[i].Sn;
-                tracingModel.id = TracingLineModels[i].Id;
+                tracingModel.sn = lineItems[0].sn;
                 tracingModel.lng = TracingLineModels[i].Lng;
                 tracingModel.lat = TracingLineModels[i].Lat;
-                tracingModel.height = TracingLineModels[i].Height;
+                tracingModel.start = lineItems[0].start_sn;
+                tracingModel.end = lineItems[0].end_sn;
                 tracingModels.Add(tracingModel);
             }
             //生成图片
@@ -143,8 +143,6 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             {
                 list = JsonUtil.SerializeToString(tracingModels),
                 images ="",
-                start = lineItems[0].start_sn,
-                end = lineItems[0].end_sn,
             };
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = FileFilterStrings.WORD;
@@ -157,6 +155,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 {
                     string downloadReport = string.Format("{0}?token={1}", PipelineInterface.tracingexport, httpDowLoadManager.Token);
                     HttpServiceHelper.Instance.DownloadPostFile(downloadReport, _currentFileName, JsonUtil.SerializeToString(item), DownloadResult);
+
+                    //bool success = HttpServiceHelper.Instance.PostRequestForStatus(downloadReport, JsonUtil.SerializeToString(item));
                 });
                 Messages.ShowMessage("导出成功！");
             }
@@ -418,6 +418,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         }
         private void setData()
         {
+            polylines = new List<IPolyline>();
             var poly0 = GviMap.GeoFactory.CreateFromWKT(lineItems[0].geom) as IPolyline;
             var poly1 = GviMap.GeoFactory.CreateFromWKT(lineItems[1].geom) as IPolyline;
             if (poly0 != null && poly1 != null)

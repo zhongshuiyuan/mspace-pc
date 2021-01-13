@@ -88,14 +88,14 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             set { _sections = value; OnPropertyChanged("Sections"); }
         }
 
-        private DateTime startTime = DateTime.Now.AddDays(-90);
+        private DateTime startTime;
 
         public DateTime StartTime
         {
             get { return startTime; }
             set { startTime = value; OnPropertyChanged("StartTime"); }
         }
-        private DateTime endTime = DateTime.Now;
+        private DateTime endTime;
 
         public DateTime EndTime
         {

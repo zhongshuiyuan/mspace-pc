@@ -936,15 +936,9 @@ namespace Mmc.Mspace.Services.HttpService
             try
             {
 
-                HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(url);
-
-                myRequest.Method = "POST";
-
-
-                myRequest.Timeout = 20000;//请求超时时间
-
+                HttpWebRequest myRequest = CreateRequestObj(url, 200000, "GET");
+                myRequest.ContentType = "application/x-www-form-urlencoded";
                 byte[] data = Encoding.UTF8.GetBytes(postData);
-
                 myRequest.ContentLength = data.Length;
                 using (Stream reqStream = myRequest.GetRequestStream())
                 {
@@ -956,6 +950,7 @@ namespace Mmc.Mspace.Services.HttpService
                                                        //向服务器请求，获得服务器的回应数据流
 
                 Stream myStream = myRequest.GetResponse().GetResponseStream();
+
                 byte[] btContent = new byte[512];
                 int intSize = 0;
                 intSize = myStream.Read(btContent, 0, 512);

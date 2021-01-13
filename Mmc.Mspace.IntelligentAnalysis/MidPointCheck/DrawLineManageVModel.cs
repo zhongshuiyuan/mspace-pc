@@ -129,7 +129,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 if(TempItemList.Count==2)
                 {
                      AreaWithStatus = 0;
-                    selectView = new SelectView();
+                    if (selectView == null)
+                        selectView = new SelectView();
                     selectView.DataContext = this;
                     selectView.Owner = drawLineManageView;
                     selectView.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -148,7 +149,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 if (TempItemList.Count == 2)
                 {
                     AreaWithStatus = 1;
-                    selectView = new SelectView();
+                    if (selectView == null)
+                        selectView = new SelectView();
                     selectView.DataContext = this;
                     selectView.Owner = drawLineManageView;
                     selectView.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -193,7 +195,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         }
         private void OnSelectCancelCommand()
         {
-            selectView.Close();
+            selectView.Hide();
         }
         private void OnUpdateSaveCommand() {
             if(TempItemList.Where(t=>t.IsRoot).Count()<1)
@@ -202,7 +204,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 return;
             }
             DelObjs();
-            selectView.Close();
+            selectView.Hide();
             if(AreaWithStatus==0)
             {
                 AreaWidthVModel areaWidthVModel = new AreaWidthVModel();
