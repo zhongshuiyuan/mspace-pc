@@ -128,7 +128,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             for (int i = 0; i < TracingLineModels.Count; i++)
             {
                 TracingModel tracingModel = new TracingModel();
-                tracingModel.sn = lineItems[0].Sn;
+                tracingModel.sn = lineItems[0].sn;
                 tracingModel.lng = TracingLineModels[i].Lng;
                 tracingModel.lat = TracingLineModels[i].Lat;
                 tracingModel.start = lineItems[0].start_sn;

@@ -22,8 +22,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         public NewDrawLineView()
         {
             InitializeComponent();
-            DrawLineWay.Items.Add("手动");
-            DrawLineWay.Items.Add("自动");
+            //DrawLineWay.Items.Add("手动");
+            //DrawLineWay.Items.Add("自动");
             VisibleOrNot.Items.Add("是");
             VisibleOrNot.Items.Add("否");
         }

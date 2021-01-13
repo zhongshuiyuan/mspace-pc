@@ -391,8 +391,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             {
                 LineItem lineItem = new LineItem();
                 lineItem.id = item["id"];
-                lineItem.Sn = item["sn"];
-                lineItem.Name = item["name"];
+                lineItem.sn = item["sn"];
+                lineItem.name = item["name"];
                 lineItem.pipe_id = item["pipe_id"];
                 lineItem.pipe_name = item["pipe_name"];
                 lineItem.start = item["start"];

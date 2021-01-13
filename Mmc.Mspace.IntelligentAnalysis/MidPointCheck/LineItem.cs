@@ -27,22 +27,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         public string id { get; set; }
         public string Number { get; set; }
 
-        private string name;
-
-        public string Name
-        {
-            get { return name; }
-            set { name = value; NotifyPropertyChanged("Name"); }
-        }
-
-        private string sn;
-
-        public string Sn
-        {
-            get { return sn; }
-            set { sn = value; NotifyPropertyChanged("Sn"); }
-        }
-
+        public string name { get; set; }
+        public string sn { get; set; }
 
         public string pipe_id { get; set; }
         public string pipe_name { get; set; }

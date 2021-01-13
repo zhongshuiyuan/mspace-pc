@@ -33,33 +33,33 @@
             <TextBox Text="{Binding Sn}"  helper:TextBoxHelper.IsNeedClearButton="False" HorizontalAlignment="Left" VerticalAlignment="Center"  helper:TextBoxHelper.Watermark="请输入描线编号" FontSize="14" Height="32" Width="180" Margin="10,5,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>
         </DockPanel>-->
 
-        <DockPanel Grid.Row="2">
+        <DockPanel Grid.Row="1">
             <TextBlock Text="描线名称：" VerticalAlignment="Center"  helper:TextBoxHelper.IsNeedClearButton="False" FontSize="16" Margin="10,5,0,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <!--<ComboBox Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="10,0,5,5"></ComboBox>-->
-            <TextBox Text="{Binding PipeName}"  helper:TextBoxHelper.IsNeedClearButton="False" HorizontalAlignment="Left" VerticalAlignment="Center"  helper:TextBoxHelper.Watermark="请输入名称" FontSize="14" Height="32" Width="180" Margin="10,5,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>
+            <TextBox Text="{Binding PipeName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  helper:TextBoxHelper.IsNeedClearButton="False" HorizontalAlignment="Left" VerticalAlignment="Center"  helper:TextBoxHelper.Watermark="请输入名称" FontSize="14" Height="32" Width="180" Margin="10,5,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>
         </DockPanel>
-        <DockPanel Grid.Row="3">
+        <DockPanel Grid.Row="2">
             <TextBlock Text="对应管线：" FontSize="16" Margin="10,5,0,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <ComboBox  Height="32" Width="180" HorizontalAlignment="Left" Margin="10 5 10 2"  helper:TextBoxHelper.Watermark="{DynamicResource CreateRegularWater}" ContextMenu="{DynamicResource TextBoxContextMenu}" Grid.Row="0" Grid.Column="1" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding PipeModels}"   SelectedItem="{Binding SelectPipeModel}"  Style="{DynamicResource DefaultComboBoxStyle}"  Grid.ColumnSpan="2">
             </ComboBox>
         </DockPanel>
-        <DockPanel Grid.Row="4">
-            <TextBlock Text="描线方式：" FontSize="16"  Margin="10,5,5,5" VerticalAlignment="Center" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
-            <ComboBox x:Name="DrawLineWay" HorizontalAlignment="Left"  SelectedItem="{Binding SelectedItem}"  Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="100" Margin="5,5,5,5"></ComboBox>
-            <Button x:Name="DrawlineBtn" Width="52" Height="24" Style="{StaticResource DefaultuploadButtonStyle}" Content="去描线" VerticalAlignment="Center"  Command="{Binding GoDrawLine}">
+        <DockPanel Grid.Row="3">
+            <!--<TextBlock Text="描线方式：" FontSize="16"  Margin="10,5,5,5" VerticalAlignment="Center" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
+            <ComboBox x:Name="DrawLineWay" HorizontalAlignment="Left"  SelectedItem="{Binding SelectedItem}"  Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="100" Margin="5,5,5,5"></ComboBox>-->
+            <Button x:Name="DrawlineBtn" Width="52" Height="24" Style="{StaticResource DefaultuploadButtonStyle}" Content="去描线" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,5,30,5" Command="{Binding GoDrawLine}">
             </Button>
         </DockPanel>
       
-        <DockPanel Grid.Row="5">
+        <DockPanel Grid.Row="4">
             <TextBlock Text="是否显示：" FontSize="16" VerticalAlignment="Center" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <ComboBox x:Name="VisibleOrNot" HorizontalAlignment="Left" SelectedItem="{Binding IsShowItem}" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="5,5,0,5"></ComboBox>
           
         </DockPanel>
 
-        <DockPanel Grid.Row="6">
+        <DockPanel Grid.Row="5">
             <TextBlock Text="起始桩号：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <!--<TextBox Text="{Binding StartPoi}"  helper:TextBoxHelper.IsNeedClearButton="False"  HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="32" Width="50" Margin="5,0,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>-->
-            <ComboBox HorizontalAlignment="Left" IsDropDownOpen="{Binding StartIsDropDownOpen}" SelectedValuePath="id" DisplayMemberPath="Sn" IsEditable="True" x:Name="startPoicobx" Style="{DynamicResource DefaultComboBoxStyle}"  ItemsSource="{Binding StakeModels}" SelectedItem="{Binding StartPoi}" Height="32" Width="180" Margin="5,5,0,5">
+            <ComboBox HorizontalAlignment="Left" IsDropDownOpen="{Binding StartIsDropDownOpen}" SelectedValuePath="id" DisplayMemberPath="Sn" IsEditable="True" x:Name="startPoicobx" Style="{DynamicResource DefaultComboBoxStyle}"  ItemsSource="{Binding StakeModels}" SelectedItem="{Binding StartPoi}" Height="32" Width="180" Margin="5,5,0,5" VerticalAlignment="Center">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="KeyUp">
                         <i:InvokeCommandAction  Command="{Binding Path=DataContext.StartSearchCommand,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding Text,ElementName=startPoicobx}"/>
@@ -67,7 +67,7 @@
                 </i:Interaction.Triggers>
             </ComboBox>
         </DockPanel>
-        <DockPanel Grid.Row="7" >
+        <DockPanel Grid.Row="6" >
             <TextBlock Text="终止桩号：" FontSize="16" Margin="10,5,5,5" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <!--<TextBox Text="{Binding EndPoi}"  helper:TextBoxHelper.IsNeedClearButton="False" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Height="32" Width="50" Margin="0,0,5,5" Style="{DynamicResource TbxWaterStyle}"></TextBox>-->
             <ComboBox HorizontalAlignment="Left" IsDropDownOpen="{Binding EndIsDropDownOpen}" SelectedItem="{Binding EndPoi}" IsEditable="True" SelectedValuePath="id" x:Name="endPoicobx" DisplayMemberPath="Sn" ItemsSource="{Binding StakeModels2}" Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="5,5,0,5">
