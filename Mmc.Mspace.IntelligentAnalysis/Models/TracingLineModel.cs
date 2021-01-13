@@ -161,6 +161,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.Models
     {
         public string stake;
         public string sn;
+        public string id;
         public string height;
         public string lat;
         public string lng;

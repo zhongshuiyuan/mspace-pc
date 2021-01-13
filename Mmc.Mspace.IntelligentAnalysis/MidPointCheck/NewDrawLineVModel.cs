@@ -688,7 +688,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                     poi.SpatialCRS = GviMap.SpatialCrs;
                     var rPoi = GviMap.ObjectManager.CreateRenderPOI(poi);
                     rPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
-                    this.poiList.Add(TracingLineModels[i].Sn, rPoi.Guid);
+                    this.poiList.Add(TracingLineModels[i].Poi.Sn, rPoi.Guid);
                 }
             }
         }
@@ -730,7 +730,6 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         }
         private void  AddLineData()
         {
-
             if (!checkData()) return;
         
             //校验数据
@@ -763,8 +762,15 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 return;
             }
             var list = JsonUtil.DeserializeFromString<dynamic>(resStr);
-            string id = list["id"];
-
+            string id = "";
+            if (ChangedItem!=null)
+            {
+                id=ChangedItem.id;
+            }
+            else
+            {
+                id = list["id"];
+            }
             if(string.IsNullOrEmpty(id))
             {
                 Messages.ShowMessage("新增失败，请检查数据");
@@ -776,6 +782,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             {
                 TracingModel tracingModel = new TracingModel();
                 tracingModel.sn = TracingLineModels[i].Sn;
+                tracingModel.id = TracingLineModels[i].Id;
                 tracingModel.lng = TracingLineModels[i].Lng;
                 tracingModel.lat = TracingLineModels[i].Lat;
                 tracingModel.height = TracingLineModels[i].Height;

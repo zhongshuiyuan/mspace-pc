@@ -9,6 +9,7 @@ using Mmc.Mspace.Common.Models;
 using Mmc.Mspace.Const.ConstDataInterface;
 using Mmc.Mspace.Const.ConstPath;
 using Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck;
+using Mmc.Mspace.IntelligentAnalysisModule.Models;
 using Mmc.Mspace.PoiManagerModule.Models;
 using Mmc.Mspace.Services.HttpService;
 using Mmc.Mspace.Theme.Pop;
@@ -103,18 +104,44 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             //    }
             //});
         }
-        public string _currentFileName = null;
+        private ObservableCollection<TracingLineModel> _tracingLineModels = new ObservableCollection<TracingLineModel>();
+        public ObservableCollection<TracingLineModel> TracingLineModels
+        {
+            get { return _tracingLineModels; }
+            set
+            {
+                _tracingLineModels = value;
+                base.SetAndNotifyPropertyChanged<ObservableCollection<TracingLineModel>>(ref this._tracingLineModels, value, "TracingLineModels");
+            }
+        }
 
+        public string _currentFileName = null;
+        private string NavigationImgPath = System.Windows.Forms.Application.LocalUserAppDataPath + "\\NavigationImage\\";
         private void OnSaveCmd()
         {
             if (!isCal) {
                 Messages.ShowMessage("暂无计算数据，请先计算后再尝试导出！");
                 return;
             }
+            gettracinglineList();
+            List<TracingModel> tracingModels = new List<TracingModel>();
+            for (int i = 0; i < TracingLineModels.Count; i++)
+            {
+                TracingModel tracingModel = new TracingModel();
+                tracingModel.sn = TracingLineModels[i].Sn;
+                tracingModel.id = TracingLineModels[i].Id;
+                tracingModel.lng = TracingLineModels[i].Lng;
+                tracingModel.lat = TracingLineModels[i].Lat;
+                tracingModel.height = TracingLineModels[i].Height;
+                tracingModels.Add(tracingModel);
+            }
+            //生成图片
+            string NavigationImgCompletePath = NavigationImgPath + GetTimeStamp() + ".png";
+
+            bool b = GviMap.MapControl.ExportManager.ExportImage(NavigationImgCompletePath, 120, 120, true);
             var item = new
             {
-                list = "",
-                line = lineItems[0].sn,
+                list = JsonUtil.SerializeToString(tracingModels),
                 images ="",
                 start = lineItems[0].start_sn,
                 end = lineItems[0].end_sn,
@@ -123,11 +150,9 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             saveFileDialog.Filter = FileFilterStrings.WORD;
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-
                 _currentFileName = saveFileDialog.FileName;
                 var httpDowLoadManager = new HttpDowLoadManager();
                 httpDowLoadManager.Token = HttpServiceUtil.Token;
-
                 Task.Run(() =>
                 {
                     string downloadReport = string.Format("{0}?token={1}", PipelineInterface.tracingexport, httpDowLoadManager.Token);
@@ -135,16 +160,22 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 });
                 Messages.ShowMessage("导出成功！");
             }
-
-
-            //string resStr1 = HttpServiceHelper.Instance.PostRequestForData(PipelineInterface.tracingexport, JsonUtil.SerializeToString(item));
-            //if (resStr1 == "")
-            //{
-            //    Messages.ShowMessage("导出失败,请重试或联系管理员");
-            //    return;
-            //}
         }
 
+        /// <summary>
+        /// 手动获取中线桩
+        /// </summary>
+        private void gettracinglineList()
+        {
+            this.TracingLineModels = new ObservableCollection<TracingLineModel>();
+            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.tracinglineList + "?traces=" + lineItems[0].id);
+            this.TracingLineModels = (JsonUtil.DeserializeFromString<ObservableCollection<TracingLineModel>>(resStr));
+        }
+        public static string GetTimeStamp()
+        {
+            TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            return Convert.ToInt64(ts.TotalMilliseconds).ToString();
+        }
         public void DownloadResult(bool result)
         {
             if (result)
@@ -431,7 +462,6 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                     CreatRenPoi(point);
                     }
                 }
-
             }
             else
             {
@@ -494,7 +524,6 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                         this.poiList.Add(rPoi.Guid.ToString(), rPoi.Guid);
                     }
                 }
-               
             }
         }
         public void ClearPatrolList()
@@ -514,14 +543,10 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         {
             if (polylines.Count == 2)
             {
-                //ITopologicalOperator3D topologicalOperator3D =polylines[0]
                 IGeometry geo_1 = Buffer(polylines[0], Convert.ToDouble(_radius)/100000);
                 geo_1.SpatialCRS = GviMap.SpatialCrs;
-                //var type = geo_1.GeometryType;
-                //IRenderMultiPolygon render = GviMap.ObjectManager.CreateRenderMultiPolygon(geo_1 as IMultiPolygon, GviMap.LinePolyManager.SurfaceSym, GviMap.ProjectTree.RootID);
                 IRenderPolygon render = GviMap.ObjectManager.CreateRenderPolygon(geo_1 as IPolygon, GviMap.LinePolyManager.SurfaceSym, GviMap.ProjectTree.RootID);
                 
-                ////polygon.SpatialCRS = GviMap.SpatialCrs;
                 render?.SetFdeGeometry(geo_1);
                 render.VisibleMask = gviViewportMask.gviViewAllNormalView;
                 render.Symbol.BoundarySymbol.Color = Color.FromArgb(255, 0, 255, 255);
@@ -560,7 +585,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             poi.MinVisibleDistance = 100;
             //poi.Name = onePerson.name;
             poi.SpatialCRS = GviMap.SpatialCrs;
-            poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "alphabet_P");//Helpers.ResourceHelper.FindResourceByKey("userImg").ToString();//
+            poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "alphabet_P");
             IRenderPOI rpoi = GviMap.ObjectManager.CreateRenderPOI(poi);
             rpoi.DepthTestMode = gviDepthTestMode.gviDepthTestAdvance;
             guids.Add(rpoi.Guid);
