@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-                         
+                            xmlns:helper="clr-namespace:Mmc.Mspace.Theme.Helper;assembly=Mmc.Mspace.Theme"     
         xmlns:controls="clr-namespace:Mmc.Mspace.Theme.Controls;assembly=Mmc.Mspace.Theme"
            xmlns:blankWindow="http://GFramework.org"
         mc:Ignorable="d"
@@ -78,8 +78,7 @@
                 <DataGridTemplateColumn Header="对应桩号" Width="150">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ComboBox HorizontalAlignment="Left"  SelectedValuePath="id" DisplayMemberPath="Sn" Style="{DynamicResource DefaultComboBoxStyle}"  ItemsSource="{Binding DataContext.SelectStakeModels,RelativeSource={RelativeSource AncestorType=Window}}" SelectedItem="{Binding Poi,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Height="32" Width="150" >
-                            </ComboBox>
+                            <TextBox PreviewTextInput="TextBox_PreviewTextInput" Text="{Binding Sn,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  helper:TextBoxHelper.IsNeedClearButton="False" HorizontalAlignment="Left" VerticalAlignment="Center"  helper:TextBoxHelper.Watermark="请输入数字桩号" FontSize="14" Height="32" Width="180" Margin="0" Style="{DynamicResource TbxWaterStyle}"></TextBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

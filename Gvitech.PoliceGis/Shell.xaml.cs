@@ -134,7 +134,8 @@ namespace MMC.MSpace
             Messenger.Messengers.Register<bool>("BottomMenuEnum", (t) => { ShowBottomMenu(t); });
             Messenger.Messengers.Register<bool>("BottomMenuEnumNavigation", (t) => { ShowBottomNavigationMenu(t); });
             Messenger.Messengers.Register<bool>("openComparison", (t) => { this.CancelComparison.Visibility = Visibility.Visible; });
-       
+            Messenger.Messengers.Register<bool>("zhibeiCommand", (t) => { zhibei(); });
+            
             Messenger.Messengers.Register<bool>("IntelligentAnalysisShow", (t) => {
                 if (t)
                 {
@@ -400,16 +401,28 @@ namespace MMC.MSpace
             var polyLine = GviMap.GeoFactory.CreatePolyline(Geom, GviMap.SpatialCrs);
             CurveSymbol curveSymbol = new CurveSymbol();
             curveSymbol.Color = ColorConvert.Argb(100, 255, 0, 0);//GviMap.LinePolyManager.CurveSym
-            curveSymbol.Width = 50f;
+            curveSymbol.Width = 30f;
+            
              rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
-
+            rLine.MaxVisibleDistance = 10000.0;
+            rLine.MinVisibleDistance = 1.0;
             rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
             GviMap.Camera.FlyToEnvelope(polyLine.Envelope);
+            zhibei();
             guids.Add(rLine.Guid);
             Application.Current.Dispatcher.Invoke(() =>
             {
                 this.guandao.Content = "隐藏管道";
             });
+        }
+
+        private void zhibei()
+        {
+            IPoint state;
+            IEulerAngle eulerAngle;
+            GviMap.Camera.GetCamera2(out state, out eulerAngle);
+            eulerAngle.Heading = 0.0;
+            GviMap.Camera.SetCamera2(state, eulerAngle, gviSetCameraFlags.gviSetCameraNoFlags);
         }
         private void Menu_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {

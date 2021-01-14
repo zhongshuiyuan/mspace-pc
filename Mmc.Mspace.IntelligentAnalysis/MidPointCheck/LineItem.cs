@@ -31,6 +31,15 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             get { return _eyeStatus; }
             set { _eyeStatus = value; NotifyPropertyChanged("EyeStatus"); }
         }
+        private bool _eyeStatus2 = true;
+
+        public bool EyeStatus2
+        {
+            get { return _eyeStatus2; }
+            set { _eyeStatus2 = value; NotifyPropertyChanged("EyeStatus2"); }
+        }
+
+
         
         public string id { get; set; }
         public string Number { get; set; }

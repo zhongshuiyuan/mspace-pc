@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mmc.Mspace.IntelligentAnalysisModule.AreaWidth"
         mc:Ignorable="d"
-        Title="SelectView" Height="246" Width="323" ResizeMode="NoResize"  ShowInTaskbar="False" Style="{StaticResource AllowsTransparencyWindowStyle2}">
+        Title="SelectView" Height="246" Width="363" ResizeMode="NoResize"  ShowInTaskbar="False" Style="{StaticResource AllowsTransparencyWindowStyle2}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
@@ -31,13 +31,13 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Background="#1E1F26" Margin="10 0"></Border>
 
             <TextBlock Margin="10,20,0,10" Grid.Row="1" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="以哪条描线作为基准线：" VerticalAlignment="Center"></TextBlock>
-            <TextBlock Margin="10,5,0,5" Grid.Row="2" HorizontalAlignment="Center" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  VerticalAlignment="Center" Text="描线"></TextBlock>
-            <TextBlock Margin="10,5,0,5" Grid.Row="2" HorizontalAlignment="Center" Grid.Column="1" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}" VerticalAlignment="Center"  Text="名称"></TextBlock>
+            <TextBlock Margin="10,5,10,5" Grid.Row="2" HorizontalAlignment="Center" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  VerticalAlignment="Center" Text="描线"></TextBlock>
+            <TextBlock Margin="10,5,20,5" Grid.Row="2" HorizontalAlignment="Center" Grid.Column="1" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}" VerticalAlignment="Center"  Text="名称"></TextBlock>
 
             <Border Grid.Row="3" Grid.Column="0" Grid.RowSpan="2" Opacity="0.2"
        Grid.ColumnSpan="2" Background="#131418" Margin="10 0"></Border>
@@ -46,7 +46,7 @@
             <RadioButton Grid.Row="4" Margin="20,0,0,0" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Left" VerticalAlignment="Center" Content="{Binding TempItemList[1].sn}"  GroupName="AnalyseMidea" Foreground="#B3BBC5" IsChecked="{Binding TempItemList[1].IsRoot,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"></RadioButton>
 
             <TextBlock Margin="10,0,0,10" Grid.Row="3" HorizontalAlignment="Center" Grid.Column="1" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="{Binding TempItemList[0].name}"></TextBlock>
-            <TextBlock Margin="10,0,0,10" Grid.Row="4" HorizontalAlignment="Center" Grid.Column="1" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="{Binding TempItemList[1].name}"></TextBlock>
+            <TextBlock Margin="10,0,20,10" Grid.Row="4" HorizontalAlignment="Center" Grid.Column="1" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="{Binding TempItemList[1].name}"></TextBlock>
             <Button Grid.Row="7" Grid.ColumnSpan="2" Content="{DynamicResource OK}" Command="{Binding UpdateSaveCommand}" Style="{StaticResource DefaultButtonStyle}"  Grid.Column="0"  HorizontalAlignment="Center" Height="36"   VerticalAlignment="Center" Width="80" Grid.RowSpan="2" />
 
         </Grid>

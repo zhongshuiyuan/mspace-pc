@@ -937,11 +937,9 @@ namespace Mmc.Mspace.Services.HttpService
             {
                 HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(url);
                 myRequest.Method = "POST";
-                myRequest.Accept = "text/html, application/xhtml+xml, */*";
                 myRequest.ContentType = "application / x-www-form-urlencoded; charset = utf-8 ";
                 myRequest.AllowAutoRedirect = true;
                 myRequest.KeepAlive = true;
-
 
                 byte[] data = Encoding.UTF8.GetBytes(postData);
                 myRequest.ContentLength = data.Length;

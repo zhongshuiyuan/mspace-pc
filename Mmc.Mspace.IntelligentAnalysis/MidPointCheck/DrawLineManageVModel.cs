@@ -136,7 +136,16 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             });
             this.DelItemsCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
-                DelItems();
+                if (DrawLineListCollection.Count<1||DrawLineListCollection.Where(t => t.IsChecked).Count() < 1)
+                {
+                    Messages.ShowMessage("没有可删除项！");
+                    return;
+                }
+                if (Messages.ShowMessageDialog("提示", "是否确认删除选中项？"))
+                {
+                    DelItems();
+                }
+          
             });
             this.SearchCmd = new Mmc.Wpf.Commands.RelayCommand(() =>
             {
@@ -257,24 +266,35 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                     Guid id = guids[selectLineItem.id];
                     gettracinglineList(id, selectLineItem.id);
                     SetVideo(rLines.SingleOrDefault(t => t.Guid == id).Guid);
+                    selectLineItem.EyeStatus2 = false;
+                    selectLineItem.EyeStatus = true;
                 }
                 else
                 {
                     Guid id = guids[selectLineItem.id];
                     ClearPatrolList(rLines.SingleOrDefault(t => t.Guid == id).Guid.ToString());
+                    selectLineItem.EyeStatus =false;
+                    selectLineItem.EyeStatus2 =true;
                 }
-                selectLineItem.EyeStatus = !selectLineItem.EyeStatus;
+          
+          
                 return;
             }
-
-
+          
             if (guids.ContainsKey(selectLineItem.id)) return;
             var polyLine = GviMap.GeoFactory.CreatePolyline(selectLineItem.geom, GviMap.SpatialCrs);
             if (polyLine == null) return;
        
             if (polyLine.EndPoint == null) return;
             CurveSymbol curveSymbol = new CurveSymbol();
-            curveSymbol.Color = ColorConvert.Argb(100, 238, 103, 35);//GviMap.LinePolyManager.CurveSym
+            if(selectLineItem.type=="自动")
+            {
+                curveSymbol.Color = ColorConvert.Argb(100, 0, 0, 0);
+            }
+            else
+            {
+                curveSymbol.Color = ColorConvert.Argb(100, 238, 103, 35);
+            }
             curveSymbol.Width = 20f;
             var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
         
@@ -288,18 +308,21 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
 
             GviMap.Camera.GetCamera2(out IPoint pointCamera, out IEulerAngle eulerAngle);
             ////GviMap.Camera.FlyToEnvelope(point.Envelope);
-            eulerAngle.Tilt = -90;
-            eulerAngle.Heading = 110;
+            eulerAngle.Tilt = -60;
+            eulerAngle.Heading = 220;
             pointCamera.X = rLine.Envelope.MaxX;
             pointCamera.Y = rLine.Envelope.MaxY;
-            pointCamera.Z = 2000;
+            pointCamera.Z = 2100;
             GviMap.Camera.SetCamera2(pointCamera, eulerAngle, 0);
+            //Messenger.Messengers.Notify("zhibeiCommand", true);
+
             if (polyLine != null)
             {
                 polylines.Add(rLine.Guid,polyLine);
             }
         
             selectLineItem.EyeStatus = true;
+            selectLineItem.EyeStatus2 = false;
         }
 
         private void SetVisibleMask(LineItem line,bool visi)
@@ -351,7 +374,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
              
                     poi.MaxVisibleDistance = 10000.0;
                     poi.MinVisibleDistance = 1.0;
-                    poi.Name = point.Sn;
+                    poi.Name = string.IsNullOrEmpty(point.Stake_sn)? point.Sn: point.Stake_sn;
                     poi.ShowName = true;
                     poi.SetPostion( Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat));
                     poi.Size = 50;
@@ -479,23 +502,14 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                     deleteString = deleteString + Convert.ToString(item.id)+",";
                 }
             }
+            deleteString = deleteString.Substring(0, deleteString.Length - 1);
+            string url = MarkInterface.DeleteLine + deleteString;
+            string resStr = HttpServiceHelper.Instance.GetRequest(url);
 
-       
-            if (deleteString =="?ids=")
-            {
-                //Messages.ShowMessage("");
-            }
-            else
-            {
-                deleteString =  deleteString.Substring(0,deleteString.Length-1);
-                string url = MarkInterface.DeleteLine + deleteString;
-                string resStr = HttpServiceHelper.Instance.GetRequest(url);
-            }
             GetLineData();
             if (DrawLineListCollection.Count == 0)
             {
                 DelObjs();
-
             }
         }
         private void ChangeIsChecked(LineItem lineItem)

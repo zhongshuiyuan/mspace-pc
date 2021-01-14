@@ -124,7 +124,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 Messages.ShowMessage("暂无计算数据，请先计算后再尝试导出！");
                 return;
             }
-            gettracinglineList();
+            gettracinglineList(lineItems[0].id);
             List<TracingModel> tracingModels = new List<TracingModel>();
             for (int i = 0; i < TracingLineModels.Count; i++)
             {
@@ -139,7 +139,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             //生成图片
             string NavigationImgCompletePath = NavigationImgPath + GetTimeStamp() + ".png";
 
-            bool b = GviMap.MapControl.ExportManager.ExportImage(NavigationImgCompletePath, 480, 480, true);
+            bool b = GviMap.MapControl.ExportManager.ExportImage(NavigationImgCompletePath, 1920, 1080, true);
             var item = new
             {
                 list = JsonUtil.SerializeToString(tracingModels),
@@ -147,6 +147,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             };
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = FileFilterStrings.WORD;
+            saveFileDialog.FileName = DateTime.Now.ToString("yyyyMMddHHmmss") + ".docx";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 _currentFileName = saveFileDialog.FileName;
@@ -188,10 +189,10 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         /// <summary>
         /// 手动获取中线桩
         /// </summary>
-        private void gettracinglineList()
+        private void gettracinglineList(string id)
         {
             this.TracingLineModels = new ObservableCollection<TracingLineModel>();
-            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.tracinglineList + "?traces=" + lineItems[0].id);
+            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.tracinglineList + "?traces=" + id);
             this.TracingLineModels = (JsonUtil.DeserializeFromString<ObservableCollection<TracingLineModel>>(resStr));
         }
         public static string GetTimeStamp()
@@ -256,11 +257,11 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             setData();
             if(lineItems[0].IsRoot)
             {
-                Cal();
+                Cal2();
             }
             else
             {
-                Cal2();
+                Cal();
             }
             Messages.ShowMessage("计算完成，问题点数目为:"+ Convert.ToString(_problemPoints.Count));
             isCal = true;
@@ -503,7 +504,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
 
                 if (polyLine.EndPoint == null) return;
                 CurveSymbol curveSymbol = new CurveSymbol();
-                curveSymbol.Color = ColorConvert.Argb(100, 238, 103, 35);//GviMap.LinePolyManager.CurveSym
+                curveSymbol.Color = ColorConvert.Argb(100, 238, 103, 35);
                 curveSymbol.Width = 20f;
                 var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
 
@@ -513,41 +514,41 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 //GviMap.Camera.FlyToObject(rLine.Guid, gviActionCode.gviActionFlyTo);
                 //var poly0 = GviMap.GeoFactory.CreateFromWKT(lineItem.geom) as IPolyline;
 
-                GviMap.Camera.GetCamera2(out IPoint pointCamera, out IEulerAngle eulerAngle);
                 ////GviMap.Camera.FlyToEnvelope(point.Envelope);
-                eulerAngle.Tilt = -90;
-                eulerAngle.Heading = 110;
+                GviMap.Camera.GetCamera2(out IPoint pointCamera, out IEulerAngle eulerAngle);
+                eulerAngle.Tilt = -60;
+                eulerAngle.Heading = 220;
                 pointCamera.X = rLine.Envelope.MaxX;
                 pointCamera.Y = rLine.Envelope.MaxY;
-                pointCamera.Z = 2000;
+                pointCamera.Z = 2100;
                 GviMap.Camera.SetCamera2(pointCamera, eulerAngle, 0);
-            }
-        
-            SetVideo();
-        }
 
+                gettracinglineList(lineItems[i].id);
+                SetVideo();
+            }
+        }
+   
         public Dictionary<string, Guid> poiList = new Dictionary<string, Guid>();
         private void SetVideo()
         {
-            if (polylines.Count > 0)
+            if (TracingLineModels.Count > 0)
             {
-                for (int i = 0; i < polylines.Count; i++)
+                for (int i = 0; i < TracingLineModels.Count; i++)
                 {
-                    for (int j = 0; j < polylines[i].PointCount; j++)
-                    {
-                        var point = polylines[i].GetPoint(j);
+                    var point = TracingLineModels[i];
 
-                        var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
-                        poi.SetPostion(point.X, point.Y);
-                        poi.Size = 50;
-
-                        poi.ShowName = false;
-                        poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");
-                        poi.SpatialCRS = GviMap.SpatialCrs;
-                        var rPoi = GviMap.ObjectManager.CreateRenderPOI(poi);
-                        rPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
-                        this.poiList.Add(rPoi.Guid.ToString(), rPoi.Guid);
-                    }
+                    var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
+                    poi.SetPostion(Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat));
+                    poi.Size = 50;
+                    poi.ShowName = true;
+                    poi.Name = point.Stake_sn;
+                    poi.MaxVisibleDistance = 10000.0;
+                    poi.MinVisibleDistance = 1.0;
+                    poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");
+                    poi.SpatialCRS = GviMap.SpatialCrs;
+                    var rPoi = GviMap.ObjectManager.CreateRenderPOI(poi);
+                    rPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
+                    this.poiList.Add(rPoi.Guid.ToString(), rPoi.Guid);
                 }
             }
         }

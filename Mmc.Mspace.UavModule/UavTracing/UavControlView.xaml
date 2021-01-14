@@ -434,9 +434,9 @@
                 </StackPanel.Resources>
 
                 <RadioButton x:Name="rbtnDefault" Content="云台" IsChecked="True"/>
-                <!--<RadioButton x:Name="rbtnNetGun" Content="网枪"/>
-                <RadioButton x:Name="rbtnTearBomb" Content="催泪弹"/>
-                <RadioButton x:Name="rbtnJettison" Content="智能抛投"/>-->
+                <RadioButton x:Name="rbtnNetGun" Visibility="Collapsed" Content="网枪"/>
+                <RadioButton x:Name="rbtnTearBomb" Visibility="Collapsed" Content="催泪弹"/>
+                <RadioButton x:Name="rbtnJettison" Visibility="Collapsed" Content="智能抛投"/>
             </StackPanel>
         </Grid>
 

@@ -257,7 +257,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     timeView1.WindowStartupLocation = WindowStartupLocation.Manual;
                     timeView1.Top = 60;
                     timeView1.Left = 100;
-                    timeView1.TimeText.Text = list[i].Time;
+                    timeView1.TimeText.Text = list[i].Time.Split(' ')[0];
                     timeView1.Show();
                     continue;
                 }
@@ -271,7 +271,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                         timeView1.WindowStartupLocation = WindowStartupLocation.Manual;
                         timeView1.Top = 60;
                         timeView1.Left = (list.Count < 3 || list.Count == 4) ? mapView.Width / 2 - 300 : mapView.Width / 3 - 300;
-                        timeView1.TimeText.Text = list[i].Time;
+                        timeView1.TimeText.Text = list[i].Time.Split(' ')[0]; 
                         timeView1.Show();
                         _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView0;
                     }
@@ -282,7 +282,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                         timeView2.WindowStartupLocation = WindowStartupLocation.Manual;
                         timeView2.Top = 60;
                         timeView2.Left = (list.Count < 3 || list.Count == 4) ? mapView.Width - 300 : (mapView.Width / 3) *2 - 300;
-                        timeView2.TimeText.Text = list[i].Time;
+                        timeView2.TimeText.Text = list[i].Time.Split(' ')[0];
                         timeView2.Show();
                         _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView1;
                     }
@@ -293,7 +293,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                         timeView3.WindowStartupLocation = WindowStartupLocation.Manual;
                         timeView3.Top = (list.Count < 4 ? 0 : mapView.Height / 2) + 60;
                         timeView3.Left = (list.Count == 3) ? mapView.Width -300 : mapView.Width / 2 - 300;
-                        timeView3.TimeText.Text = list[i].Time;
+                        timeView3.TimeText.Text = list[i].Time.Split(' ')[0];
                         timeView3.Show();
                         _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView2;
                     }
@@ -304,7 +304,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                         timeView4.WindowStartupLocation = WindowStartupLocation.Manual;
                         timeView4.Top = mapView.Height / 2 + 60;
                         timeView4.Left = mapView.Width -300;
-                        timeView4.TimeText.Text = list[i].Time;
+                        timeView4.TimeText.Text = list[i].Time.Split(' ')[0];
                         timeView4.Show();
                         _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView3;
                     }
@@ -387,6 +387,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         private void getStake()
         {
             //获取中线桩
+            if (SelectSectionModel == null) return;
             string stakeList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex+ "?section_id="+ SelectSectionModel.Id);
             this.Stakes = JsonUtil.DeserializeFromString<ObservableCollection<StakeModel>>(stakeList);
         }

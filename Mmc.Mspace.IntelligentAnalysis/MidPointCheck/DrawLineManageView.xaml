@@ -148,10 +148,27 @@
                                                 MouseOverRIcon="{DynamicResource Account_View_H}"  
                                                 PressedRIcon="{DynamicResource Account_View_C}"
                                                 Style="{StaticResource AddandExportAccountBtnStyle}" 
-                                                Command="{Binding DataContext.ChangeCmd,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}" 
+                                                Command="{Binding DataContext.ChangeCmd,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}"
                                                 CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"/>
-                                <ToggleButton x:Name="FirstEye"  Margin="20,0,0,0" ToolTip="是否显示" IsChecked="{Binding EyeStatus}"
-                                       Command="{Binding DataContext.SelectCommand,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}"  Style="{DynamicResource MapTogButtonStyle}" CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"></ToggleButton>
+                                <controls:Buttons x:Name="bs2" Height="23" GroupName="eyes" IsNeedSelected="True" Width="30" Content=""  Margin="20,0,0,0"
+											    ToolTip="不显示"
+                                                RIcon="{DynamicResource closecheck_N}"
+                                                MouseOverRIcon="{DynamicResource closecheck_N}"  
+                                                PressedRIcon="{DynamicResource closecheck_N}"
+                                                Visibility="{Binding EyeStatus,Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                Style="{StaticResource AddandExportAccountBtnStyle}" 
+                                               Command="{Binding DataContext.SelectCommand,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}"
+                                                CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"/>
+                                <controls:Buttons x:Name="bs3" Height="23" GroupName="eyes" IsNeedSelected="True" Width="30" Content=""  Margin="20,0,0,0"
+											    ToolTip="显示"
+                                                RIcon="{DynamicResource closecheck_P}" Visibility="{Binding EyeStatus2,Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                MouseOverRIcon="{DynamicResource closecheck_P}"  
+                                                PressedRIcon="{DynamicResource closecheck_P}"
+                                                Style="{StaticResource AddandExportAccountBtnStyle}" 
+                                                Command="{Binding DataContext.SelectCommand,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}" 
+                                                CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"/>
+                                <!--<ToggleButton x:Name="FirstEye"  Margin="20,0,0,0" ToolTip="是否显示" IsChecked="{Binding EyeStatus}"
+                                       Command="{Binding DataContext.SelectCommand,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}"  Style="{DynamicResource MapTogButtonStyle}" CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"></ToggleButton>-->
                                 <!--<controls:Buttons x:Name="bs2" Height="23" Width="30" Content=""  Margin="20,0,0,0"
 											    ToolTip="是否显示"
                                                 RIcon="{DynamicResource Account_Edit}"

@@ -112,7 +112,17 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.Models
             }
         }
 
+        private string stake_sn;
 
+        public string Stake_sn
+        {
+            get => stake_sn;
+            set
+            {
+                stake_sn = value;
+                NotifyPropertyChanged("Stake_sn");
+            }
+        }
         private string height;
 
         public string Height
@@ -168,6 +178,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.Models
         public string traces;
         public string start;
         public string end;
+
 
     }
 }
