@@ -49,15 +49,15 @@ namespace MMC.MSpace
         protected override void InitializeShell()
         {
             
-            WPFLoginView view = new WPFLoginView();
+            //WPFLoginView view = new WPFLoginView();
             //LoginView view = new LoginView();
             //DogCheck();
-            if (!(bool)view.ShowDialog())
-            {
-                Environment.Exit(0);
-                return;
-            }
-           // login();
+            //if (!(bool)view.ShowDialog())
+            //{
+            //    Environment.Exit(0);
+            //    return;
+            //}
+            login();
 
             WebBrowserVersionEmulation();
             DXSplashScreen.Show<SplashWindow>();
