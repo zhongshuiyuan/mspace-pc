@@ -36,6 +36,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         ObservableCollection<IPoint> _problemPoints = new ObservableCollection<IPoint>();
         List<Guid> guids = new List<Guid>();
         public List<LineItem> lineItems = new List<LineItem>();
+        private bool isSuccessReport = false;
         public ObservableCollection<IPoint> ProblemPoints
         {
             get { return _problemPoints; }
@@ -43,6 +44,11 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             {
                 base.SetAndNotifyPropertyChanged<ObservableCollection<IPoint>>(ref this._problemPoints, value, "ProblemPoints");
             }
+        }
+        public AreaWidthVModel()
+        {
+            isSuccessReport = false;
+            this.getTaskAll();
         }
 
         private string _titleText="边界宽度预警";
@@ -79,6 +85,13 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             get { return _saveCmd ?? (_saveCmd = new RelayCommand(OnSaveCmd)); }
             set { _saveCmd = value; }
         }
+        private RelayCommand _boundTaskCommand;
+        public RelayCommand BoundTaskCommand
+        {
+            get { return _boundTaskCommand ?? (_boundTaskCommand = new RelayCommand(OnBoundTaskCommand)); }
+            set { _boundTaskCommand = value; }
+        }
+        
         public override void Initialize()
         {
             base.Initialize();
@@ -114,8 +127,28 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 base.SetAndNotifyPropertyChanged<ObservableCollection<TracingLineModel>>(ref this._tracingLineModels, value, "TracingLineModels");
             }
         }
+        private ObservableCollection<TaskModel> _taskAll = new ObservableCollection<TaskModel>();
+        public ObservableCollection<TaskModel> TaskAll
+        {
+            get { return _taskAll; }
+            set
+            {
+                _taskAll = value;
+                base.SetAndNotifyPropertyChanged<ObservableCollection<TaskModel>>(ref this._taskAll, value, "TaskAll");
+            }
+        }
+
+        private TaskModel _TaskSelectItem;
+        public TaskModel TaskSelectItem
+        {
+            get { return _TaskSelectItem; }
+            set { _TaskSelectItem = value;
+                base.SetAndNotifyPropertyChanged<TaskModel>(ref this._TaskSelectItem, value, "TaskSelectItem");
+            }
+        }
 
         public string _currentFileName = null;
+        public string _currentFilePath = null;
         private string NavigationImgPath = System.Windows.Forms.Application.LocalUserAppDataPath + "\\NavigationImage\\";
         private void OnSaveCmd()
         {
@@ -123,14 +156,25 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 Messages.ShowMessage("暂无计算数据，请先计算后再尝试导出！");
                 return;
             }
-            gettracinglineList(lineItems[0].id);
+            List<TracingLineModel> list = new List<TracingLineModel>();
+            for (int i = 0; i < lineItems.Count; i++)
+            {
+                gettracinglineList(lineItems[i].id);
+                list.AddRange(TracingLineModels);
+            }
+           
             List<TracingModel> tracingModels = new List<TracingModel>();
-            for (int i = 0; i < TracingLineModels.Count; i++)
+            for (int i = 0; i < _problemPoints.Count; i++)
             {
                 TracingModel tracingModel = new TracingModel();
-                tracingModel.sn = lineItems[0].sn;
-                tracingModel.lng = TracingLineModels[i].Lng;
-                tracingModel.lat = TracingLineModels[i].Lat;
+                var res = list.Where(t => t.Lng == _problemPoints[i].X.ToString() && t.Lat == _problemPoints[i].Y.ToString()).ToList();
+                if (res.Count>0)
+                {
+                    tracingModel.sn = res[0].Sn;
+                }
+               
+                tracingModel.lng = _problemPoints[i].X.ToString();
+                tracingModel.lat = _problemPoints[i].Y.ToString();
                 tracingModel.start = lineItems[0].start_sn;
                 tracingModel.end = lineItems[0].end_sn;
                 tracingModels.Add(tracingModel);
@@ -145,25 +189,54 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             saveFileDialog.FileName = DateTime.Now.ToString("yyyyMMddHHmmss") + ".docx";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                var httpDowLoadManager = new HttpDowLoadManager();
-                httpDowLoadManager.Token = HttpServiceUtil.Token;
                 //上传图片 
-                string updatestake = string.Format("{0}", PipelineInterface.taskupload);
-                string result = HttpServiceHelper.Instance.PostImageFile(updatestake, NavigationImgCompletePath);
+                //string updatestake = string.Format("{0}", PipelineInterface.taskupload);
+                //string result = HttpServiceHelper.Instance.PostImageFile(updatestake, NavigationImgCompletePath);
                 var item = new
                 {
                     list = JsonUtil.SerializeToString(tracingModels),
-                    images = result,
+                    images = "",
                 };
                 _currentFileName = saveFileDialog.FileName;
-            
+                string filepath= saveFileDialog.FileName.Substring(0, saveFileDialog.FileName.LastIndexOf('\\') + 1);
+                string filename = saveFileDialog.FileName.Substring(saveFileDialog.FileName.LastIndexOf('\\') + 1);
+
                 System.Threading.Tasks.Task.Run(() =>
                 {
-                    string downloadReport = string.Format("{0}?token={1}", PipelineInterface.tracingexport, httpDowLoadManager.Token);
-                    HttpServiceHelper.Instance.DownloadPostFile(downloadReport, _currentFileName, JsonUtil.SerializeToString(item), DownloadResult);
+                    string path = HttpServiceHelper.Instance.PostRequestForString(PipelineInterface.tracingexport, JsonUtil.SerializeToString(item), filepath, filename, DownloadResult);
                 });
-                Messages.ShowMessage("导出成功！");
+              
             }
+        }
+
+        private void OnBoundTaskCommand()
+        {
+            if(!isSuccessReport)
+            {
+                Messages.ShowMessage("暂未生成报告文档，请先生成后再尝试关联任务！");
+                return;
+            }
+            if(TaskSelectItem==null)
+            {
+                Messages.ShowMessage("请选择对应的任务后重试！");
+                return;
+            }
+            var data = new
+            {
+                task_id = TaskSelectItem.Id,
+                file = _currentFilePath,
+                lng = "",
+                lat = "",
+            };
+            var jsonData = JsonUtil.SerializeToString(data);
+
+            string resStr = HttpServiceHelper.Instance.PostRequestForData(PipelineInterface.flycreate, jsonData);
+
+            if(string.IsNullOrEmpty(resStr))
+            {
+                Messages.ShowMessage("关联失败，请稍后重新尝试关联！");
+            }
+            Messages.ShowMessage("关联成功！");
         }
         //public bool WordToPDF(string sourcePath, string targetPath)
         //{
@@ -197,19 +270,29 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.tracinglineList + "?traces=" + id);
             this.TracingLineModels = (JsonUtil.DeserializeFromString<ObservableCollection<TracingLineModel>>(resStr));
         }
+        private void getTaskAll()
+        {
+            this.TaskAll = new ObservableCollection<TaskModel>();
+            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.taskall );
+            this.TaskAll = (JsonUtil.DeserializeFromString<ObservableCollection<TaskModel>>(resStr));
+        }
         public static string GetTimeStamp()
         {
             TimeSpan ts = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0);
             return Convert.ToInt64(ts.TotalMilliseconds).ToString();
         }
-        public void DownloadResult(bool result)
+        public void DownloadResult(string result)
         {
-            if (result)
+            if (!string.IsNullOrEmpty(result))
             {
+                _currentFilePath = result;
                 if (File.Exists(_currentFileName))
                 {
+                    Messages.ShowMessage("导出成功！");
+                    isSuccessReport = true;
                     //WordToPDF(_currentFileName,_currentFileName);
                     System.Diagnostics.Process.Start(_currentFileName);
+                   
                 }
                 //Messages.ShowMessage(Helpers.ResourceHelper.FindKey("SAVESUCCESSED"));
             }
@@ -250,6 +333,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             isCal = false;
             base.OnUnchecked();
             areaWidthView.Hide();
+            _currentFileName = null;
+            _currentFilePath = null;
         }
 
         public bool isCal = false;
@@ -545,7 +630,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                     poi.SetPostion(Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat));
                     poi.Size = 50;
                     poi.ShowName = true;
-                    poi.Name = point.Stake_sn;
+                    poi.Name = string.IsNullOrEmpty(point.Stake_sn)? point.Sn: point.Stake_sn;
                     poi.MaxVisibleDistance = 10000.0;
                     poi.MinVisibleDistance = 1.0;
                     poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");

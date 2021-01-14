@@ -24,7 +24,9 @@ namespace Mmc.Mspace.Const.ConstDataInterface
         public const string tracingexport = "/api/tracing/export-warn";//导出
         public const string tracingexportfly = "/api/tracing/export-fly";//导出
         public const string taskupload = "/api/task/upload";//上传图片
-
+        public const string taskall = "/api/task/all";//任务列表
+        public const string flycreate = "/api/fly/create";//
+        
 
 
 

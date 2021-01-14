@@ -2,6 +2,8 @@
 using Mmc.Windows.Design;
 using Mmc.Windows.Utils;
 using System;
+using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Mmc.Mspace.Services.HttpService
@@ -174,7 +176,46 @@ namespace Mmc.Mspace.Services.HttpService
                 throw ex;
             }
         }
+        public string PostRequestForString(string dataInterface, string jsonStr,string filePath,string filename, Action<string> OnFinish)
+        {
+            string data = string.Empty;
+            string url = CreateUrl(dataInterface);
+            try
+            {
+                string result = HttpService.RequestService(url, postDataStr: jsonStr, method: "POST");
+                string resultModel = result;
+                if (!string.IsNullOrEmpty(resultModel))
+                {
+                    data = resultModel.Substring(1, resultModel.Length-2); 
+                }
 
+                WebClient client = new WebClient();
+                string urlPath = data;
+                Stream strm = client.OpenRead(urlPath);
+                int count = 0;
+                byte[] buffer = new byte[4096];
+                FileStream fs = new FileStream(filePath + "//" + filename, FileMode.Create);
+                while ((count = strm.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    fs.Write(buffer, 0, count);
+                }
+                fs.Close();
+                strm.Close();
+                strm.Dispose();
+                fs.Dispose();
+                OnFinish(urlPath);
+                return data;
+            }
+            catch (HttpException ex)
+            {
+                OnFinish("");
+                throw new HttpException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public HttpResultModel PostRequestForResultModel(string dataInterface, string jsonStr)
         {
             string url = CreateUrl(dataInterface);
