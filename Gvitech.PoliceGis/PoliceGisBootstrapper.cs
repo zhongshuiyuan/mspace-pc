@@ -48,16 +48,16 @@ namespace MMC.MSpace
         public static string loginPwd { get; set; }
         protected override void InitializeShell()
         {
+            
+            //WPFLoginView view = new WPFLoginView();
             //LoginView view = new LoginView();
             //DogCheck();
-            //web 处理
-            WPFLoginView view = new WPFLoginView();
-            if (!(bool)view.ShowDialog())
-            {
-                Environment.Exit(0);
-                return;
-            }
-            //login();
+            //if (!(bool)view.ShowDialog())
+            //{
+            //    Environment.Exit(0);
+            //    return;
+            //}
+            login();
 
             WebBrowserVersionEmulation();
             DXSplashScreen.Show<SplashWindow>();
@@ -67,9 +67,7 @@ namespace MMC.MSpace
             PoliceGisBootstrapper.RegisterServices();
             SystemLog.Log("启动加载界面");
             double screenInchSize = ScreenHelper.GetScreenInchSize();
-            //web 处理
-           // string[] files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory+"Config\\Screen\\", "*inch.xaml");
-            string[] files = Directory.GetFiles("Config\\Screen\\", "*inch.xaml");
+            string[] files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory+"Config\\Screen\\", "*inch.xaml");
             Dictionary<double, string> dictionary = new Dictionary<double, string>();
             foreach (string text2 in files)
             {
