@@ -138,27 +138,29 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             }
             //生成图片
             string NavigationImgCompletePath = NavigationImgPath + GetTimeStamp() + ".png";
-
-            bool b = GviMap.MapControl.ExportManager.ExportImage(NavigationImgCompletePath, 1920, 1080, true);
-            var item = new
-            {
-                list = JsonUtil.SerializeToString(tracingModels),
-                images ="",
-            };
+            bool b = GviMap.MapControl.ExportManager.ExportImage(NavigationImgCompletePath, 120, 120, true);
+         
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = FileFilterStrings.WORD;
             saveFileDialog.FileName = DateTime.Now.ToString("yyyyMMddHHmmss") + ".docx";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                _currentFileName = saveFileDialog.FileName;
                 var httpDowLoadManager = new HttpDowLoadManager();
                 httpDowLoadManager.Token = HttpServiceUtil.Token;
+                //上传图片 
+                string updatestake = string.Format("{0}?token={1}", PipelineInterface.updatestake, httpDowLoadManager.Token);
+                string result = HttpServiceHelper.Instance.PostImageFile(updatestake, NavigationImgCompletePath);
+                var item = new
+                {
+                    list = JsonUtil.SerializeToString(tracingModels),
+                    images = result,
+                };
+                _currentFileName = saveFileDialog.FileName;
+            
                 System.Threading.Tasks.Task.Run(() =>
                 {
                     string downloadReport = string.Format("{0}?token={1}", PipelineInterface.tracingexport, httpDowLoadManager.Token);
                     HttpServiceHelper.Instance.DownloadPostFile(downloadReport, _currentFileName, JsonUtil.SerializeToString(item), DownloadResult);
-
-                    //bool success = HttpServiceHelper.Instance.PostRequestForStatus(downloadReport, JsonUtil.SerializeToString(item));
                 });
                 Messages.ShowMessage("导出成功！");
             }

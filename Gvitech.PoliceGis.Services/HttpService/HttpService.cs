@@ -941,29 +941,31 @@ namespace Mmc.Mspace.Services.HttpService
                 myRequest.AllowAutoRedirect = true;
                 myRequest.KeepAlive = true;
 
-                byte[] data = Encoding.UTF8.GetBytes(postData);
-                myRequest.ContentLength = data.Length;
-                using (Stream reqStream = myRequest.GetRequestStream())
+
+                if (myRequest.Method == "POST" && !string.IsNullOrEmpty(postData))
                 {
-                    reqStream.Write(data, 0, data.Length);
-                    reqStream.Close();
+                    Stream requestStream = myRequest.GetRequestStream();
+                    byte[] jsonbyte = Encoding.UTF8.GetBytes(postData);
+                    requestStream.Write(jsonbyte, 0, jsonbyte.Length);
+                    requestStream.Close();
                 }
                 if (SPosition > 0)
                     myRequest.AddRange((int)SPosition);//设置Range值
                                                        //向服务器请求，获得服务器的回应数据流
 
-                Stream myStream = myRequest.GetResponse().GetResponseStream();
-
-                byte[] btContent = new byte[512];
-                int intSize = 0;
-                intSize = myStream.Read(btContent, 0, 512);
-                while (intSize > 0)
+                HttpWebResponse response = (HttpWebResponse)myRequest.GetResponse();
+                using (Stream responseStream = response.GetResponseStream())
                 {
-                    FStream.Write(btContent, 0, intSize);
-                    intSize = myStream.Read(btContent, 0, 512);
+                    byte[] btContent = new byte[512];
+                    int intSize = 0;
+                    intSize = responseStream.Read(btContent, 0, 512);
+                    while (intSize > 0)
+                    {
+                        FStream.Write(btContent, 0, intSize);
+                        intSize = responseStream.Read(btContent, 0, 512);
+                    }
                 }
                 FStream.Close();
-                myStream.Close();
                 OnFinish(true);
             }
             catch (WebException WebEx)
