@@ -120,7 +120,7 @@ namespace MMC.MSpace
         private MiniblinkBrowser Browser = new MiniblinkBrowser();
         Window1 window1 = null;
         private void Shell_Loaded(object sender, RoutedEventArgs e)
-        {
+       {
             this.InitializeShellService();
             this.Owner = System.Windows.Application.Current.MainWindow;
             this.DataContext = Mmc.Mspace.Main.ViewModels.ShellViewModel.Instance;
@@ -266,9 +266,6 @@ namespace MMC.MSpace
                     regularInspectionVModel?.CloseAddWin(); 
                     this.leftView.Content = leftManagementView;
                     this.leftManagementVModel.ReLoaded();
-                    //RegInsDataRenderManager.Instance.SaveRenderLayersStatus();
-                    //RegInsDataRenderManager.Instance.HideRenderLayer();
-                    //RegInsDataRenderManager.Instance.CloseHintView();
                     break;
                 case CommonContract.LeftMenuEnum.RegularInspectionView:
                     if (regularInspectionView == null)
@@ -369,51 +366,67 @@ namespace MMC.MSpace
         /// </summary>
         private void getStackList()
         {
-            Task.Run(() =>
+            try
             {
-                string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex);
-                this.StakeModels = (JsonUtil.DeserializeFromString<List<StakeModel>>(resStr));
-                DrawAutoLine();
-            });
+                Task.Run(() =>
+                {
+                    Thread.Sleep(5000);
+
+                    string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex);
+                    this.StakeModels = (JsonUtil.DeserializeFromString<List<StakeModel>>(resStr));
+                    DrawAutoLine();
+                });
+            }
+            catch (Exception e)
+            {
+                SystemLog.Log(e);
+            }
         }
         List<Guid> guids = new List<Guid>();
         IRenderPolyline rLine;
         private void DrawAutoLine()
         {
-            string header = "linestring z (";
-            string end = ")";
-            string line = "";
-            for (int i = 0; i < StakeModels.Count; i++)
+            try
             {
-                if (i > this.StakeModels.Count - 1) return;
-                if (i == StakeModels.Count - 1)
+                string header = "linestring z (";
+                string end = ")";
+                string line = "";
+                for (int i = 0; i < StakeModels.Count; i++)
                 {
-                    line += (StakeModels[i].Lng + " " + StakeModels[i].Lat + " " + (string.IsNullOrEmpty(StakeModels[i].Height) ? "0" : StakeModels[i].Height));
-                }
-                else
-                {
-                    line += (StakeModels[i].Lng + " " + StakeModels[i].Lat + " " + (string.IsNullOrEmpty(StakeModels[i].Height) ? "0" : StakeModels[i].Height) + ",");
+                    if (i > this.StakeModels.Count - 1) return;
+                    if (i == StakeModels.Count - 1)
+                    {
+                        line += (StakeModels[i].Lng + " " + StakeModels[i].Lat + " " + (string.IsNullOrEmpty(StakeModels[i].Height) ? "0" : StakeModels[i].Height));
+                    }
+                    else
+                    {
+                        line += (StakeModels[i].Lng + " " + StakeModels[i].Lat + " " + (string.IsNullOrEmpty(StakeModels[i].Height) ? "0" : StakeModels[i].Height) + ",");
 
+                    }
                 }
+                string Geom = header + line + end;
+
+                var polyLine = GviMap.GeoFactory.CreatePolyline(Geom, GviMap.SpatialCrs);
+                CurveSymbol curveSymbol = new CurveSymbol();
+                curveSymbol.Color = ColorConvert.Argb(100, 255, 0, 0);//GviMap.LinePolyManager.CurveSym
+                curveSymbol.Width = 10f;
+
+                rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
+                rLine.MaxVisibleDistance = 10000.0;
+                rLine.MinVisibleDistance = 1.0;
+                rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
+                GviMap.Camera.FlyToEnvelope(polyLine.Envelope);
+                zhibei();
+                guids.Add(rLine.Guid);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    this.guandao.Content = "隐藏管道";
+                });
             }
-           string Geom = header + line + end;
-
-            var polyLine = GviMap.GeoFactory.CreatePolyline(Geom, GviMap.SpatialCrs);
-            CurveSymbol curveSymbol = new CurveSymbol();
-            curveSymbol.Color = ColorConvert.Argb(100, 255, 0, 0);//GviMap.LinePolyManager.CurveSym
-            curveSymbol.Width = 30f;
-            
-             rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
-            rLine.MaxVisibleDistance = 10000.0;
-            rLine.MinVisibleDistance = 1.0;
-            rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
-            GviMap.Camera.FlyToEnvelope(polyLine.Envelope);
-            zhibei();
-            guids.Add(rLine.Guid);
-            Application.Current.Dispatcher.Invoke(() =>
+            catch (Exception e)
             {
-                this.guandao.Content = "隐藏管道";
-            });
+                SystemLog.Log(e);
+            }
         }
 
         private void zhibei()

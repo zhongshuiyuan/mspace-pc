@@ -26,7 +26,8 @@
     <ImageSource x:Key="Video_S">pack://application:,,,/Mmc.Mspace.Theme;component/Images/Video_S.png</ImageSource>
     <ImageSource x:Key="Pic_C">pack://application:,,,/Mmc.Mspace.Theme;component/Images/Pic_C.png</ImageSource>
     <ImageSource x:Key="Pic_S">pack://application:,,,/Mmc.Mspace.Theme;component/Images/Pic_S.png</ImageSource>
-
+    <ImageSource x:Key="xiazai_C">pack://application:,,,/Mmc.Mspace.Theme;component/Images/Pic_C.png</ImageSource>
+    <ImageSource x:Key="xiazai">pack://application:,,,/Mmc.Mspace.Theme;component/Images/Pic_S.png</ImageSource>
     <ImageSource x:Key="up_N">pack://application:,,,/Mmc.Mspace.Theme;component/Images/up_N.png</ImageSource>
     <ImageSource x:Key="up_H">pack://application:,,,/Mmc.Mspace.Theme;component/Images/up_H.png</ImageSource>
     <ImageSource x:Key="down_N">pack://application:,,,/Mmc.Mspace.Theme;component/Images/down_N.png</ImageSource>

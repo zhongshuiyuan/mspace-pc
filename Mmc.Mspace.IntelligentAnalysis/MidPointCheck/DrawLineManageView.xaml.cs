@@ -24,5 +24,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             InitializeComponent();
             this.Owner = Application.Current.MainWindow;
         }
+
+     
     }
 }

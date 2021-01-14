@@ -41,11 +41,11 @@
                      BorderBrush="Black"   
                       CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False"   
                       Name="MidLinedg"  ItemsSource="{Binding DrawLineListCollection}">
-            <!--<i:Interaction.Triggers>
-                <i:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                    <i:InvokeCommandAction  Command="{Binding Path=DataContext.SelectCommand,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"/>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction  Command="{Binding Path=DataContext.SelectCommand2,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"/>
                 </i:EventTrigger>
-            </i:Interaction.Triggers>-->
+            </i:Interaction.Triggers>
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="HorizontalContentAlignment" Value="Center"/>

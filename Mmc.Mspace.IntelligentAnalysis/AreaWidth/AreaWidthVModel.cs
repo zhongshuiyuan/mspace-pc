@@ -1,7 +1,6 @@
 ﻿using Gvitech.CityMaker.FdeGeometry;
 using Gvitech.CityMaker.Math;
 using Gvitech.CityMaker.RenderControl;
-using Microsoft.Office.Interop.Word;
 using Mmc.Framework.Draw;
 using Mmc.Framework.Services;
 using Mmc.MathUtil;
@@ -137,7 +136,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 tracingModels.Add(tracingModel);
             }
             //生成图片
-            string NavigationImgCompletePath = NavigationImgPath + GetTimeStamp() + ".png";
+            string imgName = GetTimeStamp() + ".png";
+            string NavigationImgCompletePath = NavigationImgPath + imgName;
             bool b = GviMap.MapControl.ExportManager.ExportImage(NavigationImgCompletePath, 120, 120, true);
          
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -148,7 +148,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 var httpDowLoadManager = new HttpDowLoadManager();
                 httpDowLoadManager.Token = HttpServiceUtil.Token;
                 //上传图片 
-                string updatestake = string.Format("{0}?token={1}", PipelineInterface.updatestake, httpDowLoadManager.Token);
+                string updatestake = string.Format("{0}", PipelineInterface.taskupload);
                 string result = HttpServiceHelper.Instance.PostImageFile(updatestake, NavigationImgCompletePath);
                 var item = new
                 {
@@ -165,29 +165,29 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 Messages.ShowMessage("导出成功！");
             }
         }
-        public bool WordToPDF(string sourcePath, string targetPath)
-        {
-            bool result = false;
-            Microsoft.Office.Interop.Word.Application application = new Microsoft.Office.Interop.Word.Application();
-            Document document = null;
-            try
-            {
-                application.Visible = false;
-                document = application.Documents.Open(sourcePath);
-                document.ExportAsFixedFormat(targetPath, WdExportFormat.wdExportFormatPDF);
-                result = true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                result = false;
-            }
-            finally
-            {
-                document.Close();
-            }
-            return result;
-        }
+        //public bool WordToPDF(string sourcePath, string targetPath)
+        //{
+        //    bool result = false;
+        //    Microsoft.Office.Interop.Word.Application application = new Microsoft.Office.Interop.Word.Application();
+        //    Document document = null;
+        //    try
+        //    {
+        //        application.Visible = false;
+        //        document = application.Documents.Open(sourcePath);
+        //        document.ExportAsFixedFormat(targetPath, WdExportFormat.wdExportFormatPDF);
+        //        result = true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e.Message);
+        //        result = false;
+        //    }
+        //    finally
+        //    {
+        //        document.Close();
+        //    }
+        //    return result;
+        //}
         /// <summary>
         /// 手动获取中线桩
         /// </summary>
@@ -507,12 +507,14 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 if (polyLine.EndPoint == null) return;
                 CurveSymbol curveSymbol = new CurveSymbol();
                 curveSymbol.Color = ColorConvert.Argb(100, 238, 103, 35);
-                curveSymbol.Width = 20f;
+                curveSymbol.Width = 10f;
                 var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
 
                 if (rLine == null) return;
                 guids.Add(rLine.Guid);
                 rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
+                rLine.MinVisibleDistance = 1.0;
+                rLine.MaxVisibleDistance = 10000.0;
                 //GviMap.Camera.FlyToObject(rLine.Guid, gviActionCode.gviActionFlyTo);
                 //var poly0 = GviMap.GeoFactory.CreateFromWKT(lineItem.geom) as IPolyline;
 

@@ -137,28 +137,35 @@ namespace Mmc.Mspace.PoiManagerModule.ViewModels
     
         public void RefreshCollection(int pageSize, string page)
         {
-           // Task.Run(() =>
-           // {
+            // Task.Run(() =>
+            // {
+            try
+            {
                 List<QueryWktGroup> areaList = new List<QueryWktGroup>();
                 string url = MarkInterface.GetMarkQueryAreaCollectionInf;
-                var json = @"{""page_size"":"+ pageSize + @",""page"":"+ page + "}";
+                var json = @"{""page_size"":" + pageSize + @",""page"":" + page + "}";
                 string resStr = HttpServiceHelper.Instance.PostRequestForData(url, json);
-               try
-                 {
+                try
+                {
                     GetQueryMessage(resStr, areaList);
-                 }
-               catch(Exception e)
-                 {
+                }
+                catch (Exception e)
+                {
                     SystemLog.WriteLog(e.ToString());
-                 }              
+                }
                 if (areaList?.Count > 0)
                 {
                     QueryListCollection?.Clear();
                     foreach (var area in areaList)
-                    {                      
-                       QueryListCollection?.Add(area);
+                    {
+                        QueryListCollection?.Add(area);
                     }
-                }           
+                }
+            }
+            catch (Exception e)
+            {
+                SystemLog.Log(e);
+            }
         }      
         public void GetQueryMessage(string _input,List<QueryWktGroup> _areaList)
         {

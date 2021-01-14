@@ -64,7 +64,7 @@ namespace MMC.MSpace
             DXSplashScreen.Progress(0.0);
             string text = System.Windows.Forms.Application.LocalUserAppDataPath + "\\logs";
             SystemLog.InitSysLog(text);
-            PoliceGisBootstrapper.RegisterServices();
+            RegisterServices();
             SystemLog.Log("启动加载界面");
             double screenInchSize = ScreenHelper.GetScreenInchSize();
             string[] files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory+"Config\\Screen\\", "*inch.xaml");
@@ -270,8 +270,8 @@ namespace MMC.MSpace
             string version = "&mspace_version=" + WebConfig.MspaceVersion;
             //string url = WebConfig.MspaceHostUrl + @"/api/login/gislogin" + version;
             string url = "/api/login/gislogin";
-            //var userString = string.Format("username=maosheng&password=maosheng123");
-            var userString = string.Format("username={0}&password={1}", loginUserName, loginPwd);
+            var userString = string.Format("username=madmin&password=madmin123");
+            //var userString = string.Format("username={0}&password={1}", loginUserName, loginPwd);
             var result = HttpServiceHelper.Instance.PostUrlByFormUrlencoded(url, userString);
             var resultObj = JsonUtil.DeserializeFromString<dynamic>(result);
             var token = resultObj.data.token;

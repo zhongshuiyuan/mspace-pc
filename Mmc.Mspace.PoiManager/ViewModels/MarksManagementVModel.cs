@@ -3001,26 +3001,33 @@ namespace Mmc.Mspace.PoiManagerModule.ViewModels
         }
         public void RefreshQueryCollection()
         {
-            areaList.Clear();
-            string url = MarkInterface.GetMarkQueryAreaCollectionInf;
-            var json = ""; //@"{""page_size"":" + "" + @",""page"":" + page + "}";
-            string resStr = HttpServiceHelper.Instance.PostRequestForData(url, json);
             try
             {
-                GetQueryMessage(resStr, areaList);
+                areaList.Clear();
+                string url = MarkInterface.GetMarkQueryAreaCollectionInf;
+                var json = ""; //@"{""page_size"":" + "" + @",""page"":" + page + "}";
+                string resStr = HttpServiceHelper.Instance.PostRequestForData(url, json);
+                try
+                {
+                    GetQueryMessage(resStr, areaList);
+                }
+                catch (Exception e)
+                {
+                    SystemLog.WriteLog(e.ToString());
+                }
+                if (areaList?.Count > 0)
+                {
+                    QueryAreaCollection = new ObservableCollection<string>();
+                    QueryAreaCollection?.Clear();
+                    foreach (var area in areaList)
+                    {
+                        QueryAreaCollection?.Add(area.Name);
+                    }
+                }
             }
             catch (Exception e)
             {
-                SystemLog.WriteLog(e.ToString());
-            }
-            if (areaList?.Count > 0)
-            {
-                QueryAreaCollection = new ObservableCollection<string>();
-                QueryAreaCollection?.Clear();
-                foreach (var area in areaList)
-                {
-                    QueryAreaCollection?.Add(area.Name);                    
-                }
+                SystemLog.Log(e);
             }
         }
         public void GetQueryMessage(string _input, List<QueryWktGroup> _areaList)

@@ -90,6 +90,14 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             get { return _selectCommand ?? (_selectCommand = new RelayCommand<LineItem>(OnSelectCommand)); }
             set { _selectCommand = value; }
         }
+        private RelayCommand<LineItem> _selectCommand2;
+
+        public RelayCommand<LineItem> SelectCommand2
+        {
+            get { return _selectCommand2 ?? (_selectCommand2 = new RelayCommand<LineItem>(OnSelectCommand2)); }
+            set { _selectCommand2 = value; }
+        }
+        
         private RelayCommand _updateSaveCommand;
 
         public RelayCommand UpdateSaveCommand
@@ -252,6 +260,13 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         }
 
         private LineItem selectLineItem = null;
+
+        private void OnSelectCommand2(LineItem obj)
+        {
+            if (obj == null) return;
+            if (obj.EyeStatus) return;
+            OnSelectCommand(obj);
+        }
         private void OnSelectCommand(LineItem obj)
         {
             if (obj == null) return;
@@ -295,10 +310,14 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             {
                 curveSymbol.Color = ColorConvert.Argb(100, 238, 103, 35);
             }
-            curveSymbol.Width = 20f;
+            curveSymbol.Width = 10f;
+          
+
             var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
-        
+         
             if (rLine == null) return;
+            rLine.MinVisibleDistance = 1.0;
+            rLine.MaxVisibleDistance = 10000.0;
             rLines.Add(rLine);
             gettracinglineList(rLine.Guid,selectLineItem.id);
             guids.Add(selectLineItem.id,rLine.Guid);
@@ -310,6 +329,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             ////GviMap.Camera.FlyToEnvelope(point.Envelope);
             eulerAngle.Tilt = -60;
             eulerAngle.Heading = 220;
+
             pointCamera.X = rLine.Envelope.MaxX;
             pointCamera.Y = rLine.Envelope.MaxY;
             pointCamera.Z = 2100;

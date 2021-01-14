@@ -638,7 +638,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             var polyLine = GviMap.GeoFactory.CreatePolyline(Geom, GviMap.SpatialCrs);
             CurveSymbol curveSymbol = new CurveSymbol();
             curveSymbol.Color = ColorConvert.Argb(100, 238, 103, 35);//GviMap.LinePolyManager.CurveSym
-            curveSymbol.Width = 20f;
+            curveSymbol.Width = 10f;
             var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
 
             rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
@@ -742,6 +742,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             lineItem.name = PipeName;
             lineItem.pipe_id = SelectPipeModel.Id;
             //lineItem.sn = Sn;
+            lineItem.start = StartPoi == null?"": StartPoi.Id;
+            lineItem.end = EndPoi == null ? "" : EndPoi.Id;
             lineItem.type =  TypenameToNum(SelectedItem);
             lineItem.start_sn = TracingLineModels[0].Sn;
             lineItem.end_sn = TracingLineModels[TracingLineModels.Count - 1].Sn;

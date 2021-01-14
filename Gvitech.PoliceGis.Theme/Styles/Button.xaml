@@ -666,6 +666,7 @@
     <Style x:Key="MapToggleButtonStyle" TargetType="{x:Type ToggleButton}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Foreground" Value="{DynamicResource DefaultForeground}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Template">

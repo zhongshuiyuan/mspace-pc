@@ -850,21 +850,35 @@
                                       ToolTip="视频" x:Name="video_btn"
                                       RIcon="{DynamicResource Video_S}" Visibility="Collapsed"
                                       MouseOverRIcon="{DynamicResource Video_C}"
-                                      PressedRIcon="{DynamicResource Video_C}"
-                                      Style="{StaticResource AddressBtnStyle}" Margin="0 0 10 0" 
+                                      PressedRIcon="{DynamicResource Video_C}" Height="18" Width="18"
+                                      Style="{StaticResource AddressBtnStyle}" Margin="0 0 7 0" 
                                       Command="{Binding Path=DataContext.CheckVideoCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
                                       CommandParameter="{Binding}"/>
                                     <controls:Buttons  
                                       ToolTip="影像" x:Name="pic_btn"
-                                      RIcon="{DynamicResource Pic_S}" Visibility="Collapsed"
-                                      MouseOverRIcon="{DynamicResource Pic_C}"
-                                      PressedRIcon="{DynamicResource Pic_C}"
-                                      Style="{StaticResource AddressBtnStyle}" Margin="0 0 10 0" 
+                                      RIcon="{DynamicResource Pic_C}" Visibility="Collapsed"
+                                      MouseOverRIcon="{DynamicResource Pic_S}"
+                                      PressedRIcon="{DynamicResource Pic_S}"  Height="18" Width="18"
+                                      Style="{StaticResource AddressBtnStyle}" Margin="0 0 7 0" 
                                       Command="{Binding Path=DataContext.SelectCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
                                       CommandParameter="{Binding}"/>
-                                    <controls:Buttons  x:Name="check_btn" Command="{Binding Path=DataContext.SelectCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding }"   Style="{DynamicResource Button_plusStyle}" Height="20" Width="16" HasPathData="true" PathData="{DynamicResource glyphicon-check2}" RIcon="{DynamicResource add_n}" Visibility="Collapsed" ToolTip="查看" InnerPathFill="#D1DBEA"  HorizontalAlignment="Right" Margin="0 0 10 0"/>
-                                    <controls:Buttons x:Name="delete_btn" Command="{Binding Path=DataContext.DeleteCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding }"  Style="{DynamicResource Button_plusStyle}" Height="20" Width="16" HasPathData="true" PathData="{DynamicResource glyphicon-delete}" RIcon="{DynamicResource add_n}" Visibility="Collapsed" ToolTip="删除" InnerPathFill="#D1DBEA"  HorizontalAlignment="Right" Margin="0 0 10 0"/>
-                                    <controls:Buttons  Command="{Binding Path=DataContext.AddCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" Visibility="Collapsed" CommandParameter="{Binding .}"   Style="{DynamicResource Button_plusStyle}" Height="16" Width="16" HasPathData="true" PathData="{DynamicResource glyphicon-add}" RIcon="{DynamicResource add_n}" x:Name="add_btn" ToolTip="添加" InnerPathFill="#50ABFF"  HorizontalAlignment="Right" Margin="0 0 10 0"/>
+                                    <controls:Buttons  
+                                      ToolTip="下载" x:Name="check_btn"
+                                      RIcon="{DynamicResource xiazai}" Visibility="Collapsed"
+                                      MouseOverRIcon="{DynamicResource xiazai_C}"
+                                      PressedRIcon="{DynamicResource xiazai_C}"  Height="18" Width="18"
+                                      Style="{StaticResource AddressBtnStyle}" Margin="0 0 7 0" 
+                                      Command="{Binding Path=DataContext.SelectCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                      CommandParameter="{Binding}"/>
+                                    <controls:Buttons  
+                                      ToolTip="删除" x:Name="delete_btn"
+                                      RIcon="{DynamicResource DeletePointNew}" Visibility="Collapsed"
+                                      MouseOverRIcon="{DynamicResource DeletePointNew_H}"
+                                      PressedRIcon="{DynamicResource DeletePointNew_H}"  Height="18" Width="14"
+                                      Style="{StaticResource AddressBtnStyle}" Margin="0 0 5 0" 
+                                      Command="{Binding Path=DataContext.DeleteCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                      CommandParameter="{Binding}"/>
+                                    <controls:Buttons  Command="{Binding Path=DataContext.AddCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" Visibility="Collapsed" CommandParameter="{Binding .}"   Style="{DynamicResource Button_plusStyle}" Height="24" Width="24" HasPathData="true" PathData="{DynamicResource glyphicon-add}" RIcon="{DynamicResource add_n}" x:Name="add_btn" ToolTip="添加" InnerPathFill="#50ABFF"  HorizontalAlignment="Right" Margin="0 0 10 0"/>
 
                                     <ToggleButton x:Name="FirstEye" Margin="2,0" Tag="0" Visibility="Collapsed" IsChecked="{Binding FirstEyeStatus}"
                                     Command="{Binding DataContext.CheckMapCommand,RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"   CommandParameter="{Binding .}" Style="{DynamicResource MapTogButtonStyle}"></ToggleButton>
@@ -888,9 +902,7 @@
                         </Trigger>
                         <DataTrigger Binding="{Binding Level}" Value="4">
                             <Setter Property="Visibility" TargetName="delete_btn" Value="Visible"/>
-                            <Setter Property="Visibility" TargetName="check_btn" Value="Visible"/>
                             <Setter Property="Visibility" TargetName="FirstEye" Value="Visible"/>
-
                             
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Level}" Value="3">
@@ -902,7 +914,10 @@
                         <DataTrigger Binding="{Binding FileType}" Value="Video">
                             <Setter Property="Visibility" TargetName="video_btn" Value="Visible"/>
                             <Setter Property="Visibility" TargetName="pic_btn" Value="Collapsed"/>
-
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding FileType}" Value="ImageGroupLayer">
+                            <Setter Property="Visibility" TargetName="video_btn" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="pic_btn" Value="Visible"/>
                         </DataTrigger>
                         <!--<Trigger Property="IsMouseOver" Value="true">
                             <Setter Property="Background" TargetName="Expander" Value="#50ABFF"/>

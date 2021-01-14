@@ -72,8 +72,6 @@ namespace Mmc.Mspace.PoiManagerModule.ViewModels
         {
             this.SelectedIndex = 0;
             ///获取树结构
-            this.AddressManagementVModel.getPipeList();
-
         }
 
 
