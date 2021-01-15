@@ -40,7 +40,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             }
         }
 
-        private int _pageCount;
+        private int _pageCount=1;
 
         public int PageCount
         {
@@ -48,7 +48,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             set 
             {
                 _pageCount = value;
-                base.SetAndNotifyPropertyChanged<int>(ref this._pageCount, value, "PageCount");
+                NotifyPropertyChanged("PageCount");
             }
         }
 
@@ -57,19 +57,26 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         public int SelectCount
         {
             get { return _selectCount; }
-            set { _selectCount = value; base.SetAndNotifyPropertyChanged<int>(ref this._selectCount, value, "SelectCount");}
+            set { _selectCount = value; NotifyPropertyChanged("SelectCount"); }
         }
 
 
-        private int _pageNum;
+        private int _pageNum=1;
 
         public int PageNum
         {
             get { return _pageNum; }
             set {
                 _pageNum = value;
-                base.SetAndNotifyPropertyChanged<int>(ref this._pageNum, value, "PageNum");
+                NotifyPropertyChanged("PageNum");
             }
+        }
+        private int _total;
+
+        public int Total
+        {
+            get { return _total; }
+            set { _total = value; NotifyPropertyChanged("Total"); }
         }
 
 
@@ -433,7 +440,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                         poi.MinVisibleDistance = 0;
                         poi.Name = string.IsNullOrEmpty(point.Stake_sn) ? point.Sn : point.Stake_sn;
                         poi.ShowName = true;
-                        poi.SetPostion(Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat), 1);
+                        poi.SetPostion(Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat), string.IsNullOrEmpty(point.Height) ? 0 : Convert.ToDouble(point.Height));
                         poi.Size = 50;
                         poi.ImageName = string.Format(AppDomain.CurrentDomain.BaseDirectory + "项目数据\\shp\\IMG_POI\\{0}.png", "stake");
                         poi.SpatialCRS = GviMap.SpatialCrs;
@@ -526,7 +533,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             uavResult = httpservice.RequestService(url, method: "GET");
             var templist = JsonUtil.DeserializeFromString<dynamic>(uavResult);
              dynamic list = templist.data;
-            PageCount = templist.total;
+            Total = templist.total;
             foreach (var item in list)
             {
                 LineItem lineItem = new LineItem();

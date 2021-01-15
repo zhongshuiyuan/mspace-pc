@@ -479,7 +479,7 @@ namespace MMC.MSpace
 
                     var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
                     poi.Name = point.Sn;
-                    poi.SetPostion(Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat), 1);
+                    poi.SetPostion(Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat),string.IsNullOrEmpty(StakeModels[i].Height) ? 0: Convert.ToDouble(StakeModels[i].Height));
                     poi.Size = 50;
                     poi.ShowName = true;
                     poi.MaxVisibleDistance = 10000.0;

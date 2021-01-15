@@ -625,7 +625,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                     var point = TracingLineModels[i];
 
                     var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
-                    poi.SetPostion(Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat));
+                    poi.SetPostion(Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat), string.IsNullOrEmpty(point.Height) ? 0 : Convert.ToDouble(point.Height));
                     poi.Size = 50;
                     poi.ShowName = true;
                     poi.Name = string.IsNullOrEmpty(point.Stake_sn)? point.Sn: point.Stake_sn;
@@ -691,7 +691,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         private void CreatRenPoi(IPoint point)
         {
             var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
-            poi.SetPostion(point.X, point.Y, 5);
+            poi.SetPostion(point.X, point.Y, 1);
             poi.Size = 30;
             poi.ShowName = true;
             poi.MaxVisibleDistance = 10000;

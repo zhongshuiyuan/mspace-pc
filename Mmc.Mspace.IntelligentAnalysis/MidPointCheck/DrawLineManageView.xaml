@@ -199,7 +199,7 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5">
                     <TextBlock  FontSize="12" VerticalAlignment="Center" Margin="5,0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}">
                         <Run Text="共计"></Run>
-                        <Run Text="{Binding PageNum}"></Run>
+                        <Run Text="{Binding Total}"></Run>
                         <Run Text="条，"></Run>
                     </TextBlock>
                     <TextBlock  FontSize="12" VerticalAlignment="Center" Margin="5,0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}">
