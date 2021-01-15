@@ -17,7 +17,7 @@ namespace Mmc.Mspace.RegularInspectionModule.Views
     /// <summary>
     /// TimeView.xaml 的交互逻辑
     /// </summary>
-    public partial class TimeView 
+    public partial class TimeView :Window
     {
         public TimeView()
         {

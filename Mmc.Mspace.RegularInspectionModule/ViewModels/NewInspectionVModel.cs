@@ -53,7 +53,27 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             {
 
             }
+        }
+        private ObservableCollection<TaskModel> _taskAll = new ObservableCollection<TaskModel>();
+        public ObservableCollection<TaskModel> TaskAll
+        {
+            get { return _taskAll; }
+            set
+            {
+                _taskAll = value;
+                OnPropertyChanged("TaskAll");
+            }
+        }
 
+        private TaskModel _TaskSelectItem;
+        public TaskModel TaskSelectItem
+        {
+            get { return _TaskSelectItem; }
+            set
+            {
+                _TaskSelectItem = value;
+                OnPropertyChanged("TaskSelectItem");
+            }
         }
         private RelayCommand<object> _startSearchCommand;
 
@@ -372,6 +392,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             NewName = string.Empty;
             InspectionDate = DateTime.Now;
             InspectRegions = new ObservableCollection<InspectRegion>(InspectionService.Instance.GetAllRegion());
+            getTaskAll();
 
         }
         /// <summary>
@@ -853,7 +874,12 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 SelectSectionModel= this.Sections.SingleOrDefault(t => t.Id == se.Id);
             }
         }
-
+        private void getTaskAll()
+        {
+            this.TaskAll = new ObservableCollection<TaskModel>();
+            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.taskall);
+            this.TaskAll = (JsonUtil.DeserializeFromString<ObservableCollection<TaskModel>>(resStr));
+        }
         #endregion
         private void OnCreateCommand()
         {
@@ -874,7 +900,12 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
             if (StartPoi == null || EndPoi == null)
             {
-                Messages.ShowMessage("请输选择起始桩号！");
+                Messages.ShowMessage("请选择起始桩号！");
+                return;
+            }
+            if (TaskSelectItem == null )
+            {
+                Messages.ShowMessage("请选择关联任务！");
                 return;
             }
             Task.Run(()=>{
@@ -907,6 +938,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     file = LoadFiles,
                     start = this.StartPoi.Id,
                     end = this.EndPoi.Id,
+                    task_id =TaskSelectItem.Id,
                 }); 
 
                 bool success = HttpServiceHelper.Instance.PostRequestForStatus(PipelineInterface.createstake, txtjson);

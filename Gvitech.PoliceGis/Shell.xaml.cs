@@ -117,7 +117,6 @@ namespace MMC.MSpace
 
             userMessageVModel?.GetWindowPosition();
         }
-        private MiniblinkBrowser Browser = new MiniblinkBrowser();
         Window1 window1 = null;
         private void Shell_Loaded(object sender, RoutedEventArgs e)
        {
@@ -139,12 +138,20 @@ namespace MMC.MSpace
             Messenger.Messengers.Register<bool>("IntelligentAnalysisShow", (t) => {
                 if (t)
                 {
-                    window1 = new Window1();
-                    window1.Height = Application.Current.MainWindow.Height * 0.8;
-                    window1.Width = Application.Current.MainWindow.Width -600;
-                    window1.Left = 420;
-                    window1.Top = Application.Current.MainWindow.Height * 0.1;
-                    window1.Show();
+                    try
+                    {
+                        window1 = new Window1();
+                        window1.Height = Application.Current.MainWindow.Height * 0.8;
+                        window1.Width = Application.Current.MainWindow.Width - 600;
+                        window1.Left = 420;
+                        window1.Top = Application.Current.MainWindow.Height * 0.1;
+                        window1.Show();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString());
+                    }
+
                 }
                 else
                 {
@@ -339,6 +346,7 @@ namespace MMC.MSpace
             };
             // this.Tool.DataContext = leftview;
             this.TopMenu.DataContext = leftview;
+
         }
 
         private void Menu_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -371,10 +379,20 @@ namespace MMC.MSpace
                 Task.Run(() =>
                 {
                     Thread.Sleep(5000);
-
                     string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex);
                     this.StakeModels = (JsonUtil.DeserializeFromString<List<StakeModel>>(resStr));
                     DrawAutoLine();
+                    GviMap.AxMapControl.RcMouseWheel -= AxMapControl_RcMouseWheel;
+                    GviMap.AxMapControl.RcMouseWheel += AxMapControl_RcMouseWheel;
+
+                    GviMap.Camera.GetCamera2(out IPoint pointCamera, out IEulerAngle eulerAngle);
+                    ////GviMap.Camera.FlyToEnvelope(point.Envelope);
+                    eulerAngle.Tilt = -90;
+                    eulerAngle.Heading = 0;
+                    pointCamera.X = 115.42919769497675;
+                    pointCamera.Y = 38.30008324358834;
+                    pointCamera.Z = 2300;
+                    GviMap.Camera.SetCamera2(pointCamera, eulerAngle, 0);
                 });
             }
             catch (Exception e)
@@ -382,12 +400,117 @@ namespace MMC.MSpace
                 SystemLog.Log(e);
             }
         }
+        public double currentHeight = 10000;
+        private bool AxMapControl_RcMouseWheel(uint Flags, short Delta, int X, int Y)
+        {
+            if (!isVisible) return false;
+            IPoint state;
+            IEulerAngle eulerAngle;
+            GviMap.Camera.GetCamera2(out state, out eulerAngle);
+            if ((state.Z > 0 && state.Z < 1000) && (currentHeight != 1000))
+            {
+                currentHeight = 1000;
+                if (rLine != null)
+                {
+                    GviMap.ObjectManager.DeleteObject(rLine.Guid);
+                    DrawAutoLine();
+                }
+            }
+            else if ((state.Z > 1000 && state.Z < 2000) && (currentHeight != 2000))
+            {
+                currentHeight = 2000;
+                if (rLine != null)
+                {
+                    GviMap.ObjectManager.DeleteObject(rLine.Guid);
+                    DrawAutoLine();
+                }
+            }
+            else if ((state.Z > 2000 && state.Z < 5000) && (currentHeight != 5000))
+            {
+                currentHeight =5000;
+                if (rLine != null)
+                {
+                    GviMap.ObjectManager.DeleteObject(rLine.Guid);
+                    DrawAutoLine();
+                }
+            }
+            else if ((state.Z > 5000&& state.Z < 10000) && (currentHeight !=10000))
+            {
+                currentHeight = 10000;
+                if (rLine != null)
+                {
+                    GviMap.ObjectManager.DeleteObject(rLine.Guid);
+                    DrawAutoLine();
+           
+                }
+            }
+           else if ((state.Z >=10000 && state.Z < 40000) && (currentHeight !=30000))
+            {
+                currentHeight =30000;
+                if (rLine != null)
+                {
+                    GviMap.ObjectManager.DeleteObject(rLine.Guid);
+                    DrawAutoLine();
+                }
+            }
+            else if ((state.Z > 40000 ) && (currentHeight!=50000))
+            {
+                ClearPatrolList();
+                currentHeight = 50000;
+                if (rLine != null)
+                {
+                    GviMap.ObjectManager.DeleteObject(rLine.Guid);
+                    DrawAutoLine();
+                }
+            }
+            return false;
+        }
+
         List<Guid> guids = new List<Guid>();
         IRenderPolyline rLine;
+        public Dictionary<string, Guid> poiList = new Dictionary<string, Guid>();
+        private void SetVideo()
+        {
+            if (StakeModels.Count > 0)
+            {
+                for (int i = 0; i < StakeModels.Count; i++)
+                {
+                    var point = StakeModels[i];
+
+                    var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
+                    poi.Name = point.Sn;
+                    poi.SetPostion(Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat), 1);
+                    poi.Size = 50;
+                    poi.ShowName = true;
+                    poi.MaxVisibleDistance = 10000.0;
+                    poi.MinVisibleDistance = 0;
+                    poi.ImageName = string.Format(AppDomain.CurrentDomain.BaseDirectory + "项目数据\\shp\\IMG_POI\\{0}.png", "stake");
+                    poi.SpatialCRS = GviMap.SpatialCrs;
+                    var rPoi = GviMap.ObjectManager.CreateRenderPOI(poi);
+                    rPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
+                    this.poiList.Add(rPoi.Guid.ToString(), rPoi.Guid);
+                }
+            }
+        }
+
+        public void ClearPatrolList()
+        {
+            Dictionary<string, Guid> expr_07 = this.poiList;
+            bool flag = expr_07 == null || expr_07.Count > 0;
+            if (flag)
+            {
+                foreach (KeyValuePair<string, Guid> current in this.poiList)
+                {
+                    GviMap.ObjectManager.DeleteObject(current.Value);
+                }
+            }
+            this.poiList = new Dictionary<string, Guid>();
+        }
         private void DrawAutoLine()
         {
             try
             {
+
                 string header = "linestring z (";
                 string end = ")";
                 string line = "";
@@ -409,7 +532,7 @@ namespace MMC.MSpace
                 var polyLine = GviMap.GeoFactory.CreatePolyline(Geom, GviMap.SpatialCrs);
                 CurveSymbol curveSymbol = new CurveSymbol();
                 curveSymbol.Color = ColorConvert.Argb(100, 255, 0, 0);//GviMap.LinePolyManager.CurveSym
-                curveSymbol.Width = 10f;
+                curveSymbol.Width = getWidth();
 
                 rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
                 rLine.MaxVisibleDistance = 10000.0;
@@ -422,11 +545,43 @@ namespace MMC.MSpace
                 {
                     this.guandao.Content = "隐藏管道";
                 });
+                ClearPatrolList();
+                SetVideo();
             }
             catch (Exception e)
             {
                 SystemLog.Log(e);
             }
+        }
+
+        private float getWidth()
+        {
+            IPoint state;
+            IEulerAngle eulerAngle;
+            GviMap.Camera.GetCamera2(out state, out eulerAngle);
+
+            if (state.Z <= 1000)
+            {
+                return 3f;
+            }
+            if (state.Z > 1000& state.Z < 2000)
+            {
+                return 4f;
+            }
+            if (state.Z > 2000&& state.Z<5000)
+            {
+                return 8f;
+            }
+            if (state.Z > 5000 && state.Z < 10000)
+            {
+                return 20f;
+            }
+            if (state.Z > 10000)
+            {
+                return 200f;
+            }
+            return 10f;
+
         }
 
         private void zhibei()
@@ -697,15 +852,19 @@ namespace MMC.MSpace
         private bool isVisible = true;
         private void guandao_Click(object sender, RoutedEventArgs e)
         {
-            if(isVisible)
+
+            if (isVisible)
             {
+                ClearPatrolList();
                 this.guandao.Content = "显示管道";
                 rLine?.SetVisibleMask(GviMap.Viewport.ViewportMode, 0, false);
                 isVisible = false;
+
             }
             else
             {
-                isVisible = true ;
+                SetVideo();
+                isVisible = true;
                 this.guandao.Content = "隐藏管道";
                 rLine?.SetVisibleMask(GviMap.Viewport.ViewportMode, 0, true);
             }

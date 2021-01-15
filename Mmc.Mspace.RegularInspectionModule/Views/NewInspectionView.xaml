@@ -9,7 +9,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="NewInspectionView" Height="450" Width="270"  Style="{DynamicResource AllowsTransparencyWindowStyle2}">
+        Title="NewInspectionView" Height="490" Width="270"  Style="{DynamicResource AllowsTransparencyWindowStyle2}">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadedCommand}"/>
@@ -41,12 +41,12 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="177*"/>
-                <ColumnDefinition Width="19*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Margin="10,10,0,10" Grid.Row="0" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="管线："></TextBlock>
             <TextBlock Margin="10,10,0,10" Grid.Row="1" Grid.Column="0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="标段："></TextBlock>
@@ -91,19 +91,20 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </ComboBox>
-
-            <StackPanel Orientation="Horizontal" Margin="20,10,1,10" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" >
+            <ComboBox  Grid.Row="7"   Grid.Column="0"  Grid.ColumnSpan="2" Height="32" Width="240" HorizontalAlignment="Left" Margin="10 5 10 2"  helper:TextBoxHelper.Watermark="请选择相关任务" ContextMenu="{DynamicResource TextBoxContextMenu}" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding TaskAll}"   SelectedItem="{Binding TaskSelectItem}"  Style="{DynamicResource DefaultComboBoxStyle}"  >
+            </ComboBox>
+            <StackPanel Orientation="Horizontal" Margin="20,10,1,10" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" >
                 <RadioButton Margin="10,0,20,0" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Center" VerticalAlignment="Center" Content="本地" x:Name="pie" GroupName="AnalyseMidea" Foreground="#B3BBC5" IsChecked="{Binding LocalCheck}" ></RadioButton>
                 <RadioButton Margin="20,0" Style="{StaticResource DefaultRadioButtonStyle}"  HorizontalAlignment="Center" VerticalAlignment="Center" Content="网络" x:Name="rect" GroupName="AnalyseMidea" Foreground="#B3BBC5" IsChecked="{Binding ServerCheck}"></RadioButton>
             </StackPanel>
-            <StackPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Stretch"  >
+            <StackPanel Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Stretch"  >
                 <TextBox  Margin="30 5 10 2" Width="162" HorizontalAlignment="Stretch"  Height="32"  Style="{DynamicResource TbxWaterStyle}" VerticalContentAlignment="Center" IsEnabled="{Binding ServerCheck}"
                                    helper:TextBoxHelper.Watermark="{Binding UploadText}"          helper:TextBoxHelper.IsNeedClearButton="False"    Text="{Binding LoadFiles,UpdateSourceTrigger=PropertyChanged}"  />
                 <Button  Content="{DynamicResource Accountupload}" Style="{StaticResource DefaultuploadButtonStyle}"  HorizontalAlignment="Right" Height="24" Margin="0,5,10,5"  Command="{Binding UploadFileCommand}"  VerticalAlignment="Center" Width="44" />
 
             </StackPanel>
-            <Button Grid.Row="9" Grid.ColumnSpan="2" Content="{DynamicResource OK}" Command="{Binding CreateCommand}" Style="{StaticResource DefaultButtonStyle}"  Grid.Column="0"  HorizontalAlignment="Center" Height="36" Margin="41,0,122,30"  VerticalAlignment="Bottom" Width="80" Grid.RowSpan="2" />
-            <Button Grid.Row="9" Content="{DynamicResource Cancel}" Grid.Column="1" Command="{Binding CancelCommand}" Style="{StaticResource DefaultButtonStyle}"  HorizontalAlignment="Center" Height="36" Margin="75,0,22,30"  VerticalAlignment="Bottom" Width="80" Grid.RowSpan="2"/>
+            <Button Grid.Row="10" Grid.ColumnSpan="2" Content="{DynamicResource OK}" Command="{Binding CreateCommand}" Style="{StaticResource DefaultButtonStyle}"  Grid.Column="0"  HorizontalAlignment="Center" Height="36" Margin="41,0,122,30"  VerticalAlignment="Bottom" Width="80" Grid.RowSpan="2" />
+            <Button Grid.Row="10" Content="{DynamicResource Cancel}" Grid.Column="1" Command="{Binding CancelCommand}" Style="{StaticResource DefaultButtonStyle}"  HorizontalAlignment="Center" Height="36" Margin="75,0,22,30"  VerticalAlignment="Bottom" Width="80" Grid.RowSpan="2"/>
 
 
         </Grid>

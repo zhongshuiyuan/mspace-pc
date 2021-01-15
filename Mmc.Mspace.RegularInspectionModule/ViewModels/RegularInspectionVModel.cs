@@ -441,6 +441,8 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             this.newInspectionVModel.SelectPeriodModel = this.Periods.SingleOrDefault(t => t.Id == threeItem.Id);
             this.newInspectionVModel.SelectSectionModel = this.Sections.SingleOrDefault(t => t.Id == twoItem.Id);
             this.newInspectionVModel.SelectPipeModel = oneItem;
+
+            newInspectionVModel.LoadData();
             _newInspectionView.DataContext = newInspectionVModel;
             _newInspectionView.Owner = Application.Current.MainWindow;
             _newInspectionView.Left = 400;

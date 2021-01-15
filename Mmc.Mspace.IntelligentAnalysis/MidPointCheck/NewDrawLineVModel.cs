@@ -644,9 +644,9 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
             GviMap.Camera.GetCamera2(out IPoint pointCamera, out IEulerAngle eulerAngle);
             eulerAngle.Tilt = -60;
-            eulerAngle.Heading = 220;
-            pointCamera.X = rLine.Envelope.MaxX;
-            pointCamera.Y = rLine.Envelope.MaxY;
+            eulerAngle.Heading = 0;
+            pointCamera.X = rLine.Envelope.MinX;
+            pointCamera.Y = rLine.Envelope.MinY;
             pointCamera.Z = 2100;
             GviMap.Camera.SetCamera2(pointCamera, eulerAngle, 0);
 
@@ -671,12 +671,12 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
 
                     var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
                     poi.Name = point.Sn;
-                    poi.SetPostion(Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat));
+                    poi.SetPostion(Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat),1);
                     poi.Size = 50;
                     poi.ShowName = true;
                     poi.MaxVisibleDistance = 10000.0;
-                    poi.MinVisibleDistance = 1.0;
-                    poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");
+                    poi.MinVisibleDistance = 0;
+                    poi.ImageName = string.Format(AppDomain.CurrentDomain.BaseDirectory + "项目数据\\shp\\IMG_POI\\{0}.png", "stake");
                     poi.SpatialCRS = GviMap.SpatialCrs;
                     var rPoi = GviMap.ObjectManager.CreateRenderPOI(poi);
                     rPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
@@ -742,8 +742,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             lineItem.name = PipeName;
             lineItem.pipe_id = SelectPipeModel.Id;
             //lineItem.sn = Sn;
-            lineItem.start = StartPoi == null?"": StartPoi.Id;
-            lineItem.end = EndPoi == null ? "" : EndPoi.Id;
+            lineItem.start = StartPoi == null? TracingLineModels[0].Sn : StartPoi.Id;
+            lineItem.end = EndPoi == null ? TracingLineModels[TracingLineModels.Count - 1].Sn : EndPoi.Id;
             lineItem.type =  TypenameToNum(SelectedItem);
             lineItem.start_sn = TracingLineModels[0].Sn;
             lineItem.end_sn = TracingLineModels[TracingLineModels.Count - 1].Sn;
@@ -830,7 +830,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 {
                     if (drawCustomer == null)
                     {
-                        drawCustomer = new DrawCustomerUC(Helpers.ResourceHelper.FindKey("pipeLineMarkerKey"), DrawCustomerType.MenuCommand);
+                        drawCustomer = new DrawCustomerUC("绘制", DrawCustomerType.MenuCommand);
                         //注册绘制多边形事件
                     }
                     RCDrawManager.Instance.PolylineDraw.Register(GviMap.AxMapControl, drawCustomer, RCMouseOperType.PickPoint);

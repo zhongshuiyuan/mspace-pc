@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,6 +39,39 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 base.SetAndNotifyPropertyChanged<ObservableCollection<LineItem>>(ref this._drawLineListCollection, value, "DrawLineListCollection");               
             }
         }
+
+        private int _pageCount;
+
+        public int PageCount
+        {
+            get { return _pageCount; }
+            set 
+            {
+                _pageCount = value;
+                base.SetAndNotifyPropertyChanged<int>(ref this._pageCount, value, "PageCount");
+            }
+        }
+
+        private int _selectCount;
+
+        public int SelectCount
+        {
+            get { return _selectCount; }
+            set { _selectCount = value; base.SetAndNotifyPropertyChanged<int>(ref this._selectCount, value, "SelectCount");}
+        }
+
+
+        private int _pageNum;
+
+        public int PageNum
+        {
+            get { return _pageNum; }
+            set {
+                _pageNum = value;
+                base.SetAndNotifyPropertyChanged<int>(ref this._pageNum, value, "PageNum");
+            }
+        }
+
 
         private string _ReportSearchText;
 
@@ -217,7 +251,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         {
             Messenger.Messengers.Notify("DrawLineManage", true);
             GetLineData();
-
+            drawLineManageView.DataContext = this;
             drawLineManageView.Owner = Application.Current.MainWindow;
             drawLineManageView.Left = 700;
             drawLineManageView.Top = Application.Current.MainWindow.Height * 0.2;
@@ -328,10 +362,10 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             GviMap.Camera.GetCamera2(out IPoint pointCamera, out IEulerAngle eulerAngle);
             ////GviMap.Camera.FlyToEnvelope(point.Envelope);
             eulerAngle.Tilt = -60;
-            eulerAngle.Heading = 220;
+            eulerAngle.Heading = 0;
 
-            pointCamera.X = rLine.Envelope.MaxX;
-            pointCamera.Y = rLine.Envelope.MaxY;
+            pointCamera.X = rLine.Envelope.MinX;
+            pointCamera.Y = rLine.Envelope.MinY;
             pointCamera.Z = 2100;
             GviMap.Camera.SetCamera2(pointCamera, eulerAngle, 0);
             //Messenger.Messengers.Notify("zhibeiCommand", true);
@@ -384,27 +418,36 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         public Dictionary<string, Guid> poiList = new Dictionary<string, Guid>();
         private void SetVideo(Guid guid)
         {
-            if (TracingLineModels.Count >0)
+            try
             {
-                for (int i = 0; i < TracingLineModels.Count; i++)
-                {
-                    var point = TracingLineModels[i];
 
-                    var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
-             
-                    poi.MaxVisibleDistance = 10000.0;
-                    poi.MinVisibleDistance = 1.0;
-                    poi.Name = string.IsNullOrEmpty(point.Stake_sn)? point.Sn: point.Stake_sn;
-                    poi.ShowName = true;
-                    poi.SetPostion( Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat));
-                    poi.Size = 50;
-                    poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");
-                    poi.SpatialCRS = GviMap.SpatialCrs;
-                    var rPoi = GviMap.ObjectManager.CreateRenderPOI(poi);
-                    rPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
-                    this.poiList.Add(rPoi.Guid.ToString(), guid);
+                if (TracingLineModels.Count > 0)
+                {
+                    for (int i = 0; i < TracingLineModels.Count; i++)
+                    {
+                        var point = TracingLineModels[i];
+
+                        var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
+
+                        poi.MaxVisibleDistance = 10000.0;
+                        poi.MinVisibleDistance = 0;
+                        poi.Name = string.IsNullOrEmpty(point.Stake_sn) ? point.Sn : point.Stake_sn;
+                        poi.ShowName = true;
+                        poi.SetPostion(Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat), 1);
+                        poi.Size = 50;
+                        poi.ImageName = string.Format(AppDomain.CurrentDomain.BaseDirectory + "项目数据\\shp\\IMG_POI\\{0}.png", "stake");
+                        poi.SpatialCRS = GviMap.SpatialCrs;
+                        var rPoi = GviMap.ObjectManager.CreateRenderPOI(poi);
+                        rPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
+                        this.poiList.Add(rPoi.Guid.ToString(), guid);
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+          
         }
         public IPolygon UpdateZ(IPolygon geo, double Z)
         {
@@ -471,19 +514,20 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         ObservableCollection<IPoint> _problemPoints = new ObservableCollection<IPoint>();
         Dictionary<string,Guid> guids = new Dictionary<string,Guid>();
         public List<LineItem> lineItems = new List<LineItem>();
-    
+
         private void GetLineData()
         {
             DrawLineListCollection.Clear();
             var json = JsonUtil.DeserializeFromFile<dynamic>(AppDomain.CurrentDomain.BaseDirectory + ConfigPath.WebConnectConfig);
-            string url = string.Format("{0}/api/tracing/index?page=1&page_size=100", json.poiUrl);
+            string url = string.Format("{0}/api/tracing/index?page=1&page_size=100&name="+ ReportSearchText, json.poiUrl);
             var httpservice = new HttpService();
             httpservice.Token = HttpServiceUtil.Token;
             var uavResult = string.Empty;
             uavResult = httpservice.RequestService(url, method: "GET");
             var templist = JsonUtil.DeserializeFromString<dynamic>(uavResult);
-            dynamic list = templist.data;
-            foreach( var item in list)
+             dynamic list = templist.data;
+            PageCount = templist.total;
+            foreach (var item in list)
             {
                 LineItem lineItem = new LineItem();
                 lineItem.id = item["id"];
@@ -492,16 +536,17 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 lineItem.pipe_id = item["pipe_id"];
                 lineItem.pipe_name = item["pipe_name"];
                 lineItem.start = item["start"];
-                lineItem.end = item["end"]; 
+                lineItem.end = item["end"];
                 lineItem.start_sn = item["start_sn"];
                 lineItem.end_sn = item["end_sn"];
                 lineItem.isVisible = false;
-                lineItem.type = item["type"]=="1"?"自动":"手动";
+                lineItem.type = item["type"] == "1" ? "自动" : "手动";
                 lineItem.geom = item["geom"];
                 lineItem.IsChecked = false;
                 DrawLineListCollection.Add(lineItem);
             }
-            OnSelectCommand(DrawLineListCollection[0]);
+            if (DrawLineListCollection.Count > 0)
+                OnSelectCommand(DrawLineListCollection[0]);
         }
       
         private void AddLinePipe(LineItem lineItem)
@@ -535,6 +580,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         private void ChangeIsChecked(LineItem lineItem)
         {
             lineItem.IsChecked = !lineItem.IsChecked;
+            SelectCount = DrawLineListCollection.Where(t => t.IsChecked).Count();
         }
         private void VisualChecked(LineItem lineItem)
         {

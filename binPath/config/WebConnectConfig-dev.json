@@ -1,7 +1,7 @@
 {
   //"poiUrl": "http://mspace.mmcuav.cn",
-  //"poiUrl": "http://192.168.5.50:9090",
-  "poiUrl":"http://wrj.mmcuav.cn",
+//"poiUrl": "http://112.245.48.207:8088",
+"poiUrl":"http://wrj.mmcuav.cn",
   //"poiUrl":"http://gistest.mmcuav.cn:6001",
   "mspaceVersion": "v1.6",
   "labelMaxDistance": 1000,

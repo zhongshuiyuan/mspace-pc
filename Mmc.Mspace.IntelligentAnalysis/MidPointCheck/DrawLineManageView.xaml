@@ -19,9 +19,9 @@
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="320" ></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
+            <RowDefinition Height="*"></RowDefinition>
+         
+       
         </Grid.RowDefinitions>
         <Border  Grid.Row="0" Grid.Column="0" Background="{StaticResource titleBackground}" Grid.ColumnSpan="2" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True"/>
         <TextBlock  blankWindow:BlankWindow.Draggable="True"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="描线管理"  Foreground=" #69CEFF"  FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" />
@@ -191,39 +191,53 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <DockPanel  Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+        <DockPanel  Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 0">
             <Button  Width="130" Height="32" Style="{StaticResource DefaultuploadButtonStyle}" Content="边界宽度预警" Command="{Binding AreaWidthCmd}"   BorderThickness="0" Margin="50,5,80,5">
            
             </Button>
-            <StackPanel  Width="180"  Orientation="Horizontal" HorizontalAlignment="Center"  Margin="100,5,5,5">
-                <controls:Buttons x:Name="bs5" Content=""
+            <StackPanel    Orientation="Vertical" HorizontalAlignment="Center"  >
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5">
+                    <TextBlock  FontSize="12" VerticalAlignment="Center" Margin="5,0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}">
+                        <Run Text="共计"></Run>
+                        <Run Text="{Binding PageNum}"></Run>
+                        <Run Text="条，"></Run>
+                    </TextBlock>
+                    <TextBlock  FontSize="12" VerticalAlignment="Center" Margin="5,0" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}">
+                        <Run Text="已选中"></Run>
+                        <Run Text="{Binding SelectCount}"></Run>
+                        <Run Text="条"></Run>
+                    </TextBlock>
+                </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <controls:Buttons x:Name="bs5" Content=""
                                 RIcon="{DynamicResource FirstPageNew}"
                                 MouseOverRIcon="{DynamicResource FirstPageNew_H}"  
                                 PressedRIcon="{DynamicResource FirstPageNew_C}"
                                 Tag="{DynamicResource FirstPageNew_D}" 
                                 Style="{StaticResource AddandExportAccountBtnStyle}" Command="{Binding FirstPageCmd}" Height="32" Width="32" Margin="5,0,0,0"/>
-                <controls:Buttons x:Name="bs3" Content=""
+                    <controls:Buttons x:Name="bs3" Content=""
                                 IsEnabled="{Binding LastPageBtnEnable}"
                                 RIcon="{DynamicResource LastPageNew}"
                                 MouseOverRIcon="{DynamicResource LastPageNew_H}"  
                                 PressedRIcon="{DynamicResource LastPageNew_C}"
                                 Tag="{DynamicResource LastPageNew_D}" 
                                 Style="{StaticResource AddandExportAccountBtnStyle}" Command="{Binding LastPageCmd}" Height="32" Width="32" Margin="5,0,0,0"/>
-                <TextBlock Text="{Binding PageNum,StringFormat= {}{0}/}" FontSize="14" Foreground="#B3BBC5"  Margin="5,5,0,5" Width="20"/>
-                <TextBlock Text="{Binding PageCount}" FontSize="14" Foreground="#B3BBC5"  Margin="0,5,5,5" />
-                <controls:Buttons x:Name="bs4" Content=""
+                    <TextBlock Text="{Binding PageNum,StringFormat= {}{0}/,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" FontSize="14" Foreground="#B3BBC5" VerticalAlignment="Center" Margin="15,0,0,0" />
+                    <TextBlock Text="{Binding PageCount,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" FontSize="14" Foreground="#B3BBC5"  Margin="0,0,15,0" />
+                    <controls:Buttons x:Name="bs4" Content=""
                               IsEnabled="{Binding NextPageBtnEnable}"
                               RIcon="{DynamicResource NextPageNew}"
                                 MouseOverRIcon="{DynamicResource NextPageNew_H}"  
                                 PressedRIcon="{DynamicResource NextPageNew_C}"
                                 Tag="{DynamicResource NextPageNew_D}" 
                                 Style="{StaticResource AddandExportAccountBtnStyle}" Command="{Binding NextPageCmd}" Height="32" Width="32" Margin="5,0,0,0"/>
-                <controls:Buttons x:Name="bs6" Content=""
-                              RIcon="{DynamicResource FinalPageNew}"
+                    <controls:Buttons x:Name="bs6" Content=""
+                                RIcon="{DynamicResource FinalPageNew}"
                                 MouseOverRIcon="{DynamicResource FinalPageNew_H}"  
                                 PressedRIcon="{DynamicResource FinalPageNew_C}"
                                 Tag="{DynamicResource FinalPageNew_D}" 
                                 Style="{StaticResource AddandExportAccountBtnStyle}" Command="{Binding EndPageCmd}" Height="32" Width="32" Margin="5,0,0,0"/>
+                </StackPanel>
             </StackPanel>
             <Button Width="130" Height="32"  Style="{StaticResource DefaultuploadButtonStyle}" Content="中线桩位置核准" Command="{Binding MidPositionCmd}"  BorderThickness="0" Margin="90,5,5,5">
             </Button>

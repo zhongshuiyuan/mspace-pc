@@ -222,48 +222,49 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         /// <param name="obj"></param>
         private void OnComparisonCommand(object obj)
         {
-            closewin();
-            if (_renderLayers.Count<1)
+            try
             {
-                Messages.ShowMessage("当前视角过高或当前地图中没有相关模型！");
-                return;
-            }
-            if(FilterStakes.Count<1)
-            {
-                Messages.ShowMessage("当前视角过高或当前地图中没有相关模型！");
-                return;
-            }
-            List<StakeModel> list = FilterStakes.Where(t => t.IsChecked).ToList();
-            if(list.Count<2)
-            {
-                Messages.ShowMessage("请最少选中2期模型！");
-                return;
-            }
-            if (list.Count > 4)
-            {
-                Messages.ShowMessage("最多选择4个模型进行对比！");
-                return;
-            }
-            var mapView = ServiceManager.GetService<IMaphostService>(null).MapWindow;
+                closewin();
 
-            Messenger.Messengers.Notify(CommonContract.MessengerKey.Openscreen.ToString(), list.Count.ToString());
-            Messenger.Messengers.Notify("openComparison",true);
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (list[i].Map == null)
+                if (_renderLayers.Count < 1)
                 {
-                     timeView1 = new TimeView();
-                    timeView1.Owner = Application.Current.MainWindow;
-                    timeView1.WindowStartupLocation = WindowStartupLocation.Manual;
-                    timeView1.Top = 60;
-                    timeView1.Left = 100;
-                    timeView1.TimeText.Text = list[i].Time.Split(' ')[0];
-                    timeView1.Show();
-                    continue;
+                    Messages.ShowMessage("当前视角过高或当前地图中没有相关模型！");
+                    return;
                 }
-                if (_renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList().Count > 0)
+                if (FilterStakes.Count < 1)
+                {
+                    Messages.ShowMessage("当前视角过高或当前地图中没有相关模型！");
+                    return;
+                }
+                List<StakeModel> list = FilterStakes.Where(t => t.IsChecked).ToList();
+                if (list.Count < 2)
+                {
+                    Messages.ShowMessage("请最少选中2期模型！");
+                    return;
+                }
+                if (list.Count > 4)
+                {
+                    Messages.ShowMessage("最多选择4个模型进行对比！");
+                    return;
+                }
+                var mapView = ServiceManager.GetService<IMaphostService>(null).MapWindow;
+
+                Messenger.Messengers.Notify(CommonContract.MessengerKey.Openscreen.ToString(), list.Count.ToString());
+                Messenger.Messengers.Notify("openComparison", true);
+                for (int i = 0; i < list.Count; i++)
                 {
 
+                    if (list[i].Map == null)
+                    {
+                        timeView1 = new TimeView();
+                        timeView1.Owner = Application.Current.MainWindow;
+                        timeView1.WindowStartupLocation = WindowStartupLocation.Manual;
+                        timeView1.Top = 60;
+                        timeView1.Left = 100;
+                        timeView1.TimeText.Text = list[i].Time.Split(' ')[0];
+                        timeView1.Show();
+                        continue;
+                    }
                     if (i == 0)
                     {
                         timeView1 = new TimeView();
@@ -271,9 +272,10 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                         timeView1.WindowStartupLocation = WindowStartupLocation.Manual;
                         timeView1.Top = 60;
                         timeView1.Left = (list.Count < 3 || list.Count == 4) ? mapView.Width / 2 - 300 : mapView.Width / 3 - 300;
-                        timeView1.TimeText.Text = list[i].Time.Split(' ')[0]; 
+                        timeView1.TimeText.Text = list[i].Time.Split(' ')[0];
                         timeView1.Show();
-                        _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView0;
+                        if (_renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList().Count > 0)
+                            _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView0;
                     }
                     if (i == 1)
                     {
@@ -281,10 +283,11 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                         timeView2.Owner = Application.Current.MainWindow;
                         timeView2.WindowStartupLocation = WindowStartupLocation.Manual;
                         timeView2.Top = 60;
-                        timeView2.Left = (list.Count < 3 || list.Count == 4) ? mapView.Width - 300 : (mapView.Width / 3) *2 - 300;
+                        timeView2.Left = (list.Count < 3 || list.Count == 4) ? mapView.Width - 300 : (mapView.Width / 3) * 2 - 300;
                         timeView2.TimeText.Text = list[i].Time.Split(' ')[0];
                         timeView2.Show();
-                        _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView1;
+                        if (_renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList().Count > 0)
+                            _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView1;
                     }
                     if (i == 2)
                     {
@@ -292,10 +295,11 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                         timeView3.Owner = Application.Current.MainWindow;
                         timeView3.WindowStartupLocation = WindowStartupLocation.Manual;
                         timeView3.Top = (list.Count < 4 ? 0 : mapView.Height / 2) + 60;
-                        timeView3.Left = (list.Count == 3) ? mapView.Width -300 : mapView.Width / 2 - 300;
+                        timeView3.Left = (list.Count == 3) ? mapView.Width - 300 : mapView.Width / 2 - 300;
                         timeView3.TimeText.Text = list[i].Time.Split(' ')[0];
                         timeView3.Show();
-                        _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView2;
+                        if (_renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList().Count > 0)
+                            _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView2;
                     }
                     if (i == 3)
                     {
@@ -303,14 +307,21 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                         timeView4.Owner = Application.Current.MainWindow;
                         timeView4.WindowStartupLocation = WindowStartupLocation.Manual;
                         timeView4.Top = mapView.Height / 2 + 60;
-                        timeView4.Left = mapView.Width -300;
+                        timeView4.Left = mapView.Width - 300;
                         timeView4.TimeText.Text = list[i].Time.Split(' ')[0];
                         timeView4.Show();
-                        _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView3;
+                        if (_renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList().Count > 0)
+                            _renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList()[0].Renderable.VisibleMask = gviViewportMask.gviView3;
                     }
-                    flyToRederLayer(list[i].Map.Split('&')[0]);
+                    if (_renderLayers.Where(t => t.Guid == list[i].Map.Split('&')[0]).ToList().Count > 0)
+                        flyToRederLayer(list[i].Map.Split('&')[0]);
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            
         }
 
         /// <summary>

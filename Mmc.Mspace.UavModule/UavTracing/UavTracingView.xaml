@@ -261,9 +261,9 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Expander}">
-                            <Border SnapsToDevicePixels="true" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3">
+                            <Border SnapsToDevicePixels="true" Margin="{TemplateBinding Margin}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3">
                                 <DockPanel>
-                                    <ToggleButton FocusVisualStyle="{StaticResource ExpanderHeaderFocusVisual}" Margin="1" MinHeight="0" MinWidth="0" x:Name="HeaderSite" Style="{StaticResource ExpanderDownHeaderStyle}" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontStretch="{TemplateBinding FontStretch}" FontStyle="{TemplateBinding FontStyle}" FontWeight="{TemplateBinding FontWeight}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" DockPanel.Dock="Top" IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                    <ToggleButton FocusVisualStyle="{StaticResource ExpanderHeaderFocusVisual}" Margin="{TemplateBinding Padding}" MinHeight="0" MinWidth="0" x:Name="HeaderSite" Style="{StaticResource ExpanderDownHeaderStyle}" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontStretch="{TemplateBinding FontStretch}" FontStyle="{TemplateBinding FontStyle}" FontWeight="{TemplateBinding FontWeight}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" DockPanel.Dock="Top" IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"/>
                                     <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" x:Name="ExpandSite" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Focusable="false" Visibility="Collapsed" DockPanel.Dock="Bottom"/>
                                 </DockPanel>
                             </Border>
@@ -468,30 +468,26 @@
             </StackPanel>
                 <Expander IsExpanded="True"  Style="{DynamicResource StretchExpanderStyle2}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Expander.Header >
-                    <Grid>
-                        <Button  x:Name="connectSocketBtn" Height="28" Style="{DynamicResource DefaultButtonStyle}" Grid.Row="0" Grid.Column="0" Margin="0,0,10,0" HorizontalAlignment="Left" Command="{Binding connectSocketCMD}" Content="{DynamicResource ConnectionContent}" />
-                    </Grid>
+                    <Button  x:Name="connectSocketBtn" Height="28" Style="{DynamicResource DefaultButtonStyle}" Margin="-25,0,10,0" HorizontalAlignment="Left" Command="{Binding connectSocketCMD}" Content="{DynamicResource ConnectionContent}" />
                 </Expander.Header>
-
                 <Expander.Content>
                     <TreeView ItemsSource="{Binding UavItemAreaModels}" Background="#292C35" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="520" SelectedItemChanged="TreeView_OnSelectedItemChanged" Margin="0,10">
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate ItemsSource="{Binding UavItemModels}">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Stretch" Name="sp">
-                                    <TextBlock Text="{Binding AreaName}" Margin="10,0,0,0" FontWeight="Bold" FontSize="18" Style="{StaticResource DefaultTextBlockStyle}" HorizontalAlignment="Left" MaxWidth="150"/>
-
+                                    <TextBlock Text="{Binding AreaName}" ToolTip="{Binding AreaName}" Margin="0,0,0,0" FontWeight="Bold" FontSize="18" Style="{StaticResource DefaultTextBlockStyle}"  HorizontalAlignment="Left" MaxWidth="150"/>
                                     <TextBlock Margin="10,0" Style="{StaticResource DefaultTextBlockStyle}" HorizontalAlignment="Left" FontSize="16">
-                                        <Run Text="{Binding OnLine,StringFormat={}({0}在线 }"/>
-                                        <Run Text="{Binding OffLine,StringFormat={}{0}离线)}"/>
+                                        <Run  Text="{Binding OnLine,StringFormat={}({0} 在线 }"/>
+                                        <Run Text="{Binding OffLine,StringFormat={}{0} 离线)}"/>
                                     </TextBlock>
                                 </StackPanel>
 
                                 <HierarchicalDataTemplate.ItemTemplate>
                                     <HierarchicalDataTemplate>
-                                        <Expander IsExpanded="{Binding IsExpanded}" Padding="0" Style="{DynamicResource StretchExpanderStyle}" MinWidth="325"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+                                        <Expander IsExpanded="{Binding IsExpanded}" Margin="0 0 0 0" Style="{DynamicResource StretchExpanderStyle}" MinWidth="325"  HorizontalAlignment="Left" VerticalAlignment="Stretch" >
                                             <Expander.Header>
                                                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                                    <TextBlock Text="{Binding UavTitle}" Margin="10,0,0,0" FontWeight="Bold" Style="{StaticResource DefaultTextBlockStyle}"  HorizontalAlignment="Left" MaxWidth="180" TextTrimming="CharacterEllipsis" ToolTip="{Binding UavTitle}"/>
+                                                    <TextBlock Text="{Binding UavTitle}" Margin="0,0,0,0" FontWeight="Bold" Style="{StaticResource DefaultTextBlockStyle}"  HorizontalAlignment="Left" MaxWidth="180" TextTrimming="CharacterEllipsis" ToolTip="{Binding UavTitle}"/>
 
                                                     <DockPanel HorizontalAlignment="Right">
                                                         <gvifm:IconToggleButton  x:Name="tractBtn"  Width="24" Height="24" Margin="5,0,0,0" DockPanel.Dock="Left"
@@ -523,21 +519,21 @@
                                             </Expander.Header>
                                             <Expander.Content>
                                                 <DockPanel>
-                                                    <ItemsControl Name="cmds" Margin="20,3" HorizontalAlignment="Right" DockPanel.Dock="Bottom" Visibility="Collapsed">
+                                                    <ItemsControl Name="cmds" Margin="10,3" HorizontalAlignment="Right" DockPanel.Dock="Bottom" Visibility="Collapsed">
                                                         <ItemsControl.ItemsPanel>
                                                             <ItemsPanelTemplate>
                                                                 <gvifm:UniformGridWithSpacing HorizontalAlignment="Center" Rows="1" Columns="{Binding Items.Count, RelativeSource={RelativeSource AncestorType=ItemsControl, Mode=FindAncestor}}" />
                                                             </ItemsPanelTemplate>
                                                         </ItemsControl.ItemsPanel>
                                                     </ItemsControl>
-                                                    <Grid  Margin="25,10,5,10">
+                                                    <Grid  Margin="10,10,5,10">
                                                         <FrameworkElement.Resources>
                                                             <ResourceDictionary>
                                                                 <Style TargetType="{x:Type TextBlock}" x:Key="{x:Type TextBlock}">
                                                                     <Setter Property="FontFamily" Value="Microsoft YaHei"/>
                                                                     <Setter Property="FontSize" Value="{DynamicResource FontSize15}"/>
                                                                     <Setter Property="Foreground" Value="{DynamicResource DefaultButtonForeground}"/>
-                                                                    <Setter Property="Margin" Value="0,5" />
+                                                                    <Setter Property="Margin" Value="0,3" />
                                                                     <Setter Property="VerticalAlignment" Value="Center" />
                                                                     <Setter Property="HorizontalAlignment" Value="Left" />
                                                                 </Style>
@@ -559,9 +555,9 @@
                                                         <TextBlock Grid.Row="1" Text="{DynamicResource Model}" />
                                                         <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding deviceInfo.goods_name}" />
                                                         <TextBlock Grid.Row="2" Text="{DynamicResource DeviceName}" />
-                                                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding deviceInfo.deviceName}" ToolTip="{Binding deviceInfo.deviceName}"/>
+                                                        <TextBlock Grid.Row="2" TextTrimming="CharacterEllipsis" Grid.Column="1" Text="{Binding deviceInfo.deviceName}" ToolTip="{Binding deviceInfo.deviceName}"  MaxWidth="200"/>
                                                         <TextBlock Grid.Row="3" Text="{DynamicResource DeviceSerial}" />
-                                                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding deviceInfo.deviceSerial}" ToolTip="{Binding deviceInfo.deviceSerial}"/>
+                                                        <TextBlock Grid.Row="3" TextTrimming="CharacterEllipsis"  Grid.Column="1" Text="{Binding deviceInfo.deviceSerial}" ToolTip="{Binding deviceInfo.deviceSerial}" MaxWidth="200"/>
                                                         <TextBlock Grid.Row="4" Text="{DynamicResource IfControlState}" VerticalAlignment="Top" />
                                                         <TextBlock Grid.Row="4" Grid.Column="1" 	Text="{Binding UavControllableState}" />
                                                         <TextBlock Grid.Row="5" Text="{DynamicResource Type}" Visibility="Collapsed"/>

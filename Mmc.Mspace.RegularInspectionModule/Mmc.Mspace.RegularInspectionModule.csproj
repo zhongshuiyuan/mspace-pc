@@ -123,6 +123,7 @@
     <Compile Include="model\SectionModel.cs" />
     <Compile Include="model\ShpRoneModel.cs" />
     <Compile Include="model\StakeModel.cs" />
+    <Compile Include="model\TaskModel.cs" />
     <Compile Include="RegInsDataRenderManager.cs" />
     <Compile Include="ViewModels\AnalysisiBarChartVModel.cs" />
     <Compile Include="ViewModels\AnalysisiChartVModel.cs" />

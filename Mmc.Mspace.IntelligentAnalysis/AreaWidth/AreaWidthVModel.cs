@@ -48,6 +48,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         public AreaWidthVModel()
         {
             isSuccessReport = false;
+            TaskSelectItem = null;
             this.getTaskAll();
         }
 
@@ -168,15 +169,12 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             {
                 TracingModel tracingModel = new TracingModel();
                 var res = list.Where(t => t.Lng == _problemPoints[i].X.ToString() && t.Lat == _problemPoints[i].Y.ToString()).ToList();
-                if (res.Count>0)
-                {
-                    tracingModel.sn = res[0].Sn;
-                }
                
+                tracingModel.sn = lineItems[0].IsRoot? lineItems[1].sn: lineItems[0].sn;
                 tracingModel.lng = _problemPoints[i].X.ToString();
                 tracingModel.lat = _problemPoints[i].Y.ToString();
-                tracingModel.start = lineItems[0].start_sn;
-                tracingModel.end = lineItems[0].end_sn;
+                tracingModel.start = lineItems[0].IsRoot ? lineItems[1].start_sn : lineItems[0].start_sn;
+                tracingModel.end = lineItems[0].IsRoot ? lineItems[1].end_sn : lineItems[0].end_sn;
                 tracingModels.Add(tracingModel);
             }
             //生成图片
@@ -633,7 +631,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                     poi.Name = string.IsNullOrEmpty(point.Stake_sn)? point.Sn: point.Stake_sn;
                     poi.MaxVisibleDistance = 10000.0;
                     poi.MinVisibleDistance = 1.0;
-                    poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "中线桩");
+                    poi.ImageName = string.Format(AppDomain.CurrentDomain.BaseDirectory + "项目数据\\shp\\IMG_POI\\{0}.png", "stake");
                     poi.SpatialCRS = GviMap.SpatialCrs;
                     var rPoi = GviMap.ObjectManager.CreateRenderPOI(poi);
                     rPoi.DepthTestMode = gviDepthTestMode.gviDepthTestAlways;
@@ -693,14 +691,14 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         private void CreatRenPoi(IPoint point)
         {
             var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
-            poi.SetPostion(point.X, point.Y, 2);
+            poi.SetPostion(point.X, point.Y, 5);
             poi.Size = 30;
             poi.ShowName = true;
-            poi.MaxVisibleDistance = 5000;
-            poi.MinVisibleDistance = 100;
+            poi.MaxVisibleDistance = 10000;
+            poi.MinVisibleDistance = 1;
             //poi.Name = onePerson.name;
             poi.SpatialCRS = GviMap.SpatialCrs;
-            poi.ImageName = string.Format("项目数据\\shp\\IMG_POI\\{0}.png", "alphabet_P");
+            poi.ImageName = string.Format(AppDomain.CurrentDomain.BaseDirectory + "项目数据\\shp\\IMG_POI\\{0}.png", "alphabet_P");
             IRenderPOI rpoi = GviMap.ObjectManager.CreateRenderPOI(poi);
             rpoi.DepthTestMode = gviDepthTestMode.gviDepthTestAdvance;
             guids.Add(rpoi.Guid);

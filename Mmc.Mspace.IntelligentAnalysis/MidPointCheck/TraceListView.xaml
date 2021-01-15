@@ -118,14 +118,14 @@
                                                 Command="{Binding DataContext.EditCommand,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}" 
                                                 CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"/>
 
-                                <controls:Buttons  Height="23" Width="30" Content=""  Margin="20,0,0,0"
+                                <!--<controls:Buttons  Height="23" Width="30" Content=""  Margin="20,0,0,0"
 											    ToolTip="重瞄"
                                                 RIcon="{DynamicResource Account_Edit}"
                                                 MouseOverRIcon="{DynamicResource Account_Edit_H}"  
                                                 PressedRIcon="{DynamicResource Account_Edit_C}"
                                                 Style="{StaticResource AddandExportAccountBtnStyle}" 
                                                 Command="{Binding DataContext.VisualCmd,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}" 
-                                                CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"/>
+                                                CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}"/>-->
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

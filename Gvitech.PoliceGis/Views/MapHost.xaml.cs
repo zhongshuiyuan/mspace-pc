@@ -55,30 +55,40 @@ namespace MMC.MSpace.Views
 
         private void MapHost_Loaded(object sender, RoutedEventArgs e)
         {
-            DXSplashScreen.Progress(1.0);
+            try
+            {
 
-            this.InitAxMapControl();
-            this.FlytoFirstScene();
-            this.SetSkybox();
-            ServiceManager.GetService<IMaphostService>(null).MapWindow = this;
-            //Task.Run(()=> {
+                DXSplashScreen.Progress(1.0);
+              
+                this.InitAxMapControl();
+                this.FlytoFirstScene();
+                this.SetSkybox();
+                ServiceManager.GetService<IMaphostService>(null).MapWindow = this;
+                //Task.Run(()=> {
                 ServiceManager.GetService<IDataBaseService>(null).Init(this.axRenderControl);
-            //});
+                //});
+                var shell = new Shell();
+                LoginExcetiop.Logout += Logout;
 
-        
-            var shell = new Shell();
-            LoginExcetiop.Logout += Logout;
-            shell.Show();
-            base.Activate();
+                shell.Show();
+                base.Activate();
 
-            if (!LicenseUtil.ValidLicense(this.axRenderControl, out string resMsg))
-                System.Windows.MessageBox.Show(resMsg);
+                if (!LicenseUtil.ValidLicense(this.axRenderControl, out string resMsg))
+                    System.Windows.MessageBox.Show(resMsg);
 
-            //int num;
-       
-            DXSplashScreen.Progress(2.0);
+                //int num;
 
-            MarkerHelper.Instance.Initialize();
+                DXSplashScreen.Progress(2.0);
+                Task.Run(() =>
+                {
+                    MarkerHelper.Instance.Initialize();
+                });
+
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.ToString());
+            }
         }
 
         public void Logout()

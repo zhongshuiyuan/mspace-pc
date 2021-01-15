@@ -48,59 +48,71 @@ namespace MMC.MSpace
         public static string loginPwd { get; set; }
         protected override void InitializeShell()
         {
-            
-            //WPFLoginView view = new WPFLoginView();
-            //LoginView view = new LoginView();
-            //DogCheck();
-            //if (!(bool)view.ShowDialog())
-            //{
-            //    Environment.Exit(0);
-            //    return;
-            //}
-            login();
-
-            WebBrowserVersionEmulation();
-            DXSplashScreen.Show<SplashWindow>();
-            DXSplashScreen.Progress(0.0);
-            string text = System.Windows.Forms.Application.LocalUserAppDataPath + "\\logs";
-            SystemLog.InitSysLog(text);
-            RegisterServices();
-            SystemLog.Log("启动加载界面");
-            double screenInchSize = ScreenHelper.GetScreenInchSize();
-            string[] files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory+"Config\\Screen\\", "*inch.xaml");
-            Dictionary<double, string> dictionary = new Dictionary<double, string>();
-            foreach (string text2 in files)
+            try
             {
-                FileInfo fileInfo = new FileInfo(text2);
-                double num = double.Parse(fileInfo.Name.Replace("inch.xaml", ""));
-                double num2 = Math.Abs(screenInchSize - num);
-                bool flag = dictionary.Count != 0;
-                if (flag)
+                //WPFLoginView view = new WPFLoginView();
+                //LoginView view = new LoginView();
+                //DogCheck();
+                //if (!(bool)view.ShowDialog())
+                //{
+                //    Environment.Exit(0);
+                //    return;
+                //}
+
+                login();
+                WebBrowserVersionEmulation();
+                DXSplashScreen.Show<SplashWindow>();
+                DXSplashScreen.Progress(0.0);
+                string text = System.Windows.Forms.Application.LocalUserAppDataPath + "\\logs";
+                SystemLog.InitSysLog(text);
+                RegisterServices();
+                SystemLog.Log("启动加载界面");
+                double screenInchSize = ScreenHelper.GetScreenInchSize();
+                string[] files = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory + "Config\\Screen\\", "*inch.xaml");
+                Dictionary<double, string> dictionary = new Dictionary<double, string>();
+                foreach (string text2 in files)
                 {
-                    bool flag2 = num2 < dictionary.FirstOrDefault<KeyValuePair<double, string>>().Key;
-                    if (flag2)
+                    FileInfo fileInfo = new FileInfo(text2);
+                    double num = double.Parse(fileInfo.Name.Replace("inch.xaml", ""));
+                    double num2 = Math.Abs(screenInchSize - num);
+                    bool flag = dictionary.Count != 0;
+                    if (flag)
                     {
-                        dictionary.Clear();
+                        bool flag2 = num2 < dictionary.FirstOrDefault<KeyValuePair<double, string>>().Key;
+                        if (flag2)
+                        {
+                            dictionary.Clear();
+                            dictionary.Add(num2, text2);
+                        }
+                    }
+                    else
+                    {
                         dictionary.Add(num2, text2);
                     }
                 }
-                else
-                {
-                    dictionary.Add(num2, text2);
-                }
-            }
-            SystemLog.Log("初始化wpf样式");
-            FileStream stream = new FileStream(dictionary.FirstOrDefault<KeyValuePair<double, string>>().Value, FileMode.Open, FileAccess.Read);
-            ResourceDictionary item = XamlReader.Load(stream) as ResourceDictionary;
-            ResourceDictionary resourceDictionary = (ResourceDictionary)System.Windows.Application.LoadComponent(new Uri("/Mmc.Mspace.Theme;component/Styles.xaml", UriKind.Relative));
-            resourceDictionary.MergedDictionaries.Insert(0, item);
-            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
-            SystemLog.Log("弹出shell窗口");
-            System.Windows.Application.Current.MainWindow = (Window)base.Shell;
-            System.Windows.Application.Current.MainWindow.Show();
 
-            UserdeadLineMessage();
-        
+                SystemLog.Log("初始化wpf样式");
+                FileStream stream = new FileStream(dictionary.FirstOrDefault<KeyValuePair<double, string>>().Value, FileMode.Open, FileAccess.Read);
+                ResourceDictionary item = XamlReader.Load(stream) as ResourceDictionary;
+                ResourceDictionary resourceDictionary = (ResourceDictionary)System.Windows.Application.LoadComponent(new Uri("/Mmc.Mspace.Theme;component/Styles.xaml", UriKind.Relative));
+                resourceDictionary.MergedDictionaries.Insert(0, item);
+                System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+                SystemLog.Log("弹出shell窗口");
+
+                System.Windows.Application.Current.MainWindow = (Window)base.Shell;
+                System.Windows.Application.Current.MainWindow.Show();
+
+                Task.Run(() =>
+                {
+                    UserdeadLineMessage();
+                });
+            }
+            catch (Exception)
+            {
+              
+                throw;
+            }
+          
            
         }
         string vendorCodeString =
@@ -270,15 +282,14 @@ namespace MMC.MSpace
             string version = "&mspace_version=" + WebConfig.MspaceVersion;
             //string url = WebConfig.MspaceHostUrl + @"/api/login/gislogin" + version;
             string url = "/api/login/gislogin";
-            var userString = string.Format("username=madmin&password=madmin123");
-            //var userString = string.Format("username={0}&password={1}", loginUserName, loginPwd);
+            //var userString = string.Format("username=madmin&password=madmin123");
+            var userString = string.Format("username={0}&password={1}", loginUserName, loginPwd);
             var result = HttpServiceHelper.Instance.PostUrlByFormUrlencoded(url, userString);
             var resultObj = JsonUtil.DeserializeFromString<dynamic>(result);
             var token = resultObj.data.token;
             HttpServiceUtil.Token = token;
             HttpServiceHelper.Instance.HttpService.Token = token;
             GetUserInfo();
-
         }
 
         public void GetUserInfo()
