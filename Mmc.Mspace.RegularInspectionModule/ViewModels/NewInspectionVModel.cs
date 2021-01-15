@@ -7,6 +7,7 @@ using Mmc.Mspace.Common.Cache;
 using Mmc.Mspace.Common.Dto;
 using Mmc.Mspace.Common.Messenger;
 using Mmc.Mspace.Common.Models;
+using Mmc.Mspace.Common.Models.pipelines;
 using Mmc.Mspace.Const.ConstDataInterface;
 using Mmc.Mspace.Models.Inspection;
 using Mmc.Mspace.PoiManagerModule.Dto;

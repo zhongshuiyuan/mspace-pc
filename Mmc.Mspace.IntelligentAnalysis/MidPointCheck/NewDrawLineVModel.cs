@@ -5,6 +5,7 @@ using Mmc.Framework.Draw;
 using Mmc.Framework.Services;
 using Mmc.MathUtil;
 using Mmc.Mspace.Common.Models;
+using Mmc.Mspace.Common.Models.pipelines;
 using Mmc.Mspace.Const.ConstDataInterface;
 using Mmc.Mspace.IntelligentAnalysisModule.Models;
 using Mmc.Mspace.PoiManagerModule.Dto;

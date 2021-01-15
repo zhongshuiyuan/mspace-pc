@@ -35,7 +35,6 @@
         <DockPanel Grid.Row="2">
             <TextBlock Text="描线名称：" FontSize="16" Margin="10,5,5,5" Foreground="White"></TextBlock>
             <ComboBox Style="{DynamicResource DefaultComboBoxStyle}" Height="32" Width="180" Margin="10,0,5,5"></ComboBox>
-            <TextBox Text="asd" FontSize="16" Height="32" Width="180" Margin="10,0,5,5"></TextBox>
         </DockPanel>
         <DockPanel Grid.Row="3">
             <TextBlock Text="对应管线：" FontSize="16" Margin="10,5,5,5" Foreground="White"></TextBlock>

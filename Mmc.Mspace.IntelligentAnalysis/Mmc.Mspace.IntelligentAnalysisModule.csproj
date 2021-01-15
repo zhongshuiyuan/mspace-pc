@@ -131,8 +131,6 @@
     <Compile Include="MidPointCheck\updatePointView.xaml.cs">
       <DependentUpon>updatePointView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\StakeModel.cs" />
-    <Compile Include="Models\TaskModel.cs" />
     <Compile Include="Models\TracingLineModel.cs" />
     <Compile Include="MultiViewCompare\CompareViewExModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mmc.Mspace.RegularInspectionModule.model
+namespace Mmc.Mspace.Common.Models.pipelines
 {
    public class StakeModel : BindableBase
     {
@@ -127,5 +127,6 @@ namespace Mmc.Mspace.RegularInspectionModule.model
             set { _isChecked = value; NotifyPropertyChanged("IsChecked"); }
         }
 
+      
     }
 }

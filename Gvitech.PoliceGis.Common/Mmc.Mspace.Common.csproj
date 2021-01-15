@@ -106,6 +106,10 @@
     <Compile Include="Models\BaseViewModel.cs" />
     <Compile Include="Models\CheckedToolItemModel.cs" />
     <Compile Include="Models\LayerItemModel.cs" />
+    <Compile Include="Models\pipelines\PeriodModel.cs" />
+    <Compile Include="Models\pipelines\SectionModel.cs" />
+    <Compile Include="Models\pipelines\StakeModel.cs" />
+    <Compile Include="Models\pipelines\TaskModel.cs" />
     <Compile Include="Models\TextItem.cs" />
     <Compile Include="Models\ToolItemModel.cs" />
     <Compile Include="Models\ToolItemsModel.cs" />

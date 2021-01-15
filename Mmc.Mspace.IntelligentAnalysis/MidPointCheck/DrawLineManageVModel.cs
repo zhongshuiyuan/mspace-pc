@@ -36,7 +36,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             set
             {
                 _drawLineListCollection = value;
-                base.SetAndNotifyPropertyChanged<ObservableCollection<LineItem>>(ref this._drawLineListCollection, value, "DrawLineListCollection");               
+                NotifyPropertyChanged("DrawLineListCollection");
             }
         }
 
@@ -586,7 +586,6 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
         }
         private void ChangeIsChecked(LineItem lineItem)
         {
-            lineItem.IsChecked = !lineItem.IsChecked;
             SelectCount = DrawLineListCollection.Where(t => t.IsChecked).Count();
         }
         private void VisualChecked(LineItem lineItem)

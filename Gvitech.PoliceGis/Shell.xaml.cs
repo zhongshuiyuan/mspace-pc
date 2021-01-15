@@ -41,6 +41,7 @@ using Mmc.Mspace.Const.ConstDataInterface;
 using System.Collections.Generic;
 using Gvitech.CityMaker.RenderControl;
 using Gvitech.CityMaker.Math;
+using Mmc.Mspace.Common.Models.pipelines;
 
 namespace MMC.MSpace
 {
@@ -538,8 +539,8 @@ namespace MMC.MSpace
                 rLine.MaxVisibleDistance = 10000.0;
                 rLine.MinVisibleDistance = 1.0;
                 rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
-                GviMap.Camera.FlyToEnvelope(polyLine.Envelope);
-                zhibei();
+                //GviMap.Camera.FlyToEnvelope(polyLine.Envelope);
+             
                 guids.Add(rLine.Guid);
                 Application.Current.Dispatcher.Invoke(() =>
                 {

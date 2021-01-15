@@ -1,4 +1,5 @@
-﻿using Mmc.Wpf.Mvvm;
+﻿using Mmc.Mspace.Common.Models.pipelines;
+using Mmc.Wpf.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;

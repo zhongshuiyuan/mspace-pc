@@ -6,6 +6,7 @@ using Mmc.Framework.Services;
 using Mmc.MathUtil;
 using Mmc.Mspace.Common.Messenger;
 using Mmc.Mspace.Common.Models;
+using Mmc.Mspace.Common.Models.pipelines;
 using Mmc.Mspace.Const.ConstDataInterface;
 using Mmc.Mspace.Const.ConstPath;
 using Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck;
@@ -47,8 +48,12 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         }
         public AreaWidthVModel()
         {
+            BindingStatus = "";
             isSuccessReport = false;
             TaskSelectItem = null;
+            SelectPeriodModel = null;
+            SelectPipeModel = null;
+            SelectSectionModel = null;
             this.getTaskAll();
         }
 
@@ -118,6 +123,89 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             //    }
             //});
         }
+
+        private ObservableCollection<PipeModel> _pipeModels = new ObservableCollection<PipeModel>();
+        public ObservableCollection<PipeModel> PipeModels
+        {
+            get { return _pipeModels; }
+            set
+            {
+                _pipeModels = value;
+                NotifyPropertyChanged("PipeModels");
+            }
+        }
+        private PipeModel _selectPipeModel;
+        /// <summary>
+        /// 管线选中
+        /// </summary>
+        public PipeModel SelectPipeModel
+        {
+            get { return _selectPipeModel; }
+            set
+            {
+                _selectPipeModel = value;
+                NotifyPropertyChanged("SelectPipeModel");
+                if (SelectPipeModel != null)
+                    getSectionList();
+            }
+        }
+        private ObservableCollection<PeriodModel> _periods = new ObservableCollection<PeriodModel>();
+        /// <summary>
+        /// 阶段
+        /// </summary>
+        public ObservableCollection<PeriodModel> Periods
+        {
+            get { return _periods; }
+            set { _periods = value; NotifyPropertyChanged("Periods"); }
+        }
+        private PeriodModel _selectPeriodModel;
+        /// <summary>
+        /// 阶段选中
+        /// </summary>
+        public PeriodModel SelectPeriodModel
+        {
+            get { return _selectPeriodModel; }
+            set
+            {
+                _selectPeriodModel = value;
+                NotifyPropertyChanged("SelectPeriodModel");
+            }
+        }
+
+        private ObservableCollection<SectionModel> _sections = new ObservableCollection<SectionModel>();
+        /// <summary>
+        /// 标段
+        /// </summary>
+        public ObservableCollection<SectionModel> Sections
+        {
+            get { return _sections; }
+            set { _sections = value; NotifyPropertyChanged("Sections"); }
+        }
+
+        private SectionModel _selectSectionModel;
+        /// <summary>
+        /// 标段选中
+        /// </summary>
+        public SectionModel SelectSectionModel
+        {
+            get { return _selectSectionModel; }
+            set
+            {
+                _selectSectionModel = value;
+                NotifyPropertyChanged("SelectSectionModel");
+            }
+        }
+        private string _bindingStatus;
+
+        public string BindingStatus
+        {
+            get { return _bindingStatus; }
+            set { _bindingStatus = value;
+                NotifyPropertyChanged("BindingStatus");
+            }
+        }
+
+
         private ObservableCollection<TracingLineModel> _tracingLineModels = new ObservableCollection<TracingLineModel>();
         public ObservableCollection<TracingLineModel> TracingLineModels
         {
@@ -125,7 +213,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             set
             {
                 _tracingLineModels = value;
-                base.SetAndNotifyPropertyChanged<ObservableCollection<TracingLineModel>>(ref this._tracingLineModels, value, "TracingLineModels");
+                NotifyPropertyChanged("TracingLineModels");
             }
         }
         private ObservableCollection<TaskModel> _taskAll = new ObservableCollection<TaskModel>();
@@ -135,7 +223,16 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             set
             {
                 _taskAll = value;
-                base.SetAndNotifyPropertyChanged<ObservableCollection<TaskModel>>(ref this._taskAll, value, "TaskAll");
+                NotifyPropertyChanged("TaskAll");
+            }
+        }
+        private string _name;
+
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value;
+                NotifyPropertyChanged("Name");
             }
         }
 
@@ -214,7 +311,27 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 Messages.ShowMessage("暂未生成报告文档，请先生成后再尝试关联任务！");
                 return;
             }
-            if(TaskSelectItem==null)
+            if (string.IsNullOrEmpty(Name))
+            {
+                Messages.ShowMessage("请输入名称！");
+                return;
+            }
+            if (SelectPipeModel == null)
+            {
+                Messages.ShowMessage("请选择对应的管线后重试！");
+                return;
+            }
+            if (SelectSectionModel == null)
+            {
+                Messages.ShowMessage("请选择对应的标段后重试！");
+                return;
+            }
+            if (SelectPeriodModel == null)
+            {
+                Messages.ShowMessage("请选择对应的阶段后重试！");
+                return;
+            }
+            if (TaskSelectItem==null)
             {
                 Messages.ShowMessage("请选择对应的任务后重试！");
                 return;
@@ -222,7 +339,14 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             var data = new
             {
                 task_id = TaskSelectItem.Id,
+                name = Name,
+                pipe_id = SelectPipeModel.Id,
+                section_id = SelectSectionModel.Id,
+                period_id = SelectPeriodModel.Id,
                 file = _currentFilePath,
+                stake_start = lineItems[0].IsRoot ? lineItems[1].start_sn : lineItems[0].start_sn,
+                stake_end = lineItems[0].IsRoot ? lineItems[1].end_sn : lineItems[0].end_sn,
+                width = Radius,
                 lng = "",
                 lat = "",
             };
@@ -234,6 +358,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             {
                 Messages.ShowMessage("关联失败，请稍后重新尝试关联！");
             }
+            BindingStatus = "已绑定";
             Messages.ShowMessage("关联成功！");
         }
         //public bool WordToPDF(string sourcePath, string targetPath)
@@ -264,15 +389,47 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         /// </summary>
         private void gettracinglineList(string id)
         {
+         
             this.TracingLineModels = new ObservableCollection<TracingLineModel>();
             string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.tracinglineList + "?traces=" + id);
             this.TracingLineModels = (JsonUtil.DeserializeFromString<ObservableCollection<TracingLineModel>>(resStr));
         }
         private void getTaskAll()
         {
-            this.TaskAll = new ObservableCollection<TaskModel>();
-            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.taskall );
-            this.TaskAll = (JsonUtil.DeserializeFromString<ObservableCollection<TaskModel>>(resStr));
+            Task.Run(() =>
+            {
+                getPipeList2();
+                this.TaskAll = new ObservableCollection<TaskModel>();
+                string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.taskall);
+                this.TaskAll = (JsonUtil.DeserializeFromString<ObservableCollection<TaskModel>>(resStr));
+            });
+  
+        }
+        public void getPipeList2()
+        {
+            string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PipeList);
+            this.PipeModels = new ObservableCollection<PipeModel>((JsonUtil.DeserializeFromString<List<PipeModel>>(resStr)));
+        }
+        private void getSectionList()
+        {
+            Task.Run(() =>
+            {
+                string sectionList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.SectionList);
+                ObservableCollection<SectionModel> list = new ObservableCollection<SectionModel>(JsonUtil.DeserializeFromString<List<SectionModel>>(sectionList));
+
+                SectionModel se = SelectSectionModel;
+                this.Sections = new ObservableCollection<SectionModel>((list.Where(t => t.Pipe_id == SelectPipeModel.Id).ToList()));
+                if (se != null)
+                {
+                    SelectSectionModel = this.Sections.SingleOrDefault(t => t.Id == se.Id);
+                }
+
+                //获取阶段
+                string periodList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PeriodList);
+
+                this.Periods = new ObservableCollection<PeriodModel>(JsonUtil.DeserializeFromString<List<PeriodModel>>(periodList));
+
+            });
         }
         public static string GetTimeStamp()
         {
@@ -338,7 +495,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         public bool isCal = false;
         private void Ca()
         {
-            delObjs();
+            ClearList();
             setData();
             if(lineItems[0].IsRoot)
             {

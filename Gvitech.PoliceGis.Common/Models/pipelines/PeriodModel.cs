@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mmc.Mspace.RegularInspectionModule.model
+namespace Mmc.Mspace.Common.Models.pipelines
 {
     /// <summary>
     /// 阶段实体

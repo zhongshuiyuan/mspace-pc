@@ -8,26 +8,29 @@
         mc:Ignorable="d"
         xmlns:blankWindow="http://GFramework.org"
                          xmlns:controls="clr-namespace:Mmc.Mspace.Theme.Controls;assembly=Mmc.Mspace.Theme"
-                         Title="AreaWidthView" Height="360" Width="500"  Style="{StaticResource AllowsTransparencyWindowStyle2}">
+                         Title="AreaWidthView" Height="440" Width="500"  Style="{StaticResource AllowsTransparencyWindowStyle2}">
    
         <Grid >
             <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="215"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40"></RowDefinition>
-                <RowDefinition Height="40"></RowDefinition>
+        <Grid.RowDefinitions>
             <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"/>
-                
-        </Grid.RowDefinitions>
-        <Border  Grid.Row="0" Background="{DynamicResource  titleBackground}" Grid.Column="0" Grid.ColumnSpan="2" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True"/>
-        <TextBlock  blankWindow:BlankWindow.Draggable="True"  Grid.Row="0" Grid.Column="0" Text="{Binding TitleText}" Height="15" Width="120" Margin="18,2,0,8" Foreground="White"  FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" />
-        <Button Grid.Row="0" Grid.Column="1"  Command="{Binding CloseCmd}"  Style="{StaticResource ButtonCloseStyle}" Height="36" Width="36" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="0,2,5,0"  />
 
-        <DockPanel  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+        </Grid.RowDefinitions>
+        <Border  Grid.Row="0" Background="{DynamicResource  titleBackground}" Grid.Column="0" Grid.ColumnSpan="4" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True"/>
+        <TextBlock  blankWindow:BlankWindow.Draggable="True"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding TitleText}" Height="15" Margin="18,2,0,8" Foreground="#B3BBC5"  FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" />
+        <Button Grid.Row="0" Grid.Column="3"  Command="{Binding CloseCmd}"  Style="{StaticResource ButtonCloseStyle}" Height="36" Width="36" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="0,2,5,0"  />
+
+        <DockPanel  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Margin="0 0 0 10">
             <Button Grid.Row="1" Grid.Column="1" Width="60" Height="30" Margin="10,2,10,0" Content="计算"  Style="{StaticResource DefaultuploadButtonStyle}" Command="{Binding Calculate}" ></Button>
             <Button Grid.Row="1" Grid.Column="0" Width="65" Height="30" Margin="5,2,10,0" Content="清除"  Style="{StaticResource DefaultuploadButtonStyle}" Command="{Binding ClearDraw}" ></Button>
             <TextBlock Text="输入预警值" FontSize="16"  Margin="10,5,5,5" VerticalAlignment="Center" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
@@ -35,50 +38,63 @@
             <Button Grid.Row="1" Grid.Column="0" Width="65" Height="30" Margin="15,2,10,0" Content="生成报告"  Style="{StaticResource DefaultuploadButtonStyle}" Command="{Binding SaveCmd}" HorizontalAlignment="Left"></Button>
           
         </DockPanel>
-        <DockPanel Grid.Row="2" Grid.ColumnSpan="2">
-            <ComboBox  Height="32" Width="345" HorizontalAlignment="Left" Margin="10 5 10 2"  helper:TextBoxHelper.Watermark="请选择相关任务" ContextMenu="{DynamicResource TextBoxContextMenu}" Grid.Row="0" Grid.Column="1" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding TaskAll}"   SelectedItem="{Binding TaskSelectItem}"  Style="{DynamicResource DefaultComboBoxStyle}"  Grid.ColumnSpan="2">
+
+        <TextBlock Text="名称" Grid.Row="2" Grid.Column="0" Width="auto" FontSize="16"  Margin="10,0,5,0" VerticalAlignment="Center" Foreground="#B3BBC5"></TextBlock>
+        <TextBox   Grid.Row="2" Height="32"  Grid.Column="1" Width="180" Style="{DynamicResource TbxWaterStyle}" 
+                                 helper:TextBoxHelper.Watermark="请输入名称"    HorizontalAlignment="Left" Margin="10,0,5,0"     helper:TextBoxHelper.IsNeedClearButton="False"    Text="{Binding Name,UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2"  />
+        <TextBlock Text="管线" FontSize="16" Grid.Row="2" Width="auto" Grid.Column="2"   Margin="10,0,5,0" VerticalAlignment="Center" Foreground="#B3BBC5"></TextBlock>
+        <ComboBox Style="{DynamicResource DefaultComboBoxStyle}" helper:TextBoxHelper.Watermark="请选择管线" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding PipeModels}"   SelectedItem="{Binding SelectPipeModel}" Grid.Row="2" Grid.Column="3" Height="32" Margin="10,0,5,5"></ComboBox>
+        <TextBlock Text="标段" Grid.Row="3" Grid.Column="0"  FontSize="16"  Margin="10,0,5,0" VerticalAlignment="Center" Foreground="#B3BBC5"></TextBlock>
+        <ComboBox Style="{DynamicResource DefaultComboBoxStyle}" Grid.Row="3" Grid.Column="1"  SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding Sections}"  helper:TextBoxHelper.Watermark="请选择标段" SelectedItem="{Binding SelectSectionModel}"  Height="32"  Margin="10,0,5,5"></ComboBox>
+        <TextBlock Text="阶段" FontSize="16"   Margin="10,0,5,0" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2"  Foreground="#B3BBC5"></TextBlock>
+        <ComboBox Style="{DynamicResource DefaultComboBoxStyle}" helper:TextBoxHelper.Watermark="请选择阶段" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding Periods}"   SelectedItem="{Binding SelectPeriodModel}"  Grid.Row="3" Grid.Column="3"  Height="32"  Margin="10,0,5,5"></ComboBox>
+
+        <DockPanel Grid.Row="4" Grid.ColumnSpan="4">
+            <ComboBox  Height="32" Width="325" HorizontalAlignment="Left" Margin="10 5 10 2"  helper:TextBoxHelper.Watermark="请选择相关任务" ContextMenu="{DynamicResource TextBoxContextMenu}" Grid.Row="0" Grid.Column="1" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding TaskAll}"   SelectedItem="{Binding TaskSelectItem}"  Style="{DynamicResource DefaultComboBoxStyle}"  Grid.ColumnSpan="2">
             </ComboBox>
             <Button Grid.Row="1" Grid.Column="0" Width="65" Height="30" Margin="5,2,10,0" Content="绑定任务"  Style="{StaticResource DefaultuploadButtonStyle}" HorizontalAlignment="Left" Command="{Binding BoundTaskCommand}" ></Button>
+            <TextBlock Text="{Binding BindingStatus}" FontSize="16" Margin="10,0,5,0" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2"  Foreground="#B3BBC5"></TextBlock>
         </DockPanel>
         <!---->
-<DataGrid Grid.Row="3" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Grid.ColumnSpan="2" Grid.RowSpan="3"   AlternationCount="2" VerticalGridLinesBrush="Black" HorizontalGridLinesBrush="Transparent"
+        <DataGrid Grid.Row="5" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" Grid.ColumnSpan="4"  
+                  AlternationCount="2" VerticalGridLinesBrush="Black" HorizontalGridLinesBrush="Transparent"
                       CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False"  BorderBrush="Black"   
-                      Name="Pointdg" ItemsSource="{Binding ProblemPoints}">
-			<DataGrid.ColumnHeaderStyle>
-			<Style TargetType="DataGridColumnHeader">
-				<Setter Property="HorizontalContentAlignment" Value="Center"/>
-				<Setter Property="Background" Value="#1E2026"/>
-				<Setter Property="Foreground" Value="#B3BBC5"/>
-				<Setter Property="BorderThickness" Value="0,0,1,0" />
-				<Setter Property="BorderBrush" Value="#000000" />
-				<Setter Property="Height" Value="36"/>
-				<Setter Property="FontSize" Value="12"/>
-			</Style>
-		</DataGrid.ColumnHeaderStyle>
-		<DataGrid.RowStyle>
-			<Style TargetType="DataGridRow">
-				<Style.Triggers>
-					<Trigger Property="AlternationIndex" Value="0" >
-						<Setter Property="Background" Value="#0A0B0D" />
-						<Setter Property="Foreground" Value ="#C6CCD4"/>
-					</Trigger>
-					<Trigger Property="AlternationIndex" Value="1" >
-						<Setter Property="Background" Value="#14151A" />
-						<Setter Property="Foreground" Value ="#C6CCD4"/>
-					</Trigger>
-					<Trigger Property="IsMouseOver" Value="True">
-						<Setter Property="Background" Value="#50ABFF"/>
-						<Setter Property="Foreground" Value ="White"/>
-					</Trigger>
-					<Trigger Property="IsSelected" Value="True">
-						<Setter Property="Background" Value="#1890FF"/>
-						<Setter Property="Foreground" Value ="White"/>
-					</Trigger>
-				</Style.Triggers>
-			</Style>
-		</DataGrid.RowStyle>
-		<DataGrid.Columns>
-				<!--<DataGridTemplateColumn Header="显示" Width="80">
+                      Name="Pointdg" ItemsSource="{Binding ProblemPoints}" Margin="0 10 0 10">
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="Background" Value="#1E2026"/>
+                    <Setter Property="Foreground" Value="#B3BBC5"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,0" />
+                    <Setter Property="BorderBrush" Value="#000000" />
+                    <Setter Property="Height" Value="36"/>
+                    <Setter Property="FontSize" Value="12"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <Trigger Property="AlternationIndex" Value="0" >
+                            <Setter Property="Background" Value="#0A0B0D" />
+                            <Setter Property="Foreground" Value ="#C6CCD4"/>
+                        </Trigger>
+                        <Trigger Property="AlternationIndex" Value="1" >
+                            <Setter Property="Background" Value="#14151A" />
+                            <Setter Property="Foreground" Value ="#C6CCD4"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#50ABFF"/>
+                            <Setter Property="Foreground" Value ="White"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#1890FF"/>
+                            <Setter Property="Foreground" Value ="White"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <!--<DataGridTemplateColumn Header="显示" Width="80">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
 							<CheckBox  Command="{Binding DataContext.VisualCmd,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}" 
@@ -86,14 +102,14 @@
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>-->
-        <DataGridTemplateColumn Header="问题点" Width="180" >
-            <DataGridTemplateColumn.CellTemplate>
-                <DataTemplate>
-                    <TextBlock TextAlignment="Center"  TextTrimming="WordEllipsis"  Text="问题点"  FontSize="12"/>
-                </DataTemplate>
-            </DataGridTemplateColumn.CellTemplate>
-        </DataGridTemplateColumn>
-        <!--<DataGridTemplateColumn Header="经纬度" Width="225">
+                <DataGridTemplateColumn Header="问题点" Width="180" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock TextAlignment="Center"  TextTrimming="WordEllipsis"  Text="问题点"  FontSize="12"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <!--<DataGridTemplateColumn Header="经纬度" Width="225">
             <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
                     <TextBlock TextAlignment="Center" TextTrimming="WordEllipsis" ToolTip="{Binding AreaNum}" Text="{Binding AreaNum}"  FontSize="12"/>
@@ -101,11 +117,11 @@
             </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>-->
 
-        <DataGridTemplateColumn Header="操作 " Width="248">
-            <DataGridTemplateColumn.CellTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <controls:Buttons x:Name="bs1" Height="23" Width="30" Content=""  Margin="20,0,0,0"
+                <DataGridTemplateColumn Header="操作 " Width="248">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <controls:Buttons x:Name="bs1" Height="23" Width="30" Content=""  Margin="20,0,0,0"
 											    ToolTip="定位"
                                                 Click="Poi_Click"
                                                 RIcon="{DynamicResource Account_View}"
@@ -115,11 +131,11 @@
                                                 
                                                 CommandParameter="{Binding SelectedItem,ElementName=Pointdg}"/>
 
-                    </StackPanel>
-                </DataTemplate>
-            </DataGridTemplateColumn.CellTemplate>
-        </DataGridTemplateColumn>
-        </DataGrid.Columns>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
         </DataGrid>
     </Grid>
     <!--/ Command="{Binding DataContext.VisualCmd,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}"-->

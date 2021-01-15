@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mmc.Mspace.IntelligentAnalysisModule.Models
+namespace Mmc.Mspace.Common.Models.pipelines
 {
     public class TaskModel:BindableBase
     {

@@ -92,7 +92,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <CheckBox  Command="{Binding DataContext.IsOpenCmd,RelativeSource={RelativeSource AncestorLevel=1,AncestorType=DataGrid}}" 
-                                        IsChecked="{Binding IsChecked}"  HorizontalAlignment="Left" Style="{StaticResource PoiCheckBoxStyle}" CommandParameter="{Binding SelectedItem,ElementName=MidLinedg}" Margin="23,3,5,3"></CheckBox>
+                                        IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Left" Style="{StaticResource PoiCheckBoxStyle}"  Margin="23,3,5,3"></CheckBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

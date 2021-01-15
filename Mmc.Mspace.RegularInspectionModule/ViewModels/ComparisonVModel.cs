@@ -4,6 +4,7 @@ using Mmc.Framework.Services;
 using Mmc.Mspace.Common;
 using Mmc.Mspace.Common.Messenger;
 using Mmc.Mspace.Common.Models;
+using Mmc.Mspace.Common.Models.pipelines;
 using Mmc.Mspace.Common.ShellService;
 using Mmc.Mspace.Const.ConstDataInterface;
 using Mmc.Mspace.PoiManagerModule.Models;

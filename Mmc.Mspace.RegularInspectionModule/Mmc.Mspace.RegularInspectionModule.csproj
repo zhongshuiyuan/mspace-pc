@@ -119,11 +119,6 @@
     <Compile Include="Dto\RegInsModelConvert.cs" />
     <Compile Include="model\FileModel.cs" />
     <Compile Include="model\InspectModel.cs" />
-    <Compile Include="model\PeriodModel.cs" />
-    <Compile Include="model\SectionModel.cs" />
-    <Compile Include="model\ShpRoneModel.cs" />
-    <Compile Include="model\StakeModel.cs" />
-    <Compile Include="model\TaskModel.cs" />
     <Compile Include="RegInsDataRenderManager.cs" />
     <Compile Include="ViewModels\AnalysisiBarChartVModel.cs" />
     <Compile Include="ViewModels\AnalysisiChartVModel.cs" />
