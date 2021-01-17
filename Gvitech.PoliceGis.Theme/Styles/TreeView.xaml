@@ -868,7 +868,7 @@
                                       MouseOverRIcon="{DynamicResource Account_View_C}"
                                       PressedRIcon="{DynamicResource Account_View_C}"  Height="18" Width="18"
                                       Style="{StaticResource AddressBtnStyle}" Margin="0 0 7 0" 
-                                      Command="{Binding Path=DataContext.SelectCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                      Command="{Binding Path=DataContext.CheckReportCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
                                       CommandParameter="{Binding}"/>
                                     <controls:Buttons  
                                       ToolTip="删除" x:Name="delete_btn"

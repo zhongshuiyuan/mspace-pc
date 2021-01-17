@@ -8,6 +8,7 @@ using Mmc.Mspace.Common.Models;
 using Mmc.Mspace.Common.Models.pipelines;
 using Mmc.Mspace.Common.ShellService;
 using Mmc.Mspace.Const.ConstDataInterface;
+using Mmc.Mspace.IntelligentAnalysisModule.AreaWidth;
 using Mmc.Mspace.Models.Inspection;
 using Mmc.Mspace.PoiManagerModule.Dto;
 using Mmc.Mspace.PoiManagerModule.Models;
@@ -221,6 +222,16 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _checkedCommand ?? (_checkedCommand = new RelayCommand<object>(OnCheckedCommand)); }
             set { _checkedCommand = value; }
         }
+        private RelayCommand<object> _checkReportCommand;
+
+        public RelayCommand<object> CheckReportCommand
+        {
+            get { return _checkReportCommand ?? (_checkReportCommand = new RelayCommand<object>(OnCheckReportCommand)); }
+            set { _checkReportCommand = value; }
+        }
+
+
+        
         private RelayCommand<object> _downloadCommand;
 
         public RelayCommand<object> DownloadCommand
@@ -605,6 +616,21 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             if (inspect == null) return;
             RegInsDataRenderManager.Instance.OpenInspectData(inspect);
 
+        }
+        /// <summary>
+        /// 查看报告
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void OnCheckReportCommand(object parameter)
+        {
+            var inspect = parameter as PipeModel;
+            if (inspect == null) return;
+            AreaWidthVModel areaWidthVModel = new AreaWidthVModel();
+            areaWidthVModel.Radius = inspect.Width;
+            areaWidthVModel.Master_trace = inspect.Master_trace;
+            areaWidthVModel.Trace_id = inspect.Trace_id;
+            areaWidthVModel.Files = inspect.File;
+            areaWidthVModel.IsChecked = true;
         }
 
         private void OnDownloadCommand(object parameter)

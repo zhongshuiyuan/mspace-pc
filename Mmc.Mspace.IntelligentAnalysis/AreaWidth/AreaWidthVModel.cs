@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -108,6 +109,14 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             get { return _saveCmd ?? (_saveCmd = new RelayCommand(OnSaveCmd)); }
             set { _saveCmd = value; }
         }
+        private RelayCommand _checkCmd;
+        public RelayCommand CheckCmd
+        {
+            get { return _checkCmd ?? (_checkCmd = new RelayCommand(OnCheckCmd)); }
+            set { _checkCmd = value; }
+        }
+
+        
         private RelayCommand _boundTaskCommand;
         public RelayCommand BoundTaskCommand
         {
@@ -271,6 +280,12 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 Messages.ShowMessage("暂无计算数据，请先计算后再尝试导出！");
                 return;
             }
+            if (_problemPoints.Count<1)
+            {
+                Messages.ShowMessage("暂无异常点，不支持导出！");
+                return;
+            }
+            
             List<TracingLineModel> list = new List<TracingLineModel>();
             for (int i = 0; i < lineItems.Count; i++)
             {
@@ -389,38 +404,18 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             BindingStatus = "已绑定";
             Messages.ShowMessage("关联成功！");
         }
-        //public bool WordToPDF(string sourcePath, string targetPath)
-        //{
-        //    bool result = false;
-        //    Microsoft.Office.Interop.Word.Application application = new Microsoft.Office.Interop.Word.Application();
-        //    Document document = null;
-        //    try
-        //    {
-        //        application.Visible = false;
-        //        document = application.Documents.Open(sourcePath);
-        //        document.ExportAsFixedFormat(targetPath, WdExportFormat.wdExportFormatPDF);
-        //        result = true;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Console.WriteLine(e.Message);
-        //        result = false;
-        //    }
-        //    finally
-        //    {
-        //        document.Close();
-        //    }
-        //    return result;
-        //}
         /// <summary>
         /// 手动获取中线桩
         /// </summary>
         private void gettracinglineList(string id)
         {
-         
             this.TracingLineModels = new ObservableCollection<TracingLineModel>();
             string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.tracinglineList + "?traces=" + id);
             this.TracingLineModels = (JsonUtil.DeserializeFromString<ObservableCollection<TracingLineModel>>(resStr));
+            if(ShowType==false)
+            {
+                tracingLineModels.AddRange(this.TracingLineModels);
+            }
         }
         private void getTaskAll()
         {
@@ -485,29 +480,22 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             }
         }
 
-        //public void SaveFileDialog()
-        //{
-        //    string localFilePath, filepath;
-        //    SaveFileDialog fileDialog = new SaveFileDialog();
-        //    fileDialog.Filter = " Save to Result Files(*.)|*.*";//*.kml|All files(*.*)|
-        //    fileDialog.FileName = DateTime.Now.ToString("yyyyMMddHHmmss") + ".kml";
-        //    fileDialog.FilterIndex = 2;
-        //    fileDialog.AddExtension = true;
-        //    fileDialog.RestoreDirectory = true;
-        //    if (fileDialog.ShowDialog() == DialogResult.OK)
-        //    {
-        //        localFilePath = fileDialog.FileName.ToString();
-        //        _fileNameExt = localFilePath.Substring(localFilePath.LastIndexOf("\\") + 1);
-        //        filepath = localFilePath.Substring(0, localFilePath.LastIndexOf("\\"));
-        //        this.SaveToFile(localFilePath);
-        //    }
-        //}
 
         public override void OnChecked()
         {
             base.OnChecked();
-            areaWidthView.Left = 250;
-            areaWidthView.Top = 220;
+
+            if(ShowType)
+            {
+                areaWidthView.Left = 250;
+                areaWidthView.Top = 220;
+            }
+            else
+            {
+                areaWidthView.Left = 350;
+                areaWidthView.Top = 220;
+                getlineList();
+            }
             areaWidthView.Show();
         }
 
@@ -540,7 +528,10 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         {
             ClearList();
             areaWidthView.Hide();
-            CancelWin();
+            if (ShowType)
+            {
+                CancelWin();
+            }
             base.IsChecked = false;
         }
         private void RegisterDraw()
@@ -664,6 +655,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             }          
             curveSymbol = GviMap.TraceLinePolyManager.CreateCurveSymbol(0.4f, System.Drawing.Color.Yellow, gviDashStyle.gviDashSmall);
             IRenderPolyline renderPolyline = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol);
+
+            //renderPolyline.HeightStyle = gviHeightStyle.gviHeightOnTerrain;
             guids.Add(renderPolyline.Guid);
             // var rpolygon1 = GviMap.TempRObjectPool["plan"] as IRenderPolyline;
             // rpolygon1?.SetFdeGeometry(polyLine);
@@ -679,6 +672,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             //this.Lat = label.Position.Y;
             //this.Alt = label.Position.Z;
             var pt = polyLine.GetPoint(0);
+           
             var prjWkt = Wgs84UtmUtil.GetWkt(pt.X);
             if (!string.IsNullOrEmpty(prjWkt))
                 polyLine.ProjectEx(prjWkt);
@@ -739,7 +733,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 geo_1.SpatialCRS = GviMap.SpatialCrs;
         
                 IRenderPolygon render = GviMap.ObjectManager.CreateRenderPolygon(geo_1 as IPolygon, GviMap.LinePolyManager.SurfaceSym, GviMap.ProjectTree.RootID);
-           
+                //render.HeightStyle = gviHeightStyle.gviHeightOnTerrain;
                 render?.SetFdeGeometry(geo_1);
                 render.VisibleMask = gviViewportMask.gviViewAllNormalView;
                 render.Symbol.BoundarySymbol.Color = Color.FromArgb(255, 0, 255, 255);
@@ -777,16 +771,13 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 curveSymbol.Color = ColorConvert.Argb(100, 238, 103, 35);
                 curveSymbol.Width = -10;
                 var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
-
+                //rLine.HeightStyle = gviHeightStyle.gviHeightOnTerrain;
                 if (rLine == null) return;
                 guids.Add(rLine.Guid);
                 rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
                 rLine.MinVisibleDistance = 1.0;
                 rLine.MaxVisibleDistance = 10000.0;
-                //GviMap.Camera.FlyToObject(rLine.Guid, gviActionCode.gviActionFlyTo);
-                //var poly0 = GviMap.GeoFactory.CreateFromWKT(lineItem.geom) as IPolyline;
-
-                ////GviMap.Camera.FlyToEnvelope(point.Envelope);
+          
                 GviMap.Camera.GetCamera2(out IPoint pointCamera, out IEulerAngle eulerAngle);
                 eulerAngle.Tilt = -60;
                 eulerAngle.Heading = 220;
@@ -811,7 +802,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
 
                     var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
                     poi.SetPostion(Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat), string.IsNullOrEmpty(point.Height) ? 0 : Convert.ToDouble(point.Height));
-                    poi.Size = 30;
+                    poi.Size = 50;
                     poi.ShowName = true;
                     poi.Name = string.IsNullOrEmpty(point.Stake_sn)? point.Sn: point.Stake_sn;
                     poi.MaxVisibleDistance = 10000.0;
@@ -844,7 +835,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 IGeometry geo_1 = Buffer(polylines[0], (Convert.ToDouble(_radius)) /100000);
                 geo_1.SpatialCRS = GviMap.SpatialCrs;
                 IRenderPolygon render = GviMap.ObjectManager.CreateRenderPolygon(geo_1 as IPolygon, GviMap.LinePolyManager.SurfaceSym, GviMap.ProjectTree.RootID);
-                
+                //render.HeightStyle = gviHeightStyle.gviHeightRelative;
                 render?.SetFdeGeometry(geo_1);
                 render.VisibleMask = gviViewportMask.gviViewAllNormalView;
                 render.Symbol.BoundarySymbol.Color = Color.FromArgb(255, 0, 255, 255);
@@ -894,14 +885,145 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
 
 
         ////如果是跳转过来 就查数据
-        /// <summary>
-        /// 手动获取中线桩
-        /// </summary>
-        private void getlineList(string jizhunxian)
+
+
+        public string Files = "";
+        public string Trace_id = "";//对比线
+        public string Master_trace = "";//基准线
+        private List<TracingLineModel> tracingLineModels = new List<TracingLineModel>();
+        private string Geom = "";
+        private void getlineList()
         {
-            //this.TracingLineModels = new ObservableCollection<TracingLineModel>();
-            //string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.tracinglineList + "?traces=" + ChangedItem.id);
-            //this.TracingLineModels = (JsonUtil.DeserializeFromString<ObservableCollection<TracingLineModel>>(resStr));
+            lineItems = new List<LineItem>();
+            gettracinglineList(Master_trace);
+            DrawAutoLine(TracingLineModels.ToList(), Master_trace);
+            gettracinglineList(Trace_id);
+            DrawAutoLine(TracingLineModels.ToList(), Trace_id);
+            CaReport();
+        }
+        private void DrawAutoLine(List<TracingLineModel> list,string id)
+        {
+            string header = "linestring z (";
+            string end = ")";
+            string line = "";
+            if (list.Count < 1)
+            {
+                Messages.ShowMessage("未加载到描点信息，请重新加载或联系管理员！");
+                return;
+            }
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (i == list.Count - 1)
+                {
+                    line += (list[i].Lng + " " + list[i].Lat + " " + (string.IsNullOrEmpty(list[i].Height) ? "0" : list[i].Height));
+                }
+                else
+                {
+                    line += (list[i].Lng + " " + list[i].Lat + " " + (string.IsNullOrEmpty(list[i].Height) ? "0" : list[i].Height) + ",");
+
+                }
+            }
+            Geom = header + line + end;
+            if (id == Master_trace)
+            {
+                LineItem lineItem = new LineItem();
+                lineItem.IsRoot = true;
+                lineItem.geom = Geom;
+                lineItems.Add(lineItem);
+            }
+            else
+            {
+                LineItem lineItem = new LineItem();
+                lineItem.IsRoot = false;
+                lineItem.geom = Geom;
+                lineItems.Add(lineItem);
+            }
+            var polyLine = GviMap.GeoFactory.CreatePolyline(Geom, GviMap.SpatialCrs);
+            CurveSymbol curveSymbol = new CurveSymbol();
+            curveSymbol.Color = ColorConvert.Argb(100, 238, 103, 35);
+            curveSymbol.Width = -10;
+            var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
+            rLine.VisibleMask = gviViewportMask.gviViewAllNormalView;
+            GviMap.Camera.GetCamera2(out IPoint pointCamera, out IEulerAngle eulerAngle);
+            eulerAngle.Tilt = -60;
+            eulerAngle.Heading = 0;
+            pointCamera.X = rLine.Envelope.MinX;
+            pointCamera.Y = rLine.Envelope.MinY;
+            pointCamera.Z = 1100;
+            GviMap.Camera.SetCamera2(pointCamera, eulerAngle, 0);
+            guids.Add(rLine.Guid);
+
+            if (polyLine != null)
+            {
+                polylines.Add(polyLine);
+            }
+            SetVideo();
+        }
+
+        private void CaReport()
+        {
+            polylines = new List<IPolyline>();
+            polylines = new List<IPolyline>();
+            var poly0 = GviMap.GeoFactory.CreateFromWKT(lineItems[0].geom) as IPolyline;
+            var poly1 = GviMap.GeoFactory.CreateFromWKT(lineItems[1].geom) as IPolyline;
+            if (poly0 != null && poly1 != null)
+            {
+                polylines.Add(poly0);
+                polylines.Add(poly1);
+            }
+            else
+            {
+                Messages.ShowMessage("线路中缺少必要的地理信息，无法计算");
+                polylines.Clear();
+                delObjs();
+                areaWidthView.Hide();
+            }
+            if (lineItems[0].IsRoot)
+            {
+                Cal2();
+            }
+            else
+            {
+                Cal();
+            }
+            isCal = true;
+        }
+
+        private void OnCheckCmd()
+        {
+            try
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = FileFilterStrings.FDB;
+                saveFileDialog.FileName = DateTime.Now.ToString("yyyyMMddHHmmss") + ".pdf";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    _currentFileName = saveFileDialog.FileName;
+                    string filepath = saveFileDialog.FileName.Substring(0, saveFileDialog.FileName.LastIndexOf('\\') + 1);
+                    string filename = saveFileDialog.FileName.Substring(saveFileDialog.FileName.LastIndexOf('\\') + 1);
+                    WebClient client = new WebClient();
+                    Stream strm = client.OpenRead(Files);
+                    int count = 0;
+                    byte[] buffer = new byte[4096];
+                    FileStream fs = new FileStream(filepath + "//" + filename, FileMode.Create);
+                    while ((count = strm.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        fs.Write(buffer, 0, count);
+                    }
+                    fs.Close();
+                    strm.Close();
+                    strm.Dispose();
+                    fs.Dispose();
+                    DownloadResult("查看报告");
+                }
+            }
+            catch (Exception ex)
+            {
+                Messages.ShowMessage("查看报告失败,请联系管理员！");
+            }
+
+
         }
     }
 }

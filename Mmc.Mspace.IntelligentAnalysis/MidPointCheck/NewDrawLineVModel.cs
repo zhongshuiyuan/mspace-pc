@@ -658,7 +658,6 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                 polylines.Add(polyLine);
             }
             SetVideo(list);
-
         }
 
         public Dictionary<string, Guid> poiList = new Dictionary<string, Guid>();

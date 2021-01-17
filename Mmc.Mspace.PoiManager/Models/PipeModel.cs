@@ -229,6 +229,34 @@ namespace Mmc.Mspace.PoiManagerModule.Models
                 NotifyPropertyChanged("Section_id");
             }
         }
+        private string _master_trace;
+        /// <summary>
+        /// 基准线
+        /// </summary>
+        public string Master_trace
+        {
+            get { return _master_trace; }
+            set { _master_trace = value; NotifyPropertyChanged("Master_trace"); }
+        }
+
+        private string _trace_id;
+        /// <summary>
+        /// 线ID
+        /// </summary>
+        public string Trace_id
+        {
+            get { return _trace_id; }
+            set { _trace_id = value; NotifyPropertyChanged("Trace_id"); }
+        }
+        private string _width;
+        /// <summary>
+        /// 警戒值
+        /// </summary>
+        public string Width
+        {
+            get { return _width; }
+            set { _width = value; NotifyPropertyChanged("Width"); }
+        }
         
         private ObservableCollection<PipeModel> _child;
         public ObservableCollection<PipeModel> Child

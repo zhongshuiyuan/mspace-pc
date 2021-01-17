@@ -29,8 +29,8 @@
         <Border  Grid.Row="0" Background="{DynamicResource  titleBackground}" Grid.Column="0" Grid.ColumnSpan="4" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True"/>
         <TextBlock  blankWindow:BlankWindow.Draggable="True"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding TitleText}" Height="15" Margin="18,2,0,8" Foreground="#B3BBC5"  FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" />
         <Button Grid.Row="0" Grid.Column="3"  Command="{Binding CloseCmd}"  Style="{StaticResource ButtonCloseStyle}" Height="36" Width="36" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="0,2,5,0"  />
-        <Button Grid.Row="1" Visibility="{Binding ShowType,Converter={StaticResource FalseToVisibilityConverter}}" Grid.Column="0" Grid.ColumnSpan="4"  Width="65" Height="30" Margin="15,2,10,0" Content="查看报告"  Style="{StaticResource DefaultuploadButtonStyle}" Command="{Binding SaveCmd}" HorizontalAlignment="Left"></Button>
-        <DockPanel Visibility="{Binding ShowType,Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Margin="0 0 0 10">
+        <Button Grid.Row="1" Visibility="{Binding ShowType,Converter={StaticResource FalseToVisibilityConverter}}" Grid.Column="0" Grid.ColumnSpan="4"  Width="65" Height="30" Margin="15,2,10,0" Content="查看报告"  Style="{StaticResource DefaultuploadButtonStyle}" Command="{Binding CheckCmd}" HorizontalAlignment="Left"></Button>
+        <DockPanel x:Name="search" Visibility="{Binding ShowType,Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Margin="0 0 0 10">
             <Button Grid.Row="1" Grid.Column="1" Width="60" Height="30" Margin="10,2,10,0" Content="计算"  Style="{StaticResource DefaultuploadButtonStyle}" Command="{Binding Calculate}" ></Button>
             <Button Grid.Row="1" Grid.Column="0" Width="65" Height="30" Margin="5,2,10,0" Content="清除"  Style="{StaticResource DefaultuploadButtonStyle}" Command="{Binding ClearDraw}" ></Button>
             <TextBlock Text="输入预警值" FontSize="16"  Margin="10,5,5,5" VerticalAlignment="Center" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
@@ -39,17 +39,17 @@
         
         </DockPanel>
 
-        <TextBlock Text="名称" Grid.Row="2" Grid.Column="0" Width="auto" FontSize="16"  Margin="10,0,5,0" VerticalAlignment="Center" Foreground="#B3BBC5"></TextBlock>
-        <TextBox   Grid.Row="2" Height="32"  Grid.Column="1" Width="180" Style="{DynamicResource TbxWaterStyle}" 
+        <TextBlock Text="名称" Visibility="{Binding Visibility,ElementName=search}" Grid.Row="2" Grid.Column="0" Width="auto" FontSize="16"  Margin="10,0,5,0" VerticalAlignment="Center" Foreground="#B3BBC5"></TextBlock>
+        <TextBox Visibility="{Binding Visibility,ElementName=search}"  Grid.Row="2" Height="32"  Grid.Column="1" Width="180" Style="{DynamicResource TbxWaterStyle}" 
                                  helper:TextBoxHelper.Watermark="请输入名称"    HorizontalAlignment="Left" Margin="10,0,5,0"     helper:TextBoxHelper.IsNeedClearButton="False"    Text="{Binding Name,UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2"  />
-        <TextBlock Text="管线" FontSize="16" Grid.Row="2" Width="auto" Grid.Column="2"   Margin="10,0,5,0" VerticalAlignment="Center" Foreground="#B3BBC5"></TextBlock>
-        <ComboBox Style="{DynamicResource DefaultComboBoxStyle}" helper:TextBoxHelper.Watermark="请选择管线" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding PipeModels}"   SelectedItem="{Binding SelectPipeModel}" Grid.Row="2" Grid.Column="3" Height="32" Margin="10,0,5,5"></ComboBox>
-        <TextBlock Text="标段" Grid.Row="3" Grid.Column="0"  FontSize="16"  Margin="10,0,5,0" VerticalAlignment="Center" Foreground="#B3BBC5"></TextBlock>
-        <ComboBox Style="{DynamicResource DefaultComboBoxStyle}" Grid.Row="3" Grid.Column="1"  SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding Sections}"  helper:TextBoxHelper.Watermark="请选择标段" SelectedItem="{Binding SelectSectionModel}"  Height="32"  Margin="10,0,5,5"></ComboBox>
-        <TextBlock Text="阶段" FontSize="16"   Margin="10,0,5,0" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2"  Foreground="#B3BBC5"></TextBlock>
-        <ComboBox Style="{DynamicResource DefaultComboBoxStyle}" helper:TextBoxHelper.Watermark="请选择阶段" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding Periods}"   SelectedItem="{Binding SelectPeriodModel}"  Grid.Row="3" Grid.Column="3"  Height="32"  Margin="10,0,5,5"></ComboBox>
+        <TextBlock Visibility="{Binding Visibility,ElementName=search}" Text="管线" FontSize="16" Grid.Row="2" Width="auto" Grid.Column="2"   Margin="10,0,5,0" VerticalAlignment="Center" Foreground="#B3BBC5"></TextBlock>
+        <ComboBox Visibility="{Binding Visibility,ElementName=search}" Style="{DynamicResource DefaultComboBoxStyle}" helper:TextBoxHelper.Watermark="请选择管线" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding PipeModels}"   SelectedItem="{Binding SelectPipeModel}" Grid.Row="2" Grid.Column="3" Height="32" Margin="10,0,5,5"></ComboBox>
+        <TextBlock Visibility="{Binding Visibility,ElementName=search}" Text="标段" Grid.Row="3" Grid.Column="0"  FontSize="16"  Margin="10,0,5,0" VerticalAlignment="Center" Foreground="#B3BBC5"></TextBlock>
+        <ComboBox Visibility="{Binding Visibility,ElementName=search}" Style="{DynamicResource DefaultComboBoxStyle}" Grid.Row="3" Grid.Column="1"  SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding Sections}"  helper:TextBoxHelper.Watermark="请选择标段" SelectedItem="{Binding SelectSectionModel}"  Height="32"  Margin="10,0,5,5"></ComboBox>
+        <TextBlock Visibility="{Binding Visibility,ElementName=search}" Text="阶段" FontSize="16"   Margin="10,0,5,0" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2"  Foreground="#B3BBC5"></TextBlock>
+        <ComboBox Visibility="{Binding Visibility,ElementName=search}" Style="{DynamicResource DefaultComboBoxStyle}" helper:TextBoxHelper.Watermark="请选择阶段" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding Periods}"   SelectedItem="{Binding SelectPeriodModel}"  Grid.Row="3" Grid.Column="3"  Height="32"  Margin="10,0,5,5"></ComboBox>
 
-        <DockPanel Grid.Row="4" Grid.ColumnSpan="4">
+        <DockPanel Visibility="{Binding Visibility,ElementName=search}" Grid.Row="4" Grid.ColumnSpan="4">
             <ComboBox  Height="32" Width="325" HorizontalAlignment="Left" Margin="10 5 10 2"  helper:TextBoxHelper.Watermark="请选择相关任务" ContextMenu="{DynamicResource TextBoxContextMenu}" Grid.Row="0" Grid.Column="1" SelectedValuePath="Id" DisplayMemberPath="Name" ItemsSource="{Binding TaskAll}"   SelectedItem="{Binding TaskSelectItem}"  Style="{DynamicResource DefaultComboBoxStyle}"  Grid.ColumnSpan="2">
             </ComboBox>
             <Button Grid.Row="1" Grid.Column="0" Width="65" Height="30" Margin="5,2,10,0" Content="绑定任务"  Style="{StaticResource DefaultuploadButtonStyle}" HorizontalAlignment="Left" Command="{Binding BoundTaskCommand}" ></Button>
