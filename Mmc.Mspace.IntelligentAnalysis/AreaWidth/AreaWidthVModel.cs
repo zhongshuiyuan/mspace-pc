@@ -301,10 +301,15 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             saveFileDialog.FileName = DateTime.Now.ToString("yyyyMMddHHmmss") + ".pdf";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
-                System.Threading.Thread.Sleep(2000);
                 //上传图片 
                 string updatestake = string.Format("{0}", PipelineInterface.taskupload);
                 string result = HttpServiceHelper.Instance.PostImageFile(updatestake, NavigationImgCompletePath);
+
+                if (!result.Contains("http"))
+                {
+                    Messages.ShowMessage("上传图片阶段异常，请联系管理管或重试！");
+                    return;
+                }
                 List<string> imgs = new List<string>();
                 imgs.Add(result.Substring(1, result.Length - 2));
 
