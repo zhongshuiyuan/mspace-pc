@@ -38,6 +38,23 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         List<Guid> guids = new List<Guid>();
         public List<LineItem> lineItems = new List<LineItem>();
         private bool isSuccessReport = false;
+
+
+
+        //当从阶段飞过来看数据时  只看
+
+        private bool _showType=false;
+
+        public bool ShowType
+        {
+            get { return _showType; }
+            set
+            {
+                _showType = value;
+                NotifyPropertyChanged("ShowType");
+            }
+        }
+
         public ObservableCollection<IPoint> ProblemPoints
         {
             get { return _problemPoints; }
@@ -277,20 +294,24 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             //生成图片
             string imgName = GetTimeStamp() + ".png";
             string NavigationImgCompletePath = NavigationImgPath + imgName;
-            bool b = GviMap.MapControl.ExportManager.ExportImage(NavigationImgCompletePath, 120, 120, true);
+            bool b = GviMap.MapControl.ExportManager.ExportImage(NavigationImgCompletePath, 1280, 1280, true);
          
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = FileFilterStrings.WORD;
-            saveFileDialog.FileName = DateTime.Now.ToString("yyyyMMddHHmmss") + ".docx";
+            saveFileDialog.Filter = FileFilterStrings.FDB;
+            saveFileDialog.FileName = DateTime.Now.ToString("yyyyMMddHHmmss") + ".pdf";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
+                System.Threading.Thread.Sleep(2000);
                 //上传图片 
-                //string updatestake = string.Format("{0}", PipelineInterface.taskupload);
-                //string result = HttpServiceHelper.Instance.PostImageFile(updatestake, NavigationImgCompletePath);
-                var item = new
+                string updatestake = string.Format("{0}", PipelineInterface.taskupload);
+                string result = HttpServiceHelper.Instance.PostImageFile(updatestake, NavigationImgCompletePath);
+                List<string> imgs = new List<string>();
+                imgs.Add(result.Substring(1, result.Length - 2));
+
+               var item = new
                 {
                     list = JsonUtil.SerializeToString(tracingModels),
-                    images = "",
+                    images = JsonUtil.SerializeToString(imgs),
                 };
                 _currentFileName = saveFileDialog.FileName;
                 string filepath= saveFileDialog.FileName.Substring(0, saveFileDialog.FileName.LastIndexOf('\\') + 1);
@@ -349,6 +370,8 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 width = Radius,
                 lng = "",
                 lat = "",
+                trace_id= lineItems[0].IsRoot ? lineItems[1].id : lineItems[0].id,
+                master_trace = lineItems[0].IsRoot ? lineItems[0].id : lineItems[1].id,
             };
             var jsonData = JsonUtil.SerializeToString(data);
 
@@ -747,7 +770,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 if (polyLine.EndPoint == null) return;
                 CurveSymbol curveSymbol = new CurveSymbol();
                 curveSymbol.Color = ColorConvert.Argb(100, 238, 103, 35);
-                curveSymbol.Width = 10f;
+                curveSymbol.Width = -10;
                 var rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
 
                 if (rLine == null) return;
@@ -764,7 +787,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 eulerAngle.Heading = 220;
                 pointCamera.X = rLine.Envelope.MaxX;
                 pointCamera.Y = rLine.Envelope.MaxY;
-                pointCamera.Z = 2100;
+                pointCamera.Z = 1100;
                 GviMap.Camera.SetCamera2(pointCamera, eulerAngle, 0);
 
                 gettracinglineList(lineItems[i].id);
@@ -783,7 +806,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
 
                     var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
                     poi.SetPostion(Convert.ToDouble(point.Lng), Convert.ToDouble(point.Lat), string.IsNullOrEmpty(point.Height) ? 0 : Convert.ToDouble(point.Height));
-                    poi.Size = 50;
+                    poi.Size = 30;
                     poi.ShowName = true;
                     poi.Name = string.IsNullOrEmpty(point.Stake_sn)? point.Sn: point.Stake_sn;
                     poi.MaxVisibleDistance = 10000.0;
@@ -813,7 +836,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         {
             if (polylines.Count == 2)
             {
-                IGeometry geo_1 = Buffer(polylines[0], Convert.ToDouble(_radius)/100000);
+                IGeometry geo_1 = Buffer(polylines[0], (Convert.ToDouble(_radius)) /100000);
                 geo_1.SpatialCRS = GviMap.SpatialCrs;
                 IRenderPolygon render = GviMap.ObjectManager.CreateRenderPolygon(geo_1 as IPolygon, GviMap.LinePolyManager.SurfaceSym, GviMap.ProjectTree.RootID);
                 
@@ -841,6 +864,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         private IGeometry Buffer(IPolyline polyline, double dis)
         {
             var poly = polyline.Clone2(gviVertexAttribute.gviVertexAttributeNone);
+          
             var topo = poly as ITopologicalOperator2D;
             return topo.Buffer2D(dis, gviBufferStyle.gviBufferCapround);
         }
@@ -848,7 +872,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         private void CreatRenPoi(IPoint point)
         {
             var poi = GviMap.GeoFactory.CreateGeometry(gviGeometryType.gviGeometryPOI, gviVertexAttribute.gviVertexAttributeZ) as IPOI;
-            poi.SetPostion(point.X, point.Y, 1);
+            poi.SetPostion(point.X, point.Y, point.Z);
             poi.Size = 30;
             poi.ShowName = true;
             poi.MaxVisibleDistance = 10000;
@@ -859,6 +883,20 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             IRenderPOI rpoi = GviMap.ObjectManager.CreateRenderPOI(poi);
             rpoi.DepthTestMode = gviDepthTestMode.gviDepthTestAdvance;
             guids.Add(rpoi.Guid);
-        }     
+        }
+
+
+
+
+        ////如果是跳转过来 就查数据
+        /// <summary>
+        /// 手动获取中线桩
+        /// </summary>
+        private void getlineList(string jizhunxian)
+        {
+            //this.TracingLineModels = new ObservableCollection<TracingLineModel>();
+            //string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.tracinglineList + "?traces=" + ChangedItem.id);
+            //this.TracingLineModels = (JsonUtil.DeserializeFromString<ObservableCollection<TracingLineModel>>(resStr));
+        }
     }
 }

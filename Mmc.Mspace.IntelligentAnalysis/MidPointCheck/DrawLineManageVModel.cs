@@ -284,6 +284,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             if(AreaWithStatus==0)
             {
                 AreaWidthVModel areaWidthVModel = new AreaWidthVModel();
+                areaWidthVModel.ShowType = true;
                 areaWidthVModel.TitleText = "边界宽度预警";
                 areaWidthVModel.lineItems = TempItemList.ToList();
                 areaWidthVModel.CancelWin = ShowWin;
@@ -292,6 +293,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
             else
             {
                 AreaWidthVModel areaWidthVModel = new AreaWidthVModel();
+                areaWidthVModel.ShowType = true;
                 areaWidthVModel.TitleText = "中线桩位置核准";
                 areaWidthVModel.lineItems = TempItemList.ToList();
                 areaWidthVModel.CancelWin = ShowWin;

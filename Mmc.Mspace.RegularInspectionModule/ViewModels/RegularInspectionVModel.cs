@@ -418,7 +418,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             if (newInspectionVModel != null)
                 newInspectionVModel.HideWin();
         }
-
+        private PipeModel addSelect = null;
         private void OnAddCommand( object obj)
         {
             if (_newInspectionView == null)
@@ -434,8 +434,8 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             this.newInspectionVModel.PipeModels = this.PipeModels;
           
             this.newInspectionVModel.addRenderLayer = AddData;
-            this.newInspectionVModel.updateData = getPipeList2;
-     
+            this.newInspectionVModel.updateData = AddUpdate;
+            addSelect = obj as PipeModel;
             this.SetSelectItem(PipeModels, obj as PipeModel);
 
           
@@ -483,6 +483,47 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 if (item.Child!=null&&item.Child.Count>0)
                 {
                     SetSelectItem(new ObservableCollection<PipeModel>(item.Child), pipeModel);
+                }
+            }
+        }
+        private void AddUpdate( PipeModel pipeModel)
+        {
+            pipeModel.Father = addSelect.Id;
+            pipeModel.Level = "4";
+            AddItem(PipeModels, pipeModel);
+            addSelect = null;
+        }
+        private void AddItem(ObservableCollection<PipeModel> list, PipeModel pipeModel)
+        {
+            Application.Current.Dispatcher.Invoke(()=> {
+                foreach (var item in list)//1级
+                {
+                    if (item.Child != null && item.Child.Count > 0)
+                    {
+                        var re = item.Child.Where(t => t.Id == pipeModel.Father && t.Level == "3").ToList();
+                        if (re.Count > 0)
+                        {
+                            re[0].Child.Add(pipeModel);
+                            break;
+                        }
+                        AddItem(new ObservableCollection<PipeModel>(item.Child), pipeModel);
+                    }
+                }
+            });
+        }
+        private void DeleteItem(ObservableCollection<PipeModel> list, PipeModel pipeModel)
+        {
+            foreach (var item in list)//1级
+            {
+                if (item.Child != null && item.Child.Count > 0)
+                {
+                    var re = item.Child.Where(t => t.Id == pipeModel.Id).ToList();
+                    if (re.Count>0)
+                    {
+                        item.Child.Remove(re[0]);
+                        break;
+                    }
+                    DeleteItem(new ObservableCollection<PipeModel>(item.Child), pipeModel);
                 }
             }
         }
@@ -592,7 +633,8 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 {
                     Messages.ShowMessage("删除成功");
                     DeleteDataSource(popemodel.Map.Split('&')[0]);;
-                    this.getPipeList();
+                    //this.getPipeList();
+                    DeleteItem(PipeModels, periodModel);
                     GetMapSource();
                 }
             }
@@ -669,7 +711,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         /// 去掉node 上面的展示 
         /// </summary>
         /// <param name="obj"></param>
-        private void DeleteNode(PipeModel obj,List<PipeModel> PipeModels)
+        private void DeleteNode(PipeModel obj,ObservableCollection<PipeModel> PipeModels)
         {
             for (int i = 0; i < PipeModels.Count; i++)
             {
@@ -769,13 +811,20 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             {
                 //获取阶段
                 string periodList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.PeriodList);
-
-                this.Periods = new ObservableCollection<PeriodModel>(JsonUtil.DeserializeFromString<List<PeriodModel>>(periodList));
-
+                List<PeriodModel> res1 = JsonUtil.DeserializeFromString<List<PeriodModel>>(periodList);
+                res1.Insert(0, new PeriodModel
+                {
+                    Name = "全部"
+                });
+                this.Periods = new ObservableCollection<PeriodModel>(res1);
                 //获取标段
                 string sectionList = HttpServiceHelper.Instance.GetRequest(PipelineInterface.SectionList);
-
-                this.Sections = new ObservableCollection<SectionModel>(JsonUtil.DeserializeFromString<List<SectionModel>>(sectionList));
+                List<SectionModel> res = JsonUtil.DeserializeFromString<List<SectionModel>>(sectionList);
+                res.Insert(0, new SectionModel
+                {
+                    Name = "全部"
+                });
+                this.Sections = new ObservableCollection<SectionModel>(res);
             });
         }
 

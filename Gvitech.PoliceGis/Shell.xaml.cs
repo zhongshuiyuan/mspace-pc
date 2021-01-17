@@ -283,13 +283,10 @@ namespace MMC.MSpace
                         regularInspectionView.DataContext = regularInspectionVModel;
 
                     }
-                    if (comparisonView == null)
-                    {
-                        comparisonView = new ComparisonView();
-                        comparisonVModel = new ComparisonVModel();
-                        comparisonView.DataContext = comparisonVModel;
-                       regularInspectionVModel.updateRenderLayer = comparisonVModel.GetMapSource;
-                    }
+                    comparisonView = new ComparisonView();
+                    comparisonVModel = new ComparisonVModel();
+                    comparisonView.DataContext = comparisonVModel;
+                    regularInspectionVModel.updateRenderLayer = comparisonVModel.GetMapSource;
                     regularInspectionVModel?.MapControlEventManagement(true);
                     this.comparison.Visibility = Visibility.Visible;
                     comparisonVModel.UpdateSource();
@@ -382,7 +379,7 @@ namespace MMC.MSpace
                     Thread.Sleep(5000);
                     string resStr = HttpServiceHelper.Instance.GetRequest(PipelineInterface.stakeindex);
                     this.StakeModels = (JsonUtil.DeserializeFromString<List<StakeModel>>(resStr));
-                    DrawAutoLine();
+                    DrawAutoLine(true);
                     GviMap.AxMapControl.RcMouseWheel -= AxMapControl_RcMouseWheel;
                     GviMap.AxMapControl.RcMouseWheel += AxMapControl_RcMouseWheel;
 
@@ -408,7 +405,25 @@ namespace MMC.MSpace
             IPoint state;
             IEulerAngle eulerAngle;
             GviMap.Camera.GetCamera2(out state, out eulerAngle);
-            if ((state.Z > 0 && state.Z < 1000) && (currentHeight != 1000))
+            if ((state.Z > 0 && state.Z < 100) && (currentHeight != 100))
+            {
+                currentHeight = 100;
+                if (rLine != null)
+                {
+                    GviMap.ObjectManager.DeleteObject(rLine.Guid);
+                    DrawAutoLine();
+                }
+            }
+            else if ((state.Z > 100 && state.Z < 500) && (currentHeight != 500))
+            {
+                currentHeight = 500;
+                if (rLine != null)
+                {
+                    GviMap.ObjectManager.DeleteObject(rLine.Guid);
+                    DrawAutoLine();
+                }
+            }
+            else if ((state.Z > 500 && state.Z < 1000) && (currentHeight != 1000))
             {
                 currentHeight = 1000;
                 if (rLine != null)
@@ -507,11 +522,10 @@ namespace MMC.MSpace
             }
             this.poiList = new Dictionary<string, Guid>();
         }
-        private void DrawAutoLine()
+        private void DrawAutoLine(bool first=false)
         {
             try
             {
-
                 string header = "linestring z (";
                 string end = ")";
                 string line = "";
@@ -533,7 +547,7 @@ namespace MMC.MSpace
                 var polyLine = GviMap.GeoFactory.CreatePolyline(Geom, GviMap.SpatialCrs);
                 CurveSymbol curveSymbol = new CurveSymbol();
                 curveSymbol.Color = ColorConvert.Argb(100, 255, 0, 0);//GviMap.LinePolyManager.CurveSym
-                curveSymbol.Width = getWidth();
+                curveSymbol.Width = first?4f: getWidth();
 
                 rLine = GviMap.ObjectManager.CreateRenderPolyline(polyLine, curveSymbol, GviMap.ProjectTree.RootID);
                 rLine.MaxVisibleDistance = 10000.0;
@@ -560,7 +574,14 @@ namespace MMC.MSpace
             IPoint state;
             IEulerAngle eulerAngle;
             GviMap.Camera.GetCamera2(out state, out eulerAngle);
-
+            if (state.Z <= 100)
+            {
+                return -10;
+            }
+            if (state.Z <= 500)
+            {
+                return -10;
+            }
             if (state.Z <= 1000)
             {
                 return 3f;

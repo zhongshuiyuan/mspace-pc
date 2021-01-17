@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:gvi="http://schemas.mmc.com"
     xmlns:gvifm="http://schemas.mmc.com/wpf">
-	<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <NullableBoolConverter x:Key="NullableBoolConverter" />
     <ThicknessConverter x:Key="ThicknessConverter"/>
     <gvifm:FormImageConverter x:Key="FormImageConverter" />

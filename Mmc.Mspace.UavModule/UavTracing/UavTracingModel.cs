@@ -67,6 +67,18 @@ namespace Mmc.Mspace.UavModule.UavTracing
             }
         }
 
+        private bool _checkTrack;
+
+        public bool CheckTrack
+        {
+            get { return _checkTrack; }
+            set
+            {
+                base.SetAndNotifyPropertyChanged<bool>(ref this._checkTrack, value, "CheckTrack");
+            }
+        }
+
+
         public Action<DeviceInfo> OnTracking { get; set; }
 
         public void FollowToUav(bool isFollow)

@@ -514,6 +514,12 @@
                                                          MouseOverIcon="pack://lisi:,,,/Resources/Uav/定位H@3x.png"
                                                          CheckedIcon="pack://siteoforigin:,,,/Resources/Uav/定位H@3x.png"
                                                          ToolTip="{DynamicResource Perspectivetofollow}" ></gvifm:IconToggleButton>
+                                                        <gvifm:IconToggleButton  Width="24" Height="24"  Margin="5,0,0,0" DockPanel.Dock="Right"
+                                                         IsChecked="{Binding UavTracingModel.CheckTrack}"
+                                                         Icon="pack://siteoforigin:,,,/Resources/Uav/定位@3x.png"
+                                                         MouseOverIcon="pack://lisi:,,,/Resources/Uav/定位H@3x.png"
+                                                         CheckedIcon="pack://siteoforigin:,,,/Resources/Uav/定位H@3x.png"
+                                                          ></gvifm:IconToggleButton>
                                                     </DockPanel>
                                                 </Grid>
                                             </Expander.Header>

@@ -99,7 +99,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 OnPropertyChanged("SelectPipeModel");
             }
         }
-
+        
         private StakeModel _selectStakeModel;
 
         public StakeModel SelectStakeModel
@@ -144,7 +144,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _comparisonCommand ?? (_comparisonCommand = new RelayCommand<object>(OnComparisonCommand)); }
             set { _comparisonCommand = value; }
         }
-
+   
         public ComparisonVModel()
         {
             this.GetMapSource();
@@ -155,12 +155,15 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 mapView.Width = shellView.Width;
                 mapView.Left = shellView.Left;
                 mapView.UpdateLayout();
+                SetVisTure();
                 this.closewin();
                 //退出恢复单屏模式
                 GviMap.Viewport.ViewportMode = gviViewportMode.gviViewportSinglePerspective;
                 GviMap.AxMapControl.InteractMode = gviInteractMode.gviInteractNormal;
             } );
         }
+
+    
         private List<IRenderLayer> _renderLayers;
         public void GetMapSource()
         {
@@ -249,7 +252,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     return;
                 }
                 var mapView = ServiceManager.GetService<IMaphostService>(null).MapWindow;
-
+                SetVis(list);
                 Messenger.Messengers.Notify(CommonContract.MessengerKey.Openscreen.ToString(), list.Count.ToString());
                 Messenger.Messengers.Notify("openComparison", true);
                 for (int i = 0; i < list.Count; i++)
@@ -324,6 +327,24 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
             
         }
+        private void SetVisTure()
+        {
+            for (int i = 0; i < _renderLayers.Count; i++)
+            {
+                setRederLayerVisible(_renderLayers[i].Guid, true);
+            }
+        }
+        private void SetVis(List<StakeModel> list)
+        {
+            List<IRenderLayer> aa = new List<IRenderLayer>();
+            for (int i = 0; i < _renderLayers.Count; i++)
+            {
+               if (list.Where(t => t.Map1 == _renderLayers[i].Guid).ToList().Count<1)
+                {
+                    setRederLayerVisible(_renderLayers[i].Guid,false);
+                }
+            }
+        }
 
         /// <summary>
         /// 飞入图层
@@ -395,7 +416,27 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             });
         }
 
+        /// <summary>
+        /// 设置图层是否可见
+        /// </summary>
+        /// <param name="LayerGuid">图层guid</param>
+        /// <param name="viewPortIndex">图层视口序号，单屏状态为15,多屏状态下为视口序号，第一屏为0，第二为1，依此类推</param>
+        /// <param name="isVisilbe"></param>
+        public void setRederLayerVisible(string LayerGuid, bool isVisilbe)
+        {
+            if (_renderLayers.Count > 0)
+            {
+                foreach (var layer in _renderLayers)
+                {
 
+                    if (layer.Guid == LayerGuid)
+                    {
+                        var renderable = layer.Renderable;
+                        renderable?.SetVisibleMask(GviMap.Viewport.ViewportMode, 0, isVisilbe);
+                    }
+                }
+            }
+        }
         private void getStake()
         {
             //获取中线桩

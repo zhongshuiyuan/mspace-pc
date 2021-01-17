@@ -58,8 +58,11 @@
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="#131418" />
+                    <Setter Property="Opacity" Value="0.5" />
+                    <Setter Property="Foreground" Value ="#C6CCD4"/>
                     <Style.Triggers>
-                        <Trigger Property="AlternationIndex" Value="0" >
+                        <!--<Trigger Property="AlternationIndex" Value="0" >
                             <Setter Property="Background" Value="#131418" />
                             <Setter Property="Foreground" Value ="#C6CCD4"/>
                         </Trigger>
@@ -67,7 +70,7 @@
                             <Setter Property="Background" Value="#131418" />
                             <Setter Property="Opacity" Value="0.5" />
                             <Setter Property="Foreground" Value ="#C6CCD4"/>
-                        </Trigger>
+                        </Trigger>-->
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="#50ABFF"/>
                             <Setter Property="Foreground" Value ="White"/>

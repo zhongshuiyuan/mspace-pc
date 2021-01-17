@@ -9,6 +9,7 @@ using Mmc.Mspace.Common.Messenger;
 using Mmc.Mspace.Common.Models;
 using Mmc.Mspace.Common.Models.pipelines;
 using Mmc.Mspace.Const.ConstDataInterface;
+using Mmc.Mspace.Models.HttpResult;
 using Mmc.Mspace.Models.Inspection;
 using Mmc.Mspace.PoiManagerModule.Dto;
 using Mmc.Mspace.PoiManagerModule.Models;
@@ -43,7 +44,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         private InspectRegion _selectedItem;
         private UserInfo _userInfo;
         public Action HideWin;
-        public Action updateData;
+        public Action<PipeModel> updateData;
         public Dictionary<Guid, string> newrender = new Dictionary<Guid, string>();
         private string typeString = "";
 
@@ -940,12 +941,12 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     start = this.StartPoi.Id,
                     end = this.EndPoi.Id,
                     task_id =TaskSelectItem.Id,
-                }); 
+                });
 
-                bool success = HttpServiceHelper.Instance.PostRequestForStatus(PipelineInterface.createstake, txtjson);
-                if(success)
+                HttpResultModel success = HttpServiceHelper.Instance.PostRequestForResultModel(PipelineInterface.createstake, txtjson);
+                if(success.status=="1")
                 {
-                    updateData();
+                    updateData(JsonUtil.DeserializeFromString<PipeModel>(success.data.ToString()));
                     Messages.ShowMessage("添加成功！");
                 }
                 else

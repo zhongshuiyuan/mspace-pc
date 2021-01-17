@@ -29,14 +29,14 @@
         <Border  Grid.Row="0" Background="{DynamicResource  titleBackground}" Grid.Column="0" Grid.ColumnSpan="4" CornerRadius="5,5,0,0" blankWindow:BlankWindow.Draggable="True"/>
         <TextBlock  blankWindow:BlankWindow.Draggable="True"  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding TitleText}" Height="15" Margin="18,2,0,8" Foreground="#B3BBC5"  FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" />
         <Button Grid.Row="0" Grid.Column="3"  Command="{Binding CloseCmd}"  Style="{StaticResource ButtonCloseStyle}" Height="36" Width="36" HorizontalAlignment="Right"  VerticalAlignment="Top" Margin="0,2,5,0"  />
-
-        <DockPanel  Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Margin="0 0 0 10">
+        <Button Grid.Row="1" Visibility="{Binding ShowType,Converter={StaticResource FalseToVisibilityConverter}}" Grid.Column="0" Grid.ColumnSpan="4"  Width="65" Height="30" Margin="15,2,10,0" Content="查看报告"  Style="{StaticResource DefaultuploadButtonStyle}" Command="{Binding SaveCmd}" HorizontalAlignment="Left"></Button>
+        <DockPanel Visibility="{Binding ShowType,Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Margin="0 0 0 10">
             <Button Grid.Row="1" Grid.Column="1" Width="60" Height="30" Margin="10,2,10,0" Content="计算"  Style="{StaticResource DefaultuploadButtonStyle}" Command="{Binding Calculate}" ></Button>
             <Button Grid.Row="1" Grid.Column="0" Width="65" Height="30" Margin="5,2,10,0" Content="清除"  Style="{StaticResource DefaultuploadButtonStyle}" Command="{Binding ClearDraw}" ></Button>
             <TextBlock Text="输入预警值" FontSize="16"  Margin="10,5,5,5" VerticalAlignment="Center" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"></TextBlock>
             <TextBox Text="{Binding Radius}"  helper:TextBoxHelper.IsNeedClearButton="False" Height="32" Width="80" Margin="20,0,0,0" Style="{DynamicResource TbxWaterStyle}"  KeyDown="keydown" TextChanged="textChange"/>
             <Button Grid.Row="1" Grid.Column="0" Width="65" Height="30" Margin="15,2,10,0" Content="生成报告"  Style="{StaticResource DefaultuploadButtonStyle}" Command="{Binding SaveCmd}" HorizontalAlignment="Left"></Button>
-          
+        
         </DockPanel>
 
         <TextBlock Text="名称" Grid.Row="2" Grid.Column="0" Width="auto" FontSize="16"  Margin="10,0,5,0" VerticalAlignment="Center" Foreground="#B3BBC5"></TextBlock>

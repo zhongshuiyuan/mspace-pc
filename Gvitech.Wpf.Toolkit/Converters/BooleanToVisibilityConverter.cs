@@ -37,4 +37,5 @@ namespace Mmc.Wpf.Toolkit.Converters
 			throw new NotImplementedException();
 		}
 	}
+	
 }

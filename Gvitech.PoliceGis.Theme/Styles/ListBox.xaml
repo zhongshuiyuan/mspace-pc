@@ -6,6 +6,8 @@
                     xmlns:convert="clr-namespace:Mmc.Mspace.Theme.Converter">
     <convert:MapParameterConverter x:Key="ParameterConverter"/>
     <convert:BoolToVisibleConverter x:Key="BoolToVisible"/>
+    <convert:FalseToVisibilityConverter x:Key="FalseToVisibilityConverter"/>
+ 
     <Style x:Key="MapTogButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource MapToggleButtonStyle}">
         <Setter Property="CommandParameter">
             <Setter.Value>

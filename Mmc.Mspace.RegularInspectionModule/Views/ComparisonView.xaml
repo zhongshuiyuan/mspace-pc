@@ -8,6 +8,11 @@
              xmlns:local="clr-namespace:Mmc.Mspace.RegularInspectionModule.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Height="240">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <UserControl.Resources>
         <DataTemplate x:Key="itemTemplate">
             <Border Name="TagBorder" BorderBrush="#FF71757E" Background="Transparent" BorderThickness="0.5" CornerRadius="2" Padding="3,2" Margin="3,2" ToolTip="{Binding Sn}">
@@ -18,7 +23,7 @@
                     </Grid.RowDefinitions>
                     <Image Stretch="UniformToFill"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Width="192" Height="108" Source="{DynamicResource  ceshi123}"/>
                     <CheckBox x:Name="ischecked" Panel.ZIndex="10" Grid.Row="0" Margin="0 0 0 0" HorizontalAlignment="Right" VerticalAlignment="Top" Visibility="Collapsed" Command="{Binding Path=DataContext.CheckCommand,RelativeSource={RelativeSource AncestorType={x:Type Window}}}" CommandParameter="{Binding .}"  Style="{DynamicResource PoiCheckBoxStyle}" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged}" />
-                    <TextBlock Grid.Row="1" HorizontalAlignment="Center" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="{Binding Name}"></TextBlock>
+                    <TextBlock Grid.Row="1" HorizontalAlignment="Center" Foreground="#B3BBC5" Style="{StaticResource DefaultTextBlockStyle}"  Text="{Binding Name}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"></TextBlock>
                 </Grid>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="PreviewMouseLeftButtonDown">

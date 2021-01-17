@@ -163,7 +163,7 @@ namespace Mmc.Mspace.PoiManagerModule.ViewModels
                 }
             }
             catch (Exception e)
-            {
+             {
                 SystemLog.Log(e);
             }
         }      

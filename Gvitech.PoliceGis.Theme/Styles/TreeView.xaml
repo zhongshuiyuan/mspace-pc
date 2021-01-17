@@ -863,10 +863,10 @@
                                       Command="{Binding Path=DataContext.SelectCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
                                       CommandParameter="{Binding}"/>
                                     <controls:Buttons  
-                                      ToolTip="下载" x:Name="check_btn"
-                                      RIcon="{DynamicResource xiazai}" Visibility="Collapsed"
-                                      MouseOverRIcon="{DynamicResource xiazai_C}"
-                                      PressedRIcon="{DynamicResource xiazai_C}"  Height="18" Width="18"
+                                      ToolTip="报告" x:Name="check_btn"
+                                      RIcon="{DynamicResource Account_View}" Visibility="Collapsed"
+                                      MouseOverRIcon="{DynamicResource Account_View_C}"
+                                      PressedRIcon="{DynamicResource Account_View_C}"  Height="18" Width="18"
                                       Style="{StaticResource AddressBtnStyle}" Margin="0 0 7 0" 
                                       Command="{Binding Path=DataContext.SelectCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
                                       CommandParameter="{Binding}"/>
@@ -911,14 +911,20 @@
                         <DataTrigger Binding="{Binding Level}" Value="4">
                             <Setter Property="Visibility" TargetName="pic_btn" Value="Visible"/>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding FileType}" Value="Video">
+                        <DataTrigger Binding="{Binding Type}" Value="Video">
                             <Setter Property="Visibility" TargetName="video_btn" Value="Visible"/>
                             <Setter Property="Visibility" TargetName="pic_btn" Value="Collapsed"/>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding FileType}" Value="ImageGroupLayer">
+                        <DataTrigger Binding="{Binding Type}" Value="ImageGroupLayer">
                             <Setter Property="Visibility" TargetName="video_btn" Value="Collapsed"/>
                             <Setter Property="Visibility" TargetName="pic_btn" Value="Visible"/>
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding Type}" Value="report">
+                            <Setter Property="Visibility" TargetName="check_btn" Value="Visible"/>
+                            <Setter Property="Visibility" TargetName="video_btn" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="pic_btn" Value="Collapsed"/>
+                        </DataTrigger>
+                        
                         <!--<Trigger Property="IsMouseOver" Value="true">
                             <Setter Property="Background" TargetName="Expander" Value="#50ABFF"/>
                             <Setter Property="Visibility" TargetName="buttonvisibility" Value="Visible"/>

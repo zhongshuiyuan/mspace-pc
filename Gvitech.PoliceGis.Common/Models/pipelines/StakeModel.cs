@@ -57,6 +57,17 @@ namespace Mmc.Mspace.Common.Models.pipelines
                 NotifyPropertyChanged("Map");
             }
         }
+        private string _map1;
+
+        public string Map1
+        {
+            get => Map.Split('&')[0];
+            set
+            {
+                _map1 = value;
+                NotifyPropertyChanged("Map1");
+            }
+        }
         private string height;
 
         public string Height

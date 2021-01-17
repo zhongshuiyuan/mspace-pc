@@ -1,6 +1,7 @@
 ﻿using Mmc.Wpf.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,13 +72,22 @@ namespace Mmc.Mspace.PoiManagerModule.Models
         private string _fileType;
         public string FileType
         {
-            get => Map?.Split('&')[1];
+            get =>string.IsNullOrEmpty(Map)?"": Map?.Split('&').Length>1? Map?.Split('&')[1]: "";
             set
             {
                 _fileType = value;
                 NotifyPropertyChanged("FileType");
             }
         }
+
+        private string _type;
+
+        public string Type
+        {
+            get { return _type; }
+            set { _type = value; NotifyPropertyChanged("Type"); }
+        }
+
         public string Name
         {
             get => _name;
@@ -220,8 +230,8 @@ namespace Mmc.Mspace.PoiManagerModule.Models
             }
         }
         
-        private List<PipeModel> _child;
-        public List<PipeModel> Child
+        private ObservableCollection<PipeModel> _child;
+        public ObservableCollection<PipeModel> Child
         {
             get { return _child; }
             set { _child = value; NotifyPropertyChanged("Child"); }
