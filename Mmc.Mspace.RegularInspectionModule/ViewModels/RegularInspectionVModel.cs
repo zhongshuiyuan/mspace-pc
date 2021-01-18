@@ -198,6 +198,14 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             set { _checkVideoCommand = value; }
         }
 
+        private RelayCommand<object> _picCommand;
+
+        public RelayCommand<object> PicCommand
+        {
+            get { return _picCommand ?? (_picCommand = new RelayCommand<object>(OnPicCommand)); }
+            set { _picCommand = value; }
+        }
+        
 
         private RelayCommand<object> _importCommand;
 
@@ -247,6 +255,15 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         {
             get { return _deleteCommand ?? (_deleteCommand = new RelayCommand<object>(OnDeleteCommand)); }
             set { _deleteCommand = value; }
+        }
+
+
+        private RelayCommand<object> _editCommand;
+
+        public RelayCommand<object> EditCommand
+        {
+            get { return _editCommand ?? (_editCommand = new RelayCommand<object>(OnEditCommand)); }
+            set { _editCommand = value; }
         }
         private RelayCommand<object> _reNameCmd;
 
@@ -382,6 +399,16 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             }
         }
 
+        private void OnPicCommand(object obj)
+        {
+            if (obj == null) return;
+
+            ImageDisplayVModel ImageDisplayVModel = new ImageDisplayVModel();
+            PipeModel popemodel = obj as PipeModel;
+
+            if (WarnFileExist(popemodel.File))
+                ImageDisplayVModel.ShowImageView(popemodel.File);
+        }
         private void OnCheckVideoCommand(object obj)
         {
             if (obj == null) return;
@@ -455,6 +482,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             this.newInspectionVModel.SelectPipeModel = oneItem;
 
             newInspectionVModel.LoadData();
+            _newInspectionView.TitleName.Text = "新增影像";
             _newInspectionView.DataContext = newInspectionVModel;
             _newInspectionView.Owner = Application.Current.MainWindow;
             _newInspectionView.Left = 400;
@@ -503,6 +531,31 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             pipeModel.Level = "4";
             AddItem(PipeModels, pipeModel);
             addSelect = null;
+        }
+        private void EditUpdate(PipeModel pipeModel)
+        {
+             getPipeList2();
+             addSelect = null;
+        }
+        private void EditItem(ObservableCollection<PipeModel> list, PipeModel pipeModel)
+        {
+            Application.Current.Dispatcher.Invoke(() => {
+                foreach (var item in list)//1级
+                {
+
+                    if (item.Child != null && item.Child.Count > 0)
+                    {
+                        var re = item.Child.Where(t => t.Id == pipeModel.Id).ToList();
+                        if (re.Count > 0)
+                        {
+                            pipeModel.Father = item.Id;
+                            re[0].Name= pipeModel.Name;
+                            break;
+                        }
+                        EditItem(new ObservableCollection<PipeModel>(item.Child), pipeModel);
+                    }
+                }
+            });
         }
         private void AddItem(ObservableCollection<PipeModel> list, PipeModel pipeModel)
         {
@@ -640,6 +693,50 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             RegInsDataRenderManager.Instance.OpenInspectData(inspect);
         }
 
+        private void OnEditCommand(object parameter)
+        {
+            if (parameter == null)
+            {
+                Messages.ShowMessage(ResourceHelper.FindKey("SelectedDeleteItem"));
+                return;
+            }
+            PipeModel popemodel = parameter as PipeModel;
+            if (popemodel.Level != "4") return;
+
+            if (_newInspectionView == null)
+            {
+                _newInspectionView = new NewInspectionView();
+                newInspectionVModel = new NewInspectionVModel();
+                newInspectionVModel.HideWin = _newInspectionView.CloseWindow;
+                newInspectionVModel.HideWin += CloseAdd;
+            }
+            newInspectionVModel.Name = popemodel.Name;
+            newInspectionVModel.UploadText = popemodel.File;
+            newInspectionVModel.LoadFiles = popemodel.File;
+            
+            newInspectionVModel.EditItem = popemodel;
+
+            this.newInspectionVModel.Sections = this.Sections;
+            this.newInspectionVModel.Periods = this.Periods;
+            this.newInspectionVModel.PipeModels = this.PipeModels;
+            this.newInspectionVModel.addRenderLayer = AddData;
+            this.newInspectionVModel.updateData = EditUpdate;
+            this.newInspectionVModel.typeString = popemodel.Type;
+            this.newInspectionVModel.SelectPeriodModel = this.Periods.SingleOrDefault(t => t.Id == popemodel.Pipe_id);
+            this.newInspectionVModel.SelectSectionModel = this.Sections.SingleOrDefault(t => t.Id == popemodel.Section_id);
+            this.newInspectionVModel.SelectPipeModel = this.PipeModels[0];
+            newInspectionVModel.LoadData();
+            this.newInspectionVModel.StartPoi = this.newInspectionVModel.StakeModels.Where(t => t.Id == popemodel.Start).ToList()[0];
+            this.newInspectionVModel.EndPoi = this.newInspectionVModel.StakeModels2.Where(t => t.Id == popemodel.End).ToList()[0];
+            this.newInspectionVModel.TaskSelectItem = this.newInspectionVModel.TaskAll.Where(t => t.Id == popemodel.Task_id).ToList()[0];
+            _newInspectionView.TitleName.Text = "编辑影像";
+            _newInspectionView.DataContext = newInspectionVModel;
+            _newInspectionView.Owner = Application.Current.MainWindow;
+            _newInspectionView.Left = 400;
+            _newInspectionView.Top = Application.Current.MainWindow.Height * 0.2;
+            _newInspectionView.Show();
+        }
+
         private void OnDeleteCommand(object parameter)
         {
             if (parameter == null)
@@ -653,14 +750,13 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             var dr = Messages.ShowMessageDialog("提示", "是否确定删除当前选中项？");
             if (dr)
             {
-                PipeModel periodModel = parameter as PipeModel;
-                bool success = HttpServiceHelper.Instance.PostRequestForStatus(PipelineInterface.deletestake + "?id=" + periodModel.Id, "");
+                bool success = HttpServiceHelper.Instance.PostRequestForStatus(PipelineInterface.deletestake + "?id=" + popemodel.Id, "");
                 if(success)
                 {
                     Messages.ShowMessage("删除成功");
                     DeleteDataSource(popemodel.Map.Split('&')[0]);;
                     //this.getPipeList();
-                    DeleteItem(PipeModels, periodModel);
+                    DeleteItem(PipeModels, popemodel);
                     GetMapSource();
                 }
             }

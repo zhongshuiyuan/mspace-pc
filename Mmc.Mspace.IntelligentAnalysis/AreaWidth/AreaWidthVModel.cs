@@ -316,6 +316,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             saveFileDialog.FileName = DateTime.Now.ToString("yyyyMMddHHmmss") + ".pdf";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
+                System.Threading.Thread.Sleep(1000);
                 //上传图片 
                 string updatestake = string.Format("{0}", PipelineInterface.taskupload);
                 string result = HttpServiceHelper.Instance.PostImageFile(updatestake, NavigationImgCompletePath);
@@ -341,7 +342,6 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 {
                     string path = HttpServiceHelper.Instance.PostRequestForString(PipelineInterface.tracingexport, JsonUtil.SerializeToString(item), filepath, filename, DownloadResult);
                 });
-              
             }
         }
 
@@ -492,7 +492,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
             }
             else
             {
-                areaWidthView.Left = 350;
+                areaWidthView.Left = 370;
                 areaWidthView.Top = 220;
                 getlineList();
             }
@@ -733,7 +733,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 geo_1.SpatialCRS = GviMap.SpatialCrs;
         
                 IRenderPolygon render = GviMap.ObjectManager.CreateRenderPolygon(geo_1 as IPolygon, GviMap.LinePolyManager.SurfaceSym, GviMap.ProjectTree.RootID);
-                //render.HeightStyle = gviHeightStyle.gviHeightOnTerrain;
+                render.HeightStyle = gviHeightStyle.gviHeightOnTerrain;
                 render?.SetFdeGeometry(geo_1);
                 render.VisibleMask = gviViewportMask.gviViewAllNormalView;
                 render.Symbol.BoundarySymbol.Color = Color.FromArgb(255, 0, 255, 255);
@@ -835,7 +835,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
                 IGeometry geo_1 = Buffer(polylines[0], (Convert.ToDouble(_radius)) /100000);
                 geo_1.SpatialCRS = GviMap.SpatialCrs;
                 IRenderPolygon render = GviMap.ObjectManager.CreateRenderPolygon(geo_1 as IPolygon, GviMap.LinePolyManager.SurfaceSym, GviMap.ProjectTree.RootID);
-                //render.HeightStyle = gviHeightStyle.gviHeightRelative;
+                render.HeightStyle = gviHeightStyle.gviHeightOnTerrain;
                 render?.SetFdeGeometry(geo_1);
                 render.VisibleMask = gviViewportMask.gviViewAllNormalView;
                 render.Symbol.BoundarySymbol.Color = Color.FromArgb(255, 0, 255, 255);
@@ -859,7 +859,7 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.AreaWidth
         }
         private IGeometry Buffer(IPolyline polyline, double dis)
         {
-            var poly = polyline.Clone2(gviVertexAttribute.gviVertexAttributeNone);
+            var poly = polyline.Clone2(gviVertexAttribute.gviVertexAttributeZ);
           
             var topo = poly as ITopologicalOperator2D;
             return topo.Buffer2D(dis, gviBufferStyle.gviBufferCapround);

@@ -22,6 +22,19 @@
     <ImageSource x:Key="userImg_C">pack://application:,,,/Mmc.Mspace.Theme;component/Images/userImg_C.png</ImageSource>
     <ImageSource x:Key="userImg_H">pack://application:,,,/Mmc.Mspace.Theme;component/Images/userImg_H.png</ImageSource>
 
+    <ImageSource x:Key="bianji">pack://application:,,,/Mmc.Mspace.Theme;component/Images/bianji.png</ImageSource>
+    <ImageSource x:Key="bianji_C">pack://application:,,,/Mmc.Mspace.Theme;component/Images/bianji_C.png</ImageSource>
+    <ImageSource x:Key="bianji_H">pack://application:,,,/Mmc.Mspace.Theme;component/Images/bianji_H.png</ImageSource>
+
+    <ImageSource x:Key="zhengshe_C">pack://application:,,,/Mmc.Mspace.Theme;component/Images/zhengshe_C.png</ImageSource>
+    <ImageSource x:Key="zhengshe">pack://application:,,,/Mmc.Mspace.Theme;component/Images/zhengshe.png</ImageSource>
+    <ImageSource x:Key="pdf_C">pack://application:,,,/Mmc.Mspace.Theme;component/Images/pdf_C.png</ImageSource>
+    <ImageSource x:Key="pdf">pack://application:,,,/Mmc.Mspace.Theme;component/Images/pdf.png</ImageSource>
+
+
+    <ImageSource x:Key="qingxie_C">pack://application:,,,/Mmc.Mspace.Theme;component/Images/qingxie_C.png</ImageSource>
+    <ImageSource x:Key="qingxie">pack://application:,,,/Mmc.Mspace.Theme;component/Images/qingxie.png</ImageSource>
+    
     <ImageSource x:Key="Video_C">pack://application:,,,/Mmc.Mspace.Theme;component/Images/Video_C.png</ImageSource>
     <ImageSource x:Key="Video_S">pack://application:,,,/Mmc.Mspace.Theme;component/Images/Video_S.png</ImageSource>
     <ImageSource x:Key="Pic_C">pack://application:,,,/Mmc.Mspace.Theme;component/Images/Pic_C.png</ImageSource>

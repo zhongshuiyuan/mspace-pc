@@ -46,7 +46,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
         public Action HideWin;
         public Action<PipeModel> updateData;
         public Dictionary<Guid, string> newrender = new Dictionary<Guid, string>();
-        private string typeString = "";
+        public string typeString = "";
 
         public NewInspectionVModel()
         {
@@ -175,6 +175,15 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             get { return _name; }
             set { _name = value; OnPropertyChanged("Name"); }
         }
+
+        private PipeModel _editItem;
+
+        public PipeModel EditItem
+        {
+            get { return _editItem; }
+            set { _editItem = value; }
+        }
+
 
         private string _uploadText = "请选择文件";
 
@@ -394,6 +403,8 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
             NewName = string.Empty;
             InspectionDate = DateTime.Now;
             InspectRegions = new ObservableCollection<InspectRegion>(InspectionService.Instance.GetAllRegion());
+            getStackList("");
+            getStackList2("");
             getTaskAll();
 
         }
@@ -474,7 +485,7 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                         AddFdbDataSource(fileAddress, guid, index);
                         break;
                     case "Video":
-
+                    case "Img":
                         break;
                 }
             }
@@ -911,10 +922,12 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 return;
             }
             Task.Run(()=>{
-
-                this.ParseUpload();
+                if(EditItem==null|| EditItem.File!= UploadText)
+                {
+                    this.ParseUpload();
+                }
                 string map = "";
-                if (newrender.Count <= 0&&typeString!= "Video")
+                if (newrender.Count <= 0&&typeString!= "Video" && typeString != "Img")
                 {
                     Messages.ShowMessage("当前上传文件已存在！");
                     return;
@@ -923,12 +936,13 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                 {
                     map = newrender.First().Key + "&" + newrender.First().Value;
                 }
-                if (typeString == "Video")
+                if (typeString == "Video"|| typeString == "Img")
                 {
                     map = "123456&" + typeString;
                 }
                 var txtjson = JsonUtil.SerializeToString(new
                 {
+                    id= EditItem!=null?EditItem.Id:"",
                     name = this.Name,
                     pipe_id = this.SelectPipeModel.Id,
                     section_id = this.SelectSectionModel.Id,
@@ -942,12 +956,23 @@ namespace Mmc.Mspace.RegularInspectionModule.ViewModels
                     end = this.EndPoi.Id,
                     task_id =TaskSelectItem.Id,
                 });
-
-                HttpResultModel success = HttpServiceHelper.Instance.PostRequestForResultModel(PipelineInterface.createstake, txtjson);
+                var url = PipelineInterface.createstake;
+                if (EditItem != null)
+                {
+                  url = PipelineInterface.updatestake+"?id="+ EditItem.Id;
+                }
+                HttpResultModel success = HttpServiceHelper.Instance.PostRequestForResultModel(url, txtjson);
                 if(success.status=="1")
                 {
                     updateData(JsonUtil.DeserializeFromString<PipeModel>(success.data.ToString()));
-                    Messages.ShowMessage("添加成功！");
+                    if(EditItem!=null)
+                    {
+                        Messages.ShowMessage("修改成功！");
+                    }
+                    else
+                    {
+                        Messages.ShowMessage("添加成功！");
+                    }
                 }
                 else
                 {

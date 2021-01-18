@@ -176,6 +176,34 @@ namespace Mmc.Mspace.Services.HttpService
                 throw ex;
             }
         }
+
+        public string PostRequestForString(string dataInterface, string jsonStr, Action<string> OnFinish)
+        {
+            string data = string.Empty;
+            string url = CreateUrl(dataInterface);
+            try
+            {
+                string result = HttpService.RequestService(url, postDataStr: jsonStr, method: "POST");
+                string resultModel = result;
+                if (!string.IsNullOrEmpty(resultModel))
+                {
+                    data = resultModel.Substring(1, resultModel.Length - 2);
+                }
+
+                string urlPath = data;
+                OnFinish(urlPath);
+                return data;
+            }
+            catch (HttpException ex)
+            {
+                OnFinish("");
+                throw new HttpException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public string PostRequestForString(string dataInterface, string jsonStr,string filePath,string filename, Action<string> OnFinish)
         {
             string data = string.Empty;

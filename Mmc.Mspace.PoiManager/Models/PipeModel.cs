@@ -204,6 +204,13 @@ namespace Mmc.Mspace.PoiManagerModule.Models
                 NotifyPropertyChanged("End");
             }
         }
+        private string _task_id;
+
+        public string Task_id
+        {
+            get { return _task_id; }
+            set { _task_id = value; NotifyPropertyChanged("Task_id"); }
+        }
 
 
         private string _pipe_id;

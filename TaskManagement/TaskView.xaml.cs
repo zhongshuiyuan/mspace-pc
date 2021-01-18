@@ -31,7 +31,7 @@ namespace TaskManagement
             //username=madmin&password=madmin123
             
             //string url = "http://wrj.mmcuav.cn/web/#/?username=" + CacheData.UserInfo.username + "&password="+ CacheData.UserInfo.loginPwd;
-            string url = "http://112.245.48.207:8088/web/#/?username=" + CacheData.UserInfo.username + "&password="+ CacheData.UserInfo.loginPwd;
+            string url = "http://112.245.48.207:8088/web/#/?token=" + HttpServiceUtil.Token;
             Browser.LoadUri(url);
             windowsFormsHost.Child = Browser; //把浏览器与前后台进行对接  
         }

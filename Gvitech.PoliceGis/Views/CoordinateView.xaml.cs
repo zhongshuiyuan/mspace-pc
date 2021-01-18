@@ -30,10 +30,10 @@ namespace MMC.MSpace.Views
         {
             InitializeComponent();
             GviMap.MouseSelectObjectMask = gviMouseSelectObjectMask.gviSelectAll;
-            //GviMap.AxMapControl.MouseMove += AxMapControl_MouseMove;
-            //GviMap.AxMapControl.MouseSelectMode = gviMouseSelectMode.gviMouseSelectMove;
-            //GviMap.AxMapControl.RcMouseClickSelect += AxMapControl_RcMouseClickSelect;
-         
+            GviMap.AxMapControl.MouseMove += AxMapControl_MouseMove;
+            GviMap.AxMapControl.MouseSelectMode = gviMouseSelectMode.gviMouseSelectMove;
+            GviMap.AxMapControl.RcMouseClickSelect += AxMapControl_RcMouseClickSelect;
+
         }
 
         private void AxMapControl_RcMouseClickSelect(IPickResult PickResult, IPoint IntersectPoint, gviModKeyMask Mask, gviMouseSelectMode EventSender)

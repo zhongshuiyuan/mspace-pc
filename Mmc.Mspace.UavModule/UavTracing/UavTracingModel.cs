@@ -78,7 +78,6 @@ namespace Mmc.Mspace.UavModule.UavTracing
             }
         }
 
-
         public Action<DeviceInfo> OnTracking { get; set; }
 
         public void FollowToUav(bool isFollow)

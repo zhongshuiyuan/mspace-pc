@@ -390,6 +390,12 @@ namespace Mmc.Mspace.IntelligentAnalysisModule.MidPointCheck
                     traceListView.Owner = Application.Current.MainWindow;
                     this.HideAdd = CloseAA;
                 }
+
+                IPoint position;
+                IEulerAngle eulerAngle;
+                GviMap.Camera.GetCamera2(out position, out eulerAngle);
+                eulerAngle.Tilt = -90.0;
+                GviMap.Camera.SetCamera2(position, eulerAngle, gviSetCameraFlags.gviSetCameraNoFlags);
                 //DrawAutoLine(SelectStakeModels);//画基准线
                 traceListView.DataContext = this;
                 traceListView.Left = 50;

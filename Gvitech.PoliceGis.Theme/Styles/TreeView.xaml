@@ -817,7 +817,7 @@
 
                         <ToggleButton  x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ExpandCollapseToggleStyle}"/>
                         <ContentPresenter Grid.Column="1" x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                        <DockPanel   Grid.Column="1" HorizontalAlignment="Stretch" Margin="0 0 10 0">
+                        <DockPanel   Grid.Column="1" HorizontalAlignment="Stretch" Margin="10 0 10 0">
                             <TextBlock   HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="#B3BBC5" FontSize="14" ToolTip="{Binding NodeName}" Text="{Binding NodeName}" ></TextBlock>
                             <Border    HorizontalAlignment="Right">
                                 <!--TextTrimming="W ordEllipsis"-->
@@ -850,32 +850,57 @@
                                       ToolTip="视频" x:Name="video_btn"
                                       RIcon="{DynamicResource Video_S}" Visibility="Collapsed"
                                       MouseOverRIcon="{DynamicResource Video_C}"
-                                      PressedRIcon="{DynamicResource Video_C}" Height="18" Width="18"
-                                      Style="{StaticResource AddressBtnStyle}" Margin="0 0 7 0" 
+                                      PressedRIcon="{DynamicResource Video_C}" Height="18" Width="16"
+                                      Style="{StaticResource HomeLeftButtonStyle}" Margin="0 0 7 0" 
                                       Command="{Binding Path=DataContext.CheckVideoCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
                                       CommandParameter="{Binding}"/>
                                     <controls:Buttons  
-                                      ToolTip="影像" x:Name="pic_btn"
-                                      RIcon="{DynamicResource Pic_C}" Visibility="Collapsed"
-                                      MouseOverRIcon="{DynamicResource Pic_S}"
-                                      PressedRIcon="{DynamicResource Pic_S}"  Height="18" Width="18"
-                                      Style="{StaticResource AddressBtnStyle}" Margin="0 0 7 0" 
+                                      ToolTip="正射" x:Name="yingxiang_btn"
+                                      RIcon="{DynamicResource zhengshe}" Visibility="Collapsed"
+                                      MouseOverRIcon="{DynamicResource zhengshe_C}"
+                                      PressedRIcon="{DynamicResource zhengshe_C}"  Height="18" Width="16"
+                                      Style="{StaticResource HomeLeftButtonStyle}" Margin="0 0 7 0" 
                                       Command="{Binding Path=DataContext.SelectCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
                                       CommandParameter="{Binding}"/>
                                     <controls:Buttons  
+                                      ToolTip="倾斜" x:Name="zhengshe_btn"
+                                      RIcon="{DynamicResource qingxie}" Visibility="Collapsed"
+                                      MouseOverRIcon="{DynamicResource qingxie_C}"
+                                      PressedRIcon="{DynamicResource qingxie_C}"  Height="18" Width="16"
+                                      Style="{StaticResource HomeLeftButtonStyle}" Margin="0 0 7 0" 
+                                      Command="{Binding Path=DataContext.SelectCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                      CommandParameter="{Binding}"/>
+                                    <controls:Buttons  
+                                      ToolTip="图片" x:Name="pic_btn"
+                                      RIcon="{DynamicResource Pic_C}" Visibility="Collapsed"
+                                      MouseOverRIcon="{DynamicResource Pic_S}"
+                                      PressedRIcon="{DynamicResource Pic_S}"  Height="18" Width="16"
+                                      Style="{StaticResource HomeLeftButtonStyle}" Margin="0 0 7 0" 
+                                      Command="{Binding Path=DataContext.PicCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                      CommandParameter="{Binding}"/>
+                                    
+                                    <controls:Buttons  
                                       ToolTip="报告" x:Name="check_btn"
-                                      RIcon="{DynamicResource Account_View}" Visibility="Collapsed"
-                                      MouseOverRIcon="{DynamicResource Account_View_C}"
-                                      PressedRIcon="{DynamicResource Account_View_C}"  Height="18" Width="18"
-                                      Style="{StaticResource AddressBtnStyle}" Margin="0 0 7 0" 
+                                      RIcon="{DynamicResource pdf}" Visibility="Collapsed"
+                                      MouseOverRIcon="{DynamicResource pdf_C}"
+                                      PressedRIcon="{DynamicResource pdf_C}"  Height="18" Width="16"
+                                      Style="{StaticResource HomeLeftButtonStyle}" Margin="0 0 7 0" 
                                       Command="{Binding Path=DataContext.CheckReportCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                      CommandParameter="{Binding}"/>
+                                    <controls:Buttons  
+                                      ToolTip="编辑" x:Name="edit_btn"
+                                      RIcon="{DynamicResource bianji}" Visibility="Collapsed"
+                                      MouseOverRIcon="{DynamicResource bianji_C}"
+                                      PressedRIcon="{DynamicResource bianji_C}"  Height="18" Width="16"
+                                      Style="{StaticResource HomeLeftButtonStyle}" Margin="0 0 5 0" 
+                                      Command="{Binding Path=DataContext.EditCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
                                       CommandParameter="{Binding}"/>
                                     <controls:Buttons  
                                       ToolTip="删除" x:Name="delete_btn"
                                       RIcon="{DynamicResource DeletePointNew}" Visibility="Collapsed"
                                       MouseOverRIcon="{DynamicResource DeletePointNew_H}"
-                                      PressedRIcon="{DynamicResource DeletePointNew_H}"  Height="18" Width="14"
-                                      Style="{StaticResource AddressBtnStyle}" Margin="0 0 5 0" 
+                                      PressedRIcon="{DynamicResource DeletePointNew_H}"  Height="18" Width="16"
+                                      Style="{StaticResource HomeLeftButtonStyle}" Margin="0 0 5 0" 
                                       Command="{Binding Path=DataContext.DeleteCommand,RelativeSource={RelativeSource AncestorType=UserControl}}"
                                       CommandParameter="{Binding}"/>
                                     <controls:Buttons  Command="{Binding Path=DataContext.AddCommand,RelativeSource={RelativeSource AncestorType=UserControl}}" Visibility="Collapsed" CommandParameter="{Binding .}"   Style="{DynamicResource Button_plusStyle}" Height="24" Width="24" HasPathData="true" PathData="{DynamicResource glyphicon-add}" RIcon="{DynamicResource add_n}" x:Name="add_btn" ToolTip="添加" InnerPathFill="#50ABFF"  HorizontalAlignment="Right" Margin="0 0 10 0"/>
@@ -902,6 +927,7 @@
                         </Trigger>
                         <DataTrigger Binding="{Binding Level}" Value="4">
                             <Setter Property="Visibility" TargetName="delete_btn" Value="Visible"/>
+                            <Setter Property="Visibility" TargetName="edit_btn" Value="Visible"/>
                             <Setter Property="Visibility" TargetName="FirstEye" Value="Visible"/>
                             
                         </DataTrigger>
@@ -909,19 +935,32 @@
                             <Setter Property="Visibility" TargetName="add_btn" Value="Visible"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Level}" Value="4">
-                            <Setter Property="Visibility" TargetName="pic_btn" Value="Visible"/>
+                            <Setter Property="Visibility" TargetName="yingxiang_btn" Value="Visible"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Type}" Value="Video">
                             <Setter Property="Visibility" TargetName="video_btn" Value="Visible"/>
-                            <Setter Property="Visibility" TargetName="pic_btn" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="yingxiang_btn" Value="Collapsed"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Type}" Value="ImageGroupLayer">
                             <Setter Property="Visibility" TargetName="video_btn" Value="Collapsed"/>
-                            <Setter Property="Visibility" TargetName="pic_btn" Value="Visible"/>
+                            <Setter Property="Visibility" TargetName="yingxiang_btn" Value="Visible"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Type}" Value="report">
                             <Setter Property="Visibility" TargetName="check_btn" Value="Visible"/>
                             <Setter Property="Visibility" TargetName="video_btn" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="yingxiang_btn" Value="Collapsed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Type}" Value="Img">
+                            <Setter Property="Visibility" TargetName="check_btn" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="video_btn" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="yingxiang_btn" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="pic_btn" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Type}" Value="TileGroupLayer">
+                            <Setter Property="Visibility" TargetName="zhengshe_btn" Value="Visible"/>
+                            <Setter Property="Visibility" TargetName="check_btn" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="video_btn" Value="Collapsed"/>
+                            <Setter Property="Visibility" TargetName="yingxiang_btn" Value="Collapsed"/>
                             <Setter Property="Visibility" TargetName="pic_btn" Value="Collapsed"/>
                         </DataTrigger>
                         
